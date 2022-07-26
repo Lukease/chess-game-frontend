@@ -1,176 +1,110 @@
 import React from 'react'
 import './Arena.css'
-import king from './chess-icon/chess-king-solid.svg'
-import queen from './chess-icon/chess-queen-solid.svg'
-import knight from './chess-icon/chess-knight-solid.svg'
-import pawn from './chess-icon/chess-pawn-solid.svg'
-import rook from './chess-icon/chess-rook-solid.svg'
-import bishop from './chess-icon/chess-bishop-solid.svg'
-import knightReg from './chess-icon/chess-knight-regular.svg'
-import queenReg from './chess-icon/chess-queen-regular.svg'
-import kingReg from './chess-icon/chess-king-regular.svg'
-import bishopReg from './chess-icon/chess-bishop-regular.svg'
-import pawnReg from './chess-icon/chess-pawn-regular.svg'
-import rookReg from './chess-icon/chess-rook-regular.svg'
+import whiteKing from './chess-icon/black-king.svg'
+import whiteQueen from './chess-icon/black-queen.svg'
+import whiteKnight from './chess-icon/black-knight.svg'
+import whitePawn from './chess-icon/black-pawn.svg'
+import whiteRook from './chess-icon/black-rook.svg'
+import whiteBishop from './chess-icon/black-bishop.svg'
+import blackKnight from './chess-icon/white-knight.svg'
+import blackQueen from './chess-icon/white-queen.svg'
+import blackKing from './chess-icon/white-King.svg'
+import blackBishop from './chess-icon/white-bishop.svg'
+import blackPawn from './chess-icon/white-pawn.svg'
+import blackRook from './chess-icon/white-rook.svg'
 import {Field, FieldNumber, Letter} from './Arena_utils'
 
 class Board extends React.Component<any, any> {
-    renderLetters(letter: string) {
-        return (
-            <Letter
-                value={letter}
-            />
-        )
+    renderLetters() {
+        const alpha: Array<number> = Array.from(Array(8)).map((e, i) => i + 65)
+        const arrayOfLetters: Array<string> = alpha.map(letter => String.fromCharCode(letter))
+        const letterField: Array<any> = ['', ...arrayOfLetters, ''].map((letter, index) => {
+            return (
+                <Letter
+                    value={letter}
+                    key={index}
+                />
+            )
+        })
+
+        return letterField
     }
 
-    renderNumbers(fieldNumber: number) {
-        return (
-            <FieldNumber
-                value={fieldNumber}
-            />
-        )
+    renderNumbers(site: string) {
+        const arrayOfNumbers: Array<any> = Array.apply(null, Array(8)).map((x, index) => {
+            return (
+                <FieldNumber
+                    value={index + 1}
+                    key={index}
+                    site={site}
+                />
+            )
+        })
+
+        return arrayOfNumbers
     }
 
-    renderField(color: string, name: string, chess: boolean) {
-        return (
-            <Field
-                value={color}
-                iconName={name}
-                isFigure={chess}
-            />
-        )
+    renderField(id: number, nameChess: Array<string>, fieldLetter: string) {
+        const [whiteFigure, whitePawn, blackPawn, blackFigure] = nameChess
+        const emptyArray: Array<string> = Array(4).fill('')
+        const figureArray: Array<any> = [whiteFigure, whitePawn, ...emptyArray, blackPawn, blackFigure].map((name, index) => {
+            return (
+                <Field
+                    value={(id + index) % 2 ? 'white' : 'black'}
+                    figureName={name}
+                    isFigure={!!name}
+                    number={index + 1}
+                    letter={fieldLetter}
+                    key={index}
+                />
+            )
+        })
+
+        return figureArray
     }
 
     render() {
         return (
             <div className={'game'}>
                 <div className={'game__letters'}>
-                    {this.renderLetters('')}
-                    {this.renderLetters('A')}
-                    {this.renderLetters('B')}
-                    {this.renderLetters('C')}
-                    {this.renderLetters('D')}
-                    {this.renderLetters('E')}
-                    {this.renderLetters('F')}
-                    {this.renderLetters('G')}
-                    {this.renderLetters('H')}
-                    {this.renderLetters('')}
+                    {this.renderLetters()}
                 </div>
                 <div className={'arena'}>
-                    <div className={'numbers'}>
-                        {this.renderNumbers(8)}
-                        {this.renderNumbers(7)}
-                        {this.renderNumbers(6)}
-                        {this.renderNumbers(5)}
-                        {this.renderNumbers(4)}
-                        {this.renderNumbers(3)}
-                        {this.renderNumbers(2)}
-                        {this.renderNumbers(1)}
+                    <div className={'arena__numbers'}>
+                        {this.renderNumbers('left')}
                     </div>
-                    <div>
-                        <div className='field-row'>
-                            {this.renderField('black', rook, true)}
-                            {this.renderField('white', knight, true)}
-                            {this.renderField('black', bishop, true)}
-                            {this.renderField('white', queen, true)}
-                            {this.renderField('black', king, true)}
-                            {this.renderField('white', bishop, true)}
-                            {this.renderField('black', knight, true)}
-                            {this.renderField('white', rook, true)}
+                    <div className={'arena__chess'}>
+                        <div className='field__column'>
+                            {this.renderField(1, [whiteRook, whitePawn, blackPawn, blackRook], 'A')}
                         </div>
-                        <div className='field-row'>
-                            {this.renderField('white', pawn, true)}
-                            {this.renderField('black', pawn, true)}
-                            {this.renderField('white', pawn, true)}
-                            {this.renderField('black', pawn, true)}
-                            {this.renderField('white', pawn, true)}
-                            {this.renderField('black', pawn, true)}
-                            {this.renderField('white', pawn, true)}
-                            {this.renderField('black', pawn, true)}
+                        <div className='field__column'>
+                            {this.renderField(2, [whiteKnight, whitePawn, blackPawn, blackKnight], 'B')}
                         </div>
-                        <div className='field-row'>
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
+                        <div className='field__column'>
+                            {this.renderField(1, [whiteBishop, whitePawn, blackPawn, blackBishop], 'C')}
                         </div>
-                        <div className='field-row'>
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
+                        <div className='field__column'>
+                            {this.renderField(2, [whiteQueen, whitePawn, blackPawn, blackKing], 'D')}
                         </div>
-                        <div className='field-row'>
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
+                        <div className='field__column'>
+                            {this.renderField(1, [whiteKing, whitePawn, blackPawn, blackQueen], 'E')}
                         </div>
-                        <div className='field-row'>
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
-                            {this.renderField('white', '', false)}
-                            {this.renderField('black', '', false)}
+                        <div className='field__column'>
+                            {this.renderField(2, [whiteBishop, whitePawn, blackPawn, blackBishop], 'F')}
                         </div>
-                        <div className='field-row'>
-                            {this.renderField('black', pawnReg, true)}
-                            {this.renderField('white', pawnReg, true)}
-                            {this.renderField('black', pawnReg, true)}
-                            {this.renderField('white', pawnReg, true)}
-                            {this.renderField('black', pawnReg, true)}
-                            {this.renderField('white', pawnReg, true)}
-                            {this.renderField('black', pawnReg, true)}
-                            {this.renderField('white', pawnReg, true)}
+                        <div className='field__column'>
+                            {this.renderField(1, [whiteKnight, whitePawn, blackPawn, blackKnight], 'G')}
                         </div>
-                        <div className='field-row'>
-                            {this.renderField('white', rookReg, true)}
-                            {this.renderField('black', knightReg, true)}
-                            {this.renderField('white', bishopReg, true)}
-                            {this.renderField('black', kingReg, true)}
-                            {this.renderField('white', queenReg, true)}
-                            {this.renderField('black', bishopReg, true)}
-                            {this.renderField('white', knightReg, true)}
-                            {this.renderField('black', rookReg, true)}
+                        <div className='field__column'>
+                            {this.renderField(2, [whiteRook, whitePawn, blackPawn, blackRook], 'H')}
                         </div>
                     </div>
-                    <div className={'numbers'}>
-                        {this.renderNumbers(8)}
-                        {this.renderNumbers(7)}
-                        {this.renderNumbers(6)}
-                        {this.renderNumbers(5)}
-                        {this.renderNumbers(4)}
-                        {this.renderNumbers(3)}
-                        {this.renderNumbers(2)}
-                        {this.renderNumbers(1)}
+                    <div className={'arena__numbers'}>
+                        {this.renderNumbers('right')}
                     </div>
                 </div>
-                <div className={'game__letters game'}>
-                    {this.renderLetters('')}
-                    {this.renderLetters('A')}
-                    {this.renderLetters('B')}
-                    {this.renderLetters('C')}
-                    {this.renderLetters('D')}
-                    {this.renderLetters('E')}
-                    {this.renderLetters('F')}
-                    {this.renderLetters('G')}
-                    {this.renderLetters('H')}
-                    {this.renderLetters('')}
+                <div className={'game__letters'}>
+                    {this.renderLetters()}
                 </div>
             </div>
         )
@@ -179,7 +113,7 @@ class Board extends React.Component<any, any> {
 
 function Arena() {
     return (
-        <div className={'arena'}>
+        <div>
             <Board/>
         </div>
     )

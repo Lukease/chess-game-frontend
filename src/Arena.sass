@@ -4,59 +4,71 @@
   display: flex
   justify-content: center
   align-items: center
+  background-color: black
 
 .arena
   width: auto
   height: auto
   display: flex
-  background-color: white
+
+  &__chess
+    display: flex
+
+  &__numbers
+    display: flex
+    flex-direction: column
 
 .field
   display: flex
   width: 80px
   height: 80px
   border-style: solid
-  background-color: white
   justify-content: center
   align-items: center
 
   &__black
-    background-color: gray
+    background-color: chocolate
 
   &__white
-    background-color: white
+    background-color: burlywood
 
   &__chosen
     background-color: greenyellow
 
+  &__column
+    display: flex
+    flex-direction: column
+
+  &__number
+    display: flex
+    width: 80px
+    height: 80px
+    justify-content: center
+    align-items: center
+    font-size: 40px
+    flex-direction: row
+
+  &__letter
+    display: flex
+    width: 80px
+    height: 80px
+    justify-content: center
+    align-items: center
+    font-size: 40px
+
 .game
   display: flex
   flex-direction: column
+  border-style: solid
+  background-color: saddlebrown
 
   &__letters
     display: flex
     flex-direction: row
 
-.field-number
-  display: flex
-  width: 80px
-  height: 80px
-  justify-content: center
-  align-items: center
-  font-size: 40px
-  flex-direction: row
-
-
-.field-letter
-  display: flex
-  width: 80px
-  height: 80px
-  justify-content: center
-  align-items: center
-  font-size: 40px
-
-.field-row
-  display: flex
+  &__numbers
+    display: flex
+    flex-direction: column
 
 img
   height: 70px
