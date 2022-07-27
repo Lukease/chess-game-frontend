@@ -12,7 +12,7 @@ import blackKing from './chess-icon/white-King.svg'
 import blackBishop from './chess-icon/white-bishop.svg'
 import blackPawn from './chess-icon/white-pawn.svg'
 import blackRook from './chess-icon/white-rook.svg'
-import {Field, FieldNumber, Letter} from './Arena_utils'
+import { Field, FieldNumber, Letter } from './Arena_utils'
 
 class Board extends React.Component<any, any> {
     renderLetters() {
@@ -51,11 +51,11 @@ class Board extends React.Component<any, any> {
             return (
                 <Field
                     value={(id + index) % 2 ? 'white' : 'black'}
-                    figureName={name}
-                    isFigure={!!name}
-                    number={index + 1}
-                    letter={fieldLetter}
-                    key={index}
+                    figureName={ name }
+                    isFigure={ !!name }
+                    number={ index + 1 }
+                    letter={ fieldLetter }
+                    key={ index }
                 />
             )
         })
