@@ -12,13 +12,14 @@ import blackKing from './chess-icon/white-King.svg'
 import blackBishop from './chess-icon/white-bishop.svg'
 import blackPawn from './chess-icon/white-pawn.svg'
 import blackRook from './chess-icon/white-rook.svg'
-import {Field, FieldNumber, Letter} from './Arena_utils'
+import { Field, FieldNumber, Letter } from './Arena_utils'
 
 class Board extends React.Component<any, any> {
     renderLetters() {
         const alpha: Array<number> = Array.from(Array(8)).map((e, i) => i + 65)
         const arrayOfLetters: Array<string> = alpha.map(letter => String.fromCharCode(letter))
         const letterField: Array<any> = ['', ...arrayOfLetters, ''].map((letter, index) => {
+
             return (
                 <Letter
                     value={letter}
@@ -32,6 +33,7 @@ class Board extends React.Component<any, any> {
 
     renderNumbers(site: string) {
         const arrayOfNumbers: Array<any> = Array.apply(null, Array(8)).map((x, index) => {
+
             return (
                 <FieldNumber
                     value={index + 1}
@@ -47,7 +49,6 @@ class Board extends React.Component<any, any> {
     renderField(id: number, nameChess: Array<string>, fieldLetter: string) {
         const [whiteFigure, whitePawn, blackPawn, blackFigure] = nameChess
         const emptyArray: Array<string> = Array(4).fill('')
-
         const figureArray: Array<any> = [whiteFigure, whitePawn, ...emptyArray, blackPawn, blackFigure].map((name, index) => {
 
             return (

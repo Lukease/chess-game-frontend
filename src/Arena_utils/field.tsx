@@ -1,54 +1,67 @@
 import React, {useState} from 'react'
 import '../Arena.css'
-import {Figure} from '../types/figure'
 
-let selected: Array<any> = []
+let coordinateOfChess: Array<any> = []
 let selectedFigure: Array<string> = []
 let lastFigure: Array<any> = []
-let whoseTour: Array<string> = ['white']
-let arrayOfFigure: Array<Figure> = []
+export let whoseTour: Array<string> = ['white']
+
+const selectChess = (fieldNumber: number, event: any, fieldLetter: string) => {
+    coordinateOfChess = coordinateOfChess.concat(fieldLetter, fieldNumber)
+    selectedFigure = selectedFigure.concat(event.target.src)
+    lastFigure = lastFigure.concat(event.target, event.currentTarget)
+
+    return
+}
+
+const unCheckChess = () => {
+    coordinateOfChess = coordinateOfChess.filter(coordinate => coordinate !== coordinate)
+    selectedFigure = selectedFigure.filter(figure => figure !== figure)
+
+    return
+}
+
+const moveChess = (event: any) => {
+    const [figure] = selectedFigure
+    const [previousField, parentOfPreviousFigure] = lastFigure
+    const currentFieldImg = event.target.firstChild
+
+    previousField.classList.add('image__hide')
+    parentOfPreviousFigure.classList.remove('field__chosen')
+    currentFieldImg.src = figure
+    currentFieldImg.color = whoseTour
+    currentFieldImg.classList.remove('image__hide')
+    selectedFigure = selectedFigure.filter(figure => figure !== figure)
+    lastFigure = lastFigure.filter(figure => figure !== figure)
+    coordinateOfChess = coordinateOfChess.filter(coordinate => coordinate !== coordinate)
+
+    if (whoseTour.includes('white')) {
+        whoseTour = whoseTour.filter(color => color !== 'white')
+        whoseTour = whoseTour.concat('black')
+
+    } else {
+        whoseTour = whoseTour.filter(color => color !== 'black')
+        whoseTour = whoseTour.concat('white')
+    }
+
+    return
+}
 
 export function Field(props: any) {
     const [isChosen, setIsChosen] = useState(false)
-    const [colorOfFigure] = whoseTour
-    const selectFigure = (name: string, number: number, letter: string, event: any) => {
+    const game = (name: string, fieldNumber: number, letter: string, event: any) => {
 
-        if (event.target.id === 'figure' && selected.length === 0 && whoseTour.includes(props.color)) {
-
-            selected = selected.concat(letter, number)
+        if (event.target.className !== 'image__hide' && coordinateOfChess.length === 0 && whoseTour.includes(props.color)) {
             setIsChosen(!isChosen)
-            selectedFigure = selectedFigure.concat(event.target.src)
-            lastFigure = lastFigure.concat(event.target, event.currentTarget)
+            selectChess(fieldNumber, event, letter)
 
-        } else if (event.target.id === 'figure' && selected.includes(letter, number)) {
+        } else if (event.target.className !== 'image__hide' && coordinateOfChess.includes(letter, fieldNumber)) {
             setIsChosen(!isChosen)
-            selected = []
-            selectedFigure = []
+            unCheckChess()
         }
 
-        if (event.target.color !== 'figure' && selected.length !== 0) {
-            const [figure] = selectedFigure
-            const [previousField, parentOfPreviousFigure] = lastFigure
-            const currentFieldImg = event.target.firstChild
-
-            previousField.classList.add('image-hide')
-            previousField.id = ''
-            currentFieldImg.id = 'figure'
-            parentOfPreviousFigure.classList.remove('field__chosen')
-            currentFieldImg.src = figure
-            currentFieldImg.classList.remove('image-hide')
-            selectedFigure = []
-            lastFigure = []
-            selected = []
-
-            if (whoseTour.includes('white')) {
-                whoseTour = []
-                whoseTour = whoseTour.concat('black')
-
-            }else {
-                whoseTour = []
-                whoseTour = whoseTour.concat('white')
-            }
+        if (event.target.firstChild.color !== whoseTour && coordinateOfChess.length !== 0) {
+            moveChess(event)
         }
     }
 
@@ -56,24 +69,23 @@ export function Field(props: any) {
         <button
             className={isChosen ? `field  field__${props.value} field__chosen` : `field  field__${props.value}`}
             onClick={event => {
-                selectFigure(props.figureName, props.number, props.letter, event)
+                game(props.figureName, props.number, props.letter, event)
             }}
-
         >
             {props.isFigure
                 ? <img
                     src={props.figureName}
-                    id={'figure'}
                     color={props.color}
+                    className={'image'}
                 >
                 </img>
                 : <img
-                    id={'empty-field'}
-                    className={'image-hide'}
-                    // color={}
+                    className={'image image__hide'}
+                    src={''}
+
                 >
                 </img>
-            //todo add color to empty field
+                //todo add color to empty field
             }
         </button>
     )
