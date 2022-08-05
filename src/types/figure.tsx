@@ -1,7 +1,5 @@
-import {Coordinate} from './coordinate'
-
 export type Figure = {
     name: string
-    Coordinate: Coordinate
+    id: string
     color: string
 }
