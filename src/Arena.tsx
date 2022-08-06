@@ -34,14 +34,15 @@ class Board extends React.Component<any, any> {
         return arrayOfNumbers
     }
 
-    renderField(id: number, fieldLetter: string) {
+    renderField(id: number, columnNumber: number, columnLetter: string) {
         const fieldArray: Array<JSX.Element> = Array(8).fill('').map((name, index) => {
 
             return (
                 <Field
                     value={(id + index) % 2 ? 'white' : 'black'}
                     key={index}
-                    id={fieldLetter + (index + 1)}
+                    id={[columnNumber,index + 1]}
+                    // coordinate={[columnNumber,index + 1]}
                 />
             )
         })
@@ -61,28 +62,28 @@ class Board extends React.Component<any, any> {
                     </div>
                     <div className={'arena__chess'}>
                         <div className='field__column'>
-                            {this.renderField(1, 'A')}
+                            {this.renderField(1, 1, 'A')}
                         </div>
                         <div className='field__column'>
-                            {this.renderField(2, 'B')}
+                            {this.renderField(2, 2, 'B')}
                         </div>
                         <div className='field__column'>
-                            {this.renderField(1, 'C')}
+                            {this.renderField(1, 3, 'C')}
                         </div>
                         <div className='field__column'>
-                            {this.renderField(2, 'D')}
+                            {this.renderField(2, 4, 'D')}
                         </div>
                         <div className='field__column'>
-                            {this.renderField(1, 'E')}
+                            {this.renderField(1, 5, 'E')}
                         </div>
                         <div className='field__column'>
-                            {this.renderField(2, 'F')}
+                            {this.renderField(2, 6, 'F')}
                         </div>
                         <div className='field__column'>
-                            {this.renderField(1, 'G')}
+                            {this.renderField(1, 7, 'G')}
                         </div>
                         <div className='field__column'>
-                            {this.renderField(2, 'H')}
+                            {this.renderField(2, 8, 'H')}
                         </div>
                     </div>
                     <div className={'arena__numbers'}>

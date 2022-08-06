@@ -1,5 +1,5 @@
 export type Figure = {
     name: string
-    id: string
+    id: Array<number>
     color: string
 }

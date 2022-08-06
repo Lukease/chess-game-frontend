@@ -8,10 +8,11 @@ let arrayOfSelectedNames: Array<string> = []
 let arrayOfSelectedFigures: Array<any> = []
 export let whoseTour: Array<string> = ['white']
 
-const fillField = (chessArray: Array<Figure>, fieldId: string) => {
+const fillField = (chessArray: Array<Figure>, fieldId: Array<number> ) => {
     const figure: Array<string> = chessArray.map(figure => {
-
-        if (figure.id === fieldId) {
+        const [column, number] = fieldId
+        const [figureColumn, figureField] = figure.id
+        if (column === figureColumn && number === figureField ) {
             return figure.name
         }
         return ''
@@ -61,6 +62,9 @@ const moveChess = (event: any) => {
 }
 
 export function Field(props: any) {
+    const [column, number] = props.id
+    console.log(column)
+    console.log(number)
     const [isChosen, setIsChosen] = useState(false)
     const game = (id: string, event: any) => {
         const [color] = whoseTour
