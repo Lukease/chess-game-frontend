@@ -6,6 +6,11 @@
   align-items: center
   background-color: black
 
+.navigation
+  display: flex
+  flex-direction: row
+  align-items: center
+
 .arena
   width: auto
   height: auto
@@ -70,14 +75,102 @@
     display: flex
     flex-direction: column
 
-img
+  &__add-figure
+    display: flex
+    width: 100px
+    height: 30px
+    justify-content: center
+    align-items: center
+    margin: 10px
+
+.figure
+  display: flex
   height: 80px
   width: 80px
 
-.image
-  display: block
+  &__white-King
+    background-image: url('chess_icon/white-King.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
 
-  &__hide
-    display: none
+  &__black-King
+    background-image: url('chess_icon/black-king.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
 
+  &__black-Knight
+    background-image: url('chess_icon/black-knight.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
 
+  &__black-Bishop
+    background-image: url('chess_icon/black-bishop.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
+
+  &__black-Rook
+    background-image: url('chess_icon/black-rook.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
+
+  &__black-Queen
+    background-image: url('chess_icon/black-queen.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
+
+  &__black-Pawn
+    background-image: url('chess_icon/black-pawn.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
+
+  &__white-Knight
+    background-image: url('chess_icon/white-knight.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
+
+  &__white-Bishop
+    background-image: url('chess_icon/white-bishop.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
+
+  &__white-Rook
+    background-image: url('chess_icon/white-rook.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
+
+  &__white-Queen
+    background-image: url('chess_icon/white-queen.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
+
+  &__white-Pawn
+    background-image: url('chess_icon/white-pawn.svg')
+    display: flex
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat
+
+  &__empty
+    display: flex

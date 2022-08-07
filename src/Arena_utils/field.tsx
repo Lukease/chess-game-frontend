@@ -1,24 +1,27 @@
 import React, {useState} from 'react'
 import '../Arena.css'
-import {Figure} from "../types/figure"
-import {defaultChessArrangement} from "../chess_arrangement/default_chess_arrangement";
+import {Figure} from '../types'
+import {defaultChessArrangement} from '../chess_arrangement/default_chess_arrangement'
 
 let coordinateOfChess: Array<any> = []
 let arrayOfSelectedNames: Array<string> = []
 let arrayOfSelectedFigures: Array<any> = []
 export let whoseTour: Array<string> = ['white']
 
-const fillField = (chessArray: Array<Figure>, fieldId: Array<number> ) => {
+const fillField = (chessArray: Array<Figure>, fieldId: Array<number>) => {
     const figure: Array<string> = chessArray.map(figure => {
         const [column, number] = fieldId
         const [figureColumn, figureField] = figure.id
-        if (column === figureColumn && number === figureField ) {
-            return figure.name
+        if (column === figureColumn && number === figureField) {
+
+            return `figure__${figure.name}`
         }
-        return ''
+        return 'figure__empty'
     })
 
-    return figure.find(name => name !== '')
+    const figureName = figure.find(name => name !== 'figure__empty')
+
+    return (figureName ? figureName : 'figure__empty')
 }
 
 const selectChess = (id: string, event: any) => {
@@ -62,14 +65,11 @@ const moveChess = (event: any) => {
 }
 
 export function Field(props: any) {
-    const [column, number] = props.id
-    console.log(column)
-    console.log(number)
     const [isChosen, setIsChosen] = useState(false)
     const game = (id: string, event: any) => {
         const [color] = whoseTour
 
-        if (event.target.className === 'image' && coordinateOfChess.length === 0 && event.target.src.search(color) !== -1) {
+        if (event.target.className === 'field' && coordinateOfChess.length === 0) {
             setIsChosen(!isChosen)
             selectChess(id, event)
 
@@ -83,19 +83,17 @@ export function Field(props: any) {
     }
 
     return (
-        <button
+        <div
             className={isChosen ? `field  field__${props.value} field__chosen` : `field  field__${props.value}`}
             onClick={event => {
                 game(props.id, event)
             }}
         >
             <img
-                className={fillField(defaultChessArrangement, props.id) ? 'image' : 'image image__hide'}
+                className={`figure ${fillField(defaultChessArrangement, props.id)}`}
                 id={props.id}
-                src={fillField(defaultChessArrangement, props.id)}
-                alt={''}
             >
             </img>
-        </button>
+        </div>
     )
 }
