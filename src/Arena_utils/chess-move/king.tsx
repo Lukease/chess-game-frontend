@@ -1,16 +1,16 @@
 import React from 'react'
 
-export const correctMovesOfKing = (coordinate: Array<number>) => {
-    const [column, field] = coordinate
+export const correctMovesOfKing = (columnNumber: number, fieldNumber: number) => {
+
     const moves: Array<Array<number>> = [
-        [column, field + 1],
-        [column, field - 1],
-        [column + 1, field],
-        [column - 1, field],
-        [column - 1, field - 1],
-        [column + 1, field - 1],
-        [column - 1, field + 1],
-        [column + 1, field + 1],
+        [0 , 1],
+        [0 , -1],
+        [1,],
+        [-1,],
+        [-1, -1],
+        [1, -1],
+        [-1, 1],
+        [1, 1],
     ]
 
     return moves

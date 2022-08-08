@@ -1,7 +1,7 @@
 import React  from 'react'
 
-export const correctMovesOfPawn = (coordinate: Array<number>) => {
-    const [column, field] = coordinate
+export const correctMovesOfPawn = (columnNumber: number, fieldNumber: number) => {
+
     const moves: Array<Array<number>> = [
 
     ]

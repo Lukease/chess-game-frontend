@@ -1,12 +1,15 @@
 import React from 'react'
 import './Arena.css'
 import {Field, FieldNumber, Letter} from './Arena_utils'
+import {AddBlack, AddWhite, toggleClass} from './Arena_utils/addFigure'
 
 class AddFigure extends React.Component<any, any> {
+
     render() {
         return (
             <button
-                className={'game__add-figure'}
+                className={'game__add'}
+                onClick={toggleClass}
             >
                 Add Figure
             </button>
@@ -36,7 +39,7 @@ class Board extends React.Component<any, any> {
 
             return (
                 <FieldNumber
-                    value={index + 1}
+                    value={index}
                     key={index}
                     site={site}
                 />
@@ -53,7 +56,7 @@ class Board extends React.Component<any, any> {
                 <Field
                     value={(id + index) % 2 ? 'white' : 'black'}
                     key={index}
-                    id={[columnNumber,index + 1]}
+                    id={columnLetter + index}
                 />
             )
         })
@@ -113,8 +116,10 @@ function Arena() {
 
     return (
         <div className={'navigation'}>
+            <AddWhite/>
             <AddFigure/>
             <Board/>
+            <AddBlack/>
         </div>
     )
 }

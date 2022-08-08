@@ -10,6 +10,7 @@
   display: flex
   flex-direction: row
   align-items: center
+  gap: 10px
 
 .arena
   width: auto
@@ -47,7 +48,7 @@
   &__number
     display: flex
     width: 80px
-    height: 80px
+    height: 85px
     justify-content: center
     align-items: center
     font-size: 40px
@@ -55,7 +56,7 @@
 
   &__letter
     display: flex
-    width: 80px
+    width: 85px
     height: 80px
     justify-content: center
     align-items: center
@@ -75,13 +76,26 @@
     display: flex
     flex-direction: column
 
+  &__add
+    display: flex
+    position: absolute
+    width: auto
+    height: auto
+    justify-content: center
+    align-items: center
+    top: 10px
+    right: 100px
+
   &__add-figure
     display: flex
     width: 100px
-    height: 30px
-    justify-content: center
+    height: 500px
     align-items: center
-    margin: 10px
+    justify-content: center
+    flex-direction: column
+    border-style: solid
+    border-color: white
+    background-color: grey
 
 .figure
   display: flex
@@ -174,3 +188,6 @@
 
   &__empty
     display: flex
+
+
+

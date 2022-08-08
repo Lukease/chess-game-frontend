@@ -5,7 +5,7 @@ export function FieldNumber(props: any) {
         <div
             className={'field__number'}
         >
-            {props.value}
+            {props.value + 1}
         </div>
     )
 }
