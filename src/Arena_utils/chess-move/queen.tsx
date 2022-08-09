@@ -69,6 +69,7 @@ export const correctMovesOfQueen = (columnNumber: number, fieldNumber: number) =
         }
         return [possibleMoveColumn, possibleMoveField]
     })
-
+       // const filteredArray: Array<number> = arrayOfMoves.filter(coordinate => coordinate !== undefined)
+    console.log(arrayOfMoves.filter(coordinate => coordinate !== undefined))
     return moves
 }

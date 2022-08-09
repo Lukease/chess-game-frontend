@@ -1,17 +1,22 @@
 import React from 'react'
 import './Arena.css'
-import {Field, FieldNumber, Letter} from './Arena_utils'
-import {AddBlack, AddWhite, toggleClass} from './Arena_utils/addFigure'
+import { Field, FieldNumber, Letter } from './Arena_utils'
+import {
+    addNewFigure,
+    getFigure,
+    mouseMoveFigure,
+    AddBlackFigure,
+    AddWhiteFigure,
+    hideShowFigures
+} from './Arena_utils/new-figure'
 
-class AddFigure extends React.Component<any, any> {
-
+class PositionEditor extends React.Component<any, any> {
     render() {
         return (
             <button
                 className={'game__add'}
-                onClick={toggleClass}
             >
-                Add Figure
+                Position Editor
             </button>
         )
     }
@@ -56,7 +61,7 @@ class Board extends React.Component<any, any> {
                 <Field
                     value={(id + index) % 2 ? 'white' : 'black'}
                     key={index}
-                    id={columnLetter + index}
+                    id={columnLetter + (index + 1)}
                 />
             )
         })
@@ -115,11 +120,16 @@ class Board extends React.Component<any, any> {
 function Arena() {
 
     return (
-        <div className={'navigation'}>
-            <AddWhite/>
-            <AddFigure/>
+        <div className={'navigation'}
+             onMouseDown={event => getFigure(event)}
+             onMouseMove={event => mouseMoveFigure(event)}
+             onMouseUp={event => addNewFigure(event)}
+             onClick={event => hideShowFigures(event)}
+        >
+            <AddWhiteFigure/>
+            <PositionEditor/>
             <Board/>
-            <AddBlack/>
+            <AddBlackFigure/>
         </div>
     )
 }

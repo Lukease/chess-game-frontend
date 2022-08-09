@@ -1,7 +1,6 @@
-
-export const AddWhite = (event: any) => {
+export const AddWhiteFigure = () => {
     return (
-        <div className={'game__add-figure'}>
+        <div className={'game__add-figure game__add-figure--hidden'}>
             <div className={'figure figure__white-Queen'}></div>
             <div className={'figure figure__white-King'}></div>
             <div className={'figure figure__white-Bishop'}></div>
@@ -12,10 +11,9 @@ export const AddWhite = (event: any) => {
     )
 }
 
-export function AddBlack(props: any) {
-
+export function AddBlackFigure() {
     return (
-        <div className={'game__add-figure'}>
+        <div className={'game__add-figure game__add-figure--hidden'}>
             <div className={'figure figure__black-Queen'}></div>
             <div className={'figure figure__black-King'}></div>
             <div className={'figure figure__black-Bishop'}></div>
@@ -23,10 +21,5 @@ export function AddBlack(props: any) {
             <div className={'figure figure__black-Rook'}></div>
             <div className={'figure figure__black-Pawn'}></div>
         </div>
-
     )
-}
-
-export function toggleClass() {
-
 }

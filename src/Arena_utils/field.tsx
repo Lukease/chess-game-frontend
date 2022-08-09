@@ -11,7 +11,7 @@ export let whoseTour: Array<string> = ['white']
 
 const fillField = (chessArray: Array<Figure>, fieldId: string) => {
     const figure: Array<string> = chessArray.map(figure => {
-        const column: number =  (fieldId.charAt(0)).charCodeAt(0) - 65
+        const column: number =  (fieldId.charAt(0)).charCodeAt(0) - 64
         const number: number = parseInt(fieldId.charAt(1))
         const [figureColumn, figureField] = figure.id
 
@@ -105,7 +105,7 @@ export function Field(props: any) {
             }}
         >
             <img
-                // ${fillField(defaultChessArrangement, props.id)
+                // ${fillField(defaultChessArrangement, props.id)}
                 className={`figure ${fillField(defaultChessArrangement, props.id)}`}
                 id={props.id}
             >
