@@ -1,12 +1,13 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import '../Arena.css'
-import {Figure} from '../types'
-import {defaultChessArrangement} from '../chess_arrangement/default_chess_arrangement'
-import {correctMoves} from "./correct-moves";
+import { Figure } from '../types'
+import { defaultChessArrangement } from '../chess_arrangement/default_chess_arrangement'
+import { checkPossibleMoves } from './possible-moves-utils'
 
 let coordinateOfChess: Array<any> = []
 let arrayOfSelectedNames: Array<string> = []
 let arrayOfSelectedFigures: Array<any> = []
+let arrayOfCorrectIds: Array<string> = []
 export let whoseTour: Array<string> = ['white']
 
 const fillField = (chessArray: Array<Figure>, fieldId: string) => {
@@ -28,17 +29,18 @@ const fillField = (chessArray: Array<Figure>, fieldId: string) => {
 }
 
 const selectChess = (id: string, event: any) => {
-    const columnNumber: number =  (id.charAt(0)).charCodeAt(0) - 65
+    const columnNumber: number =  (id.charAt(0)).charCodeAt(0) - 64
     const fieldNumber: number = parseInt(id.charAt(1))
 
     coordinateOfChess = coordinateOfChess.concat(id)
 
-    const figureClass = event.target.className.split(' ')[1]
-    const figureNameAndColor = figureClass.split('__')[1]
-    const figureName = figureNameAndColor.split('-')[1]
+    const figureClass: string = event.target.className.split(' ')[1]
+    const figureNameAndColor: string = figureClass.split('__')[1]
+    const figureNameAndColorSplit: Array<string> = figureNameAndColor.split('-')
+    const [figureColor,figureName] = figureNameAndColorSplit
+    const coordinate: Array<string>  =  checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
 
-    const coordinate =  correctMoves(figureName, columnNumber, fieldNumber)
-
+    arrayOfCorrectIds = arrayOfCorrectIds.concat(coordinate)
     arrayOfSelectedNames = arrayOfSelectedNames.concat(figureNameAndColor)
     arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.target, event.currentTarget)
 
@@ -49,6 +51,7 @@ const unCheckChess = () => {
     coordinateOfChess = []
     arrayOfSelectedNames = []
     arrayOfSelectedFigures = []
+    arrayOfCorrectIds = []
 
     return
 }
@@ -61,11 +64,14 @@ const moveChess = (event: any) => {
     previousField.classList.remove(`figure__${figure}`)
     previousField.classList.add('figure__empty')
     parentOfPreviousFigure.classList.remove('field__chosen')
+
+    currentFieldImg.className = ''
+    currentFieldImg.classList.add('figure')
     currentFieldImg.classList.add(`figure__${figure}`)
-    currentFieldImg.classList.remove('figure__empty')
     arrayOfSelectedNames = []
     arrayOfSelectedFigures = []
     coordinateOfChess = []
+    arrayOfCorrectIds = []
 
     if (whoseTour.includes('white')) {
         whoseTour = whoseTour.filter(color => color !== 'white')
@@ -92,7 +98,7 @@ export function Field(props: any) {
             setIsChosen(!isChosen)
             unCheckChess()
 
-        } else if (coordinateOfChess.length !== 0) {
+        } else if (arrayOfCorrectIds.some(id => id === props.id) && coordinateOfChess.length !== 0) {
             moveChess(event)
         }
     }
@@ -108,6 +114,7 @@ export function Field(props: any) {
                 // ${fillField(defaultChessArrangement, props.id)}
                 className={`figure ${fillField(defaultChessArrangement, props.id)}`}
                 id={props.id}
+                alt={''}
             >
             </img>
         </div>

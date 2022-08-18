@@ -1,6 +1,6 @@
-import React from 'react'
+import { getAllPossibleMoves, getCorrectMoves } from '../possible-moves-utils'
 
-export const correctMovesOfBishop = (columnNumber: number, fieldNumber: number) => {
+export const correctMovesOfBishop = (columnNumber: number, fieldNumber: number, color: string) => {
     const moves: Array<Array<number>> = [
         [ - 1,  - 1],
         [ - 2,  - 2],
@@ -32,5 +32,7 @@ export const correctMovesOfBishop = (columnNumber: number, fieldNumber: number) 
         [  7,   7],
     ]
 
-    return moves
+    const getCorrectFieldsId = getAllPossibleMoves(moves, columnNumber, fieldNumber)
+
+    return getCorrectMoves(getCorrectFieldsId, color)
 }

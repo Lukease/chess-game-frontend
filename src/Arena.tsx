@@ -1,6 +1,6 @@
 import React from 'react'
 import './Arena.css'
-import { Field, FieldNumber, Letter } from './Arena_utils'
+import {Field, FieldNumber, Letter} from './Arena_utils'
 import {
     addNewFigure,
     getFigure,
@@ -10,14 +10,19 @@ import {
     hideShowFigures
 } from './Arena_utils/new-figure'
 
-class PositionEditor extends React.Component<any, any> {
+class GameNavigation extends React.Component<any, any> {
     render() {
         return (
-            <button
-                className={'game__add'}
-            >
-                Position Editor
-            </button>
+            <div className={'game__navigation'}>
+                <button className={'game__navigation--start'}>
+                    Start Game
+                </button>
+                <button
+                    className={'game__navigation--editor'}
+                >
+                    Position Editor
+                </button>
+            </div>
         )
     }
 }
@@ -127,7 +132,7 @@ function Arena() {
              onClick={event => hideShowFigures(event)}
         >
             <AddWhiteFigure/>
-            <PositionEditor/>
+            <GameNavigation/>
             <Board/>
             <AddBlackFigure/>
         </div>
