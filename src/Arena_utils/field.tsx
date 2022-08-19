@@ -28,6 +28,13 @@ const fillField = (chessArray: Array<Figure>, fieldId: string) => {
 }
 
 const selectChess = (id: string, event: any) => {
+    if (arrayOfSelectedFigures.length !== 0) {
+        const [, parentOfFirstFigure, , parentOfSecondFigure] = arrayOfSelectedFigures
+        parentOfFirstFigure.classList.remove('field__chosen')
+        parentOfSecondFigure.classList.remove('field__chosen')
+        arrayOfSelectedFigures = []
+    }
+
     const columnNumber: number = (id.charAt(0)).charCodeAt(0) - 64
     const fieldNumber: number = parseInt(id.charAt(1))
     const figureClass: string = event.target.className.split(' ')[1]
@@ -55,17 +62,19 @@ const unCheckChess = () => {
 
 const moveChess = (event: any) => {
     const [figure] = arrayOfSelectedNames
-    const [previousField, parentOfPreviousFigure] = arrayOfSelectedFigures
+    const [previousField,] = arrayOfSelectedFigures
     const currentFieldImg = event.target
 
+    event.currentTarget.classList.add('field__chosen')
     previousField.classList.remove(`figure__${figure}`)
     previousField.classList.add('figure__empty')
-    parentOfPreviousFigure.classList.remove('field__chosen')
+
+    arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.target, event.currentTarget)
+
     currentFieldImg.className = ''
     currentFieldImg.classList.add('figure')
     currentFieldImg.classList.add(`figure__${figure}`)
     arrayOfSelectedNames = []
-    arrayOfSelectedFigures = []
     coordinateOfChess = []
     arrayOfCorrectIds = []
 
