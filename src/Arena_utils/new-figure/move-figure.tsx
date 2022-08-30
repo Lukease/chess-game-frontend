@@ -1,25 +1,30 @@
 let nameOfFigure: string
 let isMoving = false
 let figure: any
-let selectedFigure: any
 
 export const getFigure = (event: any) => {
     const [figureClass,] = event.target.classList
     const color = document.querySelector('.game__color')!.innerHTML
+    const trashIconChosen = document.querySelector('.navigation__trash')!
 
-    if (figureClass === 'figure' && color === 'black/white') {
+    if (figureClass === 'figure' && color === 'black/white'&& !trashIconChosen.classList.contains('field__chosen')) {
         nameOfFigure = event.target.classList.value
-        selectedFigure = event.target
         isMoving = true
 
         const secondClass: string = nameOfFigure.split(' ')[1]
 
         figure = document.createElement('div')
         figure.classList.add('figure__move', secondClass)
-        event.target.appendChild(figure)
-console.log(figure)
-console.log(event.target)
         document.body.style.cursor = 'none'
+
+        if (event.target.parentNode.classList.contains('game__add-figure')) {
+            event.target.appendChild(figure)
+        } else {
+            event.target.parentNode.appendChild(figure)
+            event.target.className = ''
+            event.target.classList.add('figure')
+            event.target.classList.add('figure__empty')
+        }
     }
 }
 
@@ -37,16 +42,11 @@ export const mouseMoveFigure = (event: any) => {
 
 export const addNewFigure = (event: any) => {
     const color = document.querySelector('.game__color')!.innerHTML
+    const trashIconChosen = document.querySelector('.navigation__trash')!
 
     document.body.style.cursor = 'auto'
-    if (color === 'black/white') {
+    if (color === 'black/white' && !trashIconChosen.classList.contains('field__chosen')) {
         isMoving = false
-
-        if (!selectedFigure.parentNode.classList.contains('game__add-figure') && event.target.classList.contains('figure__empty')) {
-            selectedFigure.className = ''
-            selectedFigure.classList.add('figure')
-            selectedFigure.classList.add('figure__empty')
-        }
 
         if (nameOfFigure) {
             const secondClass: string = nameOfFigure.split(' ')[1]

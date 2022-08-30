@@ -41,7 +41,7 @@ const selectChess = (id: string, event: any) => {
     const columnNumber: number = (id.charAt(0)).charCodeAt(0) - 64
     const fieldNumber: number = parseInt(id.charAt(1))
 
-    fieldAndColumnNumber = fieldAndColumnNumber.concat(columnNumber,fieldNumber)
+    fieldAndColumnNumber = fieldAndColumnNumber.concat(columnNumber, fieldNumber)
 
     const figureClass: string = event.target.className.split(' ')[1]
     const figure: string = figureClass.split('__')[1]
@@ -110,18 +110,25 @@ const moveChess = (event: any) => {
 export function Field(props: any) {
     const [isChosen, setIsChosen] = useState(false)
     const game = (id: string, event: any) => {
-        const color = document.querySelector('.game__color')!.innerHTML
+        const color: string = document.querySelector('.game__color')!.innerHTML
+        const trashIconChosen: Element = document.querySelector('.navigation__trash')!
 
-        if (event.target.className.includes(`figure__${color}`) && coordinateOfChess.length === 0) {
-            setIsChosen(!isChosen)
-            selectChess(id, event)
+        if (!trashIconChosen.classList.contains('field__chosen')) {
+            if (event.target.className.includes(`figure__${color}`) && coordinateOfChess.length === 0) {
+                setIsChosen(!isChosen)
+                selectChess(id, event)
 
-        } else if (event.target.className !== 'figure__empty' && coordinateOfChess.includes(id)) {
-            setIsChosen(!isChosen)
-            unCheckChess()
+            } else if (event.target.className !== 'figure__empty' && coordinateOfChess.includes(id)) {
+                setIsChosen(!isChosen)
+                unCheckChess()
 
-        } else {
-            moveChess(event)
+            } else {
+                moveChess(event)
+            }
+        } else if (trashIconChosen.classList.contains('field__chosen') && event.target.className.includes('figure')) {
+            event.target.className = ''
+            event.target.classList.add('figure')
+            event.target.classList.add('figure__empty')
         }
     }
 
