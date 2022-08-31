@@ -17,13 +17,18 @@
   gap: 10px
 
   &__trash
-    background-image: url('icons/trash.svg')
+    background-image: url('icons/garbage-trash-svgrepo-com.svg')
     display: flex
-    width: 50px
-    height: 30px
-    background-size: contain
+    width: 100%
+    height: 100%
+    background-size: 70% 70%
     background-position: center
     background-repeat: no-repeat
+    border-style: none
+    background-color: #72380a
+
+    &--chosen
+      background-color: firebrick
 
 .arena
   width: 100%
@@ -127,13 +132,13 @@
   &__add-figure
     display: flex
     width: 7%
-    height: 50%
+    height: 60%
     align-items: center
     justify-content: center
     flex-direction: column
     border-style: solid
-    border-color: white
-    background-color: grey
+    border-color: grey
+    background-color: saddlebrown
 
     &--hidden
       display: none

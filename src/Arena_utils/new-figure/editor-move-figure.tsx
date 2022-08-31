@@ -9,7 +9,7 @@ export const editorGetFigure = (event: any) => {
     const trashIconChosen = document.querySelector('.navigation__trash')!
 
     previousFigure = event.target
-    if (figureClass === 'figure' && color === 'black/white' && !trashIconChosen.classList.contains('field__chosen')) {
+    if (figureClass === 'figure' && color === 'black/white' && !trashIconChosen.classList.contains('navigation__trash--chosen')) {
         nameOfFigure = event.target.classList.value
         isMoving = true
 
@@ -65,7 +65,7 @@ export const editorAddNewFigure = (event: any) => {
 
         const secondClass: string = nameOfFigure.split(' ')[1]
 
-        if (color === 'black/white' && !trashIconChosen.classList.contains('field__chosen') && isEmptyFigure) {
+        if (color === 'black/white' && !trashIconChosen.classList.contains('navigation__trash--chosen') && isEmptyFigure) {
             mouseUpTarget.forEach(element => {
 
                 if (element.id !== '' && element.id !== 'root') {

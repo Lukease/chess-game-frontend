@@ -5,15 +5,12 @@ export class GameNavigation extends React.Component<any, any> {
         super(props)
 
         this.state = {isToggleOn: false}
-        this.state = {isTrashClicked: false}
         this.handleClick = this.handleClick.bind(this)
-        this.deleteIcon = this.deleteIcon.bind(this)
     }
 
     handleClick() {
         this.setState((prevState: { isToggleOn: boolean }) => ({
             isToggleOn: !prevState.isToggleOn,
-            isTrashClicked: false
         }))
 
         const addFigureColumn: NodeListOf<Element> = document.querySelectorAll('.game__add-figure')
@@ -26,12 +23,6 @@ export class GameNavigation extends React.Component<any, any> {
 
         document.getElementById('color')!.innerHTML = 'white'
         alert('let s start! White starts.')
-    }
-
-    deleteIcon() {
-        this.setState((prevState: { isTrashClicked: boolean }) => ({
-            isTrashClicked: !prevState.isTrashClicked
-        }))
     }
 
     render() {
@@ -49,13 +40,6 @@ export class GameNavigation extends React.Component<any, any> {
                     disabled={!!this.state.isToggleOn}
                 >
                     Position Editor
-                </button>
-                <button
-                    className={!!this.state.isTrashClicked ? 'navigation__trash field__chosen' : 'navigation__trash'}
-                    disabled={!!this.state.isToggleOn}
-                    onClick={this.deleteIcon}
-                    id={'trashIcon'}
-                >
                 </button>
                 <div
                     className={'game__whose-turn'}

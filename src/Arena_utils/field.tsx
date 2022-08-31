@@ -113,7 +113,7 @@ export function Field(props: any) {
         const color: string = document.querySelector('.game__color')!.innerHTML
         const trashIconChosen: Element = document.querySelector('.navigation__trash')!
 
-        if (!trashIconChosen.classList.contains('field__chosen')) {
+        if (!trashIconChosen.classList.contains('navigation__trash--chosen')) {
             if (event.target.className.includes(`figure__${color}`) && coordinateOfChess.length === 0) {
                 setIsChosen(!isChosen)
                 selectChess(id, event)
@@ -125,7 +125,7 @@ export function Field(props: any) {
             } else {
                 moveChess(event)
             }
-        } else if (trashIconChosen.classList.contains('field__chosen') && event.target.className.includes('figure') && !event.target.classList.value.includes('King')) {
+        } else if (trashIconChosen.classList.contains('navigation__trash--chosen') && event.target.className.includes('figure') && !event.target.classList.value.includes('King')) {
             event.target.className = ''
             event.target.classList.add('figure')
             event.target.classList.add('figure__empty')
