@@ -18,7 +18,8 @@ export const editorGetFigure = (event: any) => {
         figure = document.createElement('div')
         figure.classList.add('figure__move', secondClass)
         document.body.style.cursor = 'none'
-        figure.style.display = 'none'
+        figure.style.display = 'block'
+        figure.style.position = 'absolute'
 
         if (event.target.parentNode.classList.contains('game__add-figure')) {
             event.target.appendChild(figure)
@@ -36,8 +37,6 @@ export const editorMouseMoveFigure = (event: any) => {
         let x: number = event.clientX - 50
         let y: number = event.clientY - 30
 
-        figure.style.display = 'block'
-        figure.style.position = 'absolute'
         figure.style.left = `${x}px`
         figure.style.top = `${y}px`
     }

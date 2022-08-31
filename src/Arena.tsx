@@ -5,8 +5,7 @@ import {
     editorAddNewFigure,
     editorGetFigure,
     editorMouseMoveFigure,
-    AddBlackFigure,
-    AddWhiteFigure,
+    AddFigure,
     hideShowFigures
 } from './Arena_utils/new-figure'
 import { GameNavigation } from './Arena_utils/start-game'
@@ -115,10 +114,10 @@ function Arena() {
              onMouseUp={event => editorAddNewFigure(event)}
              onClick={event => hideShowFigures(event)}
         >
-            <AddWhiteFigure/>
+            <AddFigure color={'white'}/>
             <GameNavigation/>
             <Board/>
-            <AddBlackFigure/>
+            <AddFigure color={'black'}/>
         </div>
     )
 }
