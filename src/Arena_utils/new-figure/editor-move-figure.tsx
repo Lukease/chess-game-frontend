@@ -1,13 +1,15 @@
 let nameOfFigure: string
 let isMoving = false
 let figure: any
+let previousFigure: any
 
-export const getFigure = (event: any) => {
+export const editorGetFigure = (event: any) => {
     const [figureClass,] = event.target.classList
     const color = document.querySelector('.game__color')!.innerHTML
     const trashIconChosen = document.querySelector('.navigation__trash')!
 
-    if (figureClass === 'figure' && color === 'black/white'&& !trashIconChosen.classList.contains('field__chosen')) {
+    previousFigure = event.target
+    if (figureClass === 'figure' && color === 'black/white' && !trashIconChosen.classList.contains('field__chosen')) {
         nameOfFigure = event.target.classList.value
         isMoving = true
 
@@ -16,6 +18,7 @@ export const getFigure = (event: any) => {
         figure = document.createElement('div')
         figure.classList.add('figure__move', secondClass)
         document.body.style.cursor = 'none'
+        figure.style.display = 'none'
 
         if (event.target.parentNode.classList.contains('game__add-figure')) {
             event.target.appendChild(figure)
@@ -28,7 +31,7 @@ export const getFigure = (event: any) => {
     }
 }
 
-export const mouseMoveFigure = (event: any) => {
+export const editorMouseMoveFigure = (event: any) => {
     if (isMoving) {
         let x: number = event.clientX - 50
         let y: number = event.clientY - 30
@@ -40,28 +43,45 @@ export const mouseMoveFigure = (event: any) => {
     }
 }
 
-export const addNewFigure = (event: any) => {
-    const color = document.querySelector('.game__color')!.innerHTML
-    const trashIconChosen = document.querySelector('.navigation__trash')!
-
-    document.body.style.cursor = 'auto'
-    if (color === 'black/white' && !trashIconChosen.classList.contains('field__chosen')) {
+export const editorAddNewFigure = (event: any) => {
+    if (isMoving) {
         isMoving = false
 
-        if (nameOfFigure) {
-            const secondClass: string = nameOfFigure.split(' ')[1]
-            let x: number = event.clientX
-            let y: number = event.clientY
-            const mouseUpTarget = document.elementsFromPoint(x, y)
+        const color = document.querySelector('.game__color')!.innerHTML
+        const trashIconChosen = document.querySelector('.navigation__trash')!
+        let x: number = event.clientX
+        let y: number = event.clientY
+        const mouseUpTarget = document.elementsFromPoint(x, y)
+        const isEmptyFigure = mouseUpTarget.reduce((acc, item) => {
+            if (item.classList.value === 'figure figure__empty') {
+                return true
+            }
+            return acc
 
-            figure.remove()
+        }, false)
+
+        figure.remove()
+        document.body.style.cursor = 'auto'
+
+        const secondClass: string = nameOfFigure.split(' ')[1]
+
+        if (color === 'black/white' && !trashIconChosen.classList.contains('field__chosen') && isEmptyFigure) {
             mouseUpTarget.forEach(element => {
 
                 if (element.id !== '' && element.id !== 'root') {
                     element.classList.add(secondClass)
                     element.classList.remove('figure__empty')
+                    figure = ''
+                    previousFigure = ''
                 }
             })
+        }
+
+        if (!isEmptyFigure) {
+            previousFigure.classList.add(secondClass)
+            previousFigure.classList.remove('figure__empty')
+            figure = ''
+            previousFigure = ''
         }
     }
 }

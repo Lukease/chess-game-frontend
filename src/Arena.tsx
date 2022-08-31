@@ -2,9 +2,9 @@ import React from 'react'
 import './Arena.css'
 import { Field, FieldNumber, Letter } from './Arena_utils'
 import {
-    addNewFigure,
-    getFigure,
-    mouseMoveFigure,
+    editorAddNewFigure,
+    editorGetFigure,
+    editorMouseMoveFigure,
     AddBlackFigure,
     AddWhiteFigure,
     hideShowFigures
@@ -110,9 +110,9 @@ function Arena() {
 
     return (
         <div className={'navigation'}
-             onMouseDown={event => getFigure(event)}
-             onMouseMove={event => mouseMoveFigure(event)}
-             onMouseUp={event => addNewFigure(event)}
+             onMouseDown={event => editorGetFigure(event)}
+             onMouseMove={event => editorMouseMoveFigure(event)}
+             onMouseUp={event => editorAddNewFigure(event)}
              onClick={event => hideShowFigures(event)}
         >
             <AddWhiteFigure/>

@@ -125,7 +125,7 @@ export function Field(props: any) {
             } else {
                 moveChess(event)
             }
-        } else if (trashIconChosen.classList.contains('field__chosen') && event.target.className.includes('figure')) {
+        } else if (trashIconChosen.classList.contains('field__chosen') && event.target.className.includes('figure') && !event.target.classList.value.includes('King')) {
             event.target.className = ''
             event.target.classList.add('figure')
             event.target.classList.add('figure__empty')
