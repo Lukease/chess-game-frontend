@@ -3,6 +3,8 @@ import '../Arena.css'
 import {Figure} from '../types'
 import {defaultChessArrangement} from '../chess_arrangement/default_chess_arrangement'
 import {checkPossibleMoves} from './possible-moves-utils'
+import {blackWhiteChangeTurn, showPossibleMoves, removePossibleMoves, removeChosenField} from './game'
+import {addNewFigure, mouseMoveFigure, moveFigure} from './game/move-figure'
 
 let coordinateOfChess: Array<any> = []
 let arrayOfSelectedNames: Array<string> = []
@@ -10,6 +12,8 @@ let arrayOfSelectedFigures: Array<any> = []
 let arrayOfCorrectIds: Array<string> = []
 let fieldAndColumnNumber: Array<number> = []
 let figureNameAndColor: Array<string> = []
+let lastMoveId: Array<string> = []
+let selectedFigure: any = []
 
 const fillField = (chessArray: Array<Figure>, fieldId: string) => {
     const figure: Array<string> = chessArray.map(figure => {
@@ -30,33 +34,33 @@ const fillField = (chessArray: Array<Figure>, fieldId: string) => {
 }
 
 const selectChess = (id: string, event: any) => {
-    if (arrayOfSelectedFigures.length !== 0) {
-        const [, parentOfFirstFigure, , parentOfSecondFigure] = arrayOfSelectedFigures
-
-        parentOfFirstFigure.classList.remove('field__chosen')
-        parentOfSecondFigure.classList.remove('field__chosen')
-        arrayOfSelectedFigures = []
-    }
-
     const columnNumber: number = (id.charAt(0)).charCodeAt(0) - 64
     const fieldNumber: number = parseInt(id.charAt(1))
 
     fieldAndColumnNumber = fieldAndColumnNumber.concat(columnNumber, fieldNumber)
+    lastMoveId = lastMoveId.concat(id)
 
     const figureClass: string = event.target.className.split(' ')[1]
     const figure: string = figureClass.split('__')[1]
     const figureNameAndColorSplit: Array<string> = figure.split('-')
     const [figureColor, figureName] = figureNameAndColorSplit
+    const coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
 
+    showPossibleMoves(coordinate)
+
+    arrayOfCorrectIds = arrayOfCorrectIds.concat(coordinate)
     figureNameAndColor = figureNameAndColor.concat(figureColor, figureName)
     coordinateOfChess = coordinateOfChess.concat(id)
     arrayOfSelectedNames = arrayOfSelectedNames.concat(figure)
-    arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.target, event.currentTarget)
+    selectedFigure = event.target
+    arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.currentTarget)
 
     return
 }
 
 const unCheckChess = () => {
+    removePossibleMoves(arrayOfCorrectIds)
+
     coordinateOfChess = []
     arrayOfSelectedNames = []
     arrayOfSelectedFigures = []
@@ -68,22 +72,17 @@ const unCheckChess = () => {
 }
 
 const moveChess = (event: any) => {
-    const [columnNumber, fieldNumber] = fieldAndColumnNumber
-    const [figureColor, figureName] = figureNameAndColor
-    const coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
-
-    arrayOfCorrectIds = arrayOfCorrectIds.concat(coordinate)
+    removePossibleMoves(arrayOfCorrectIds)
 
     if (arrayOfCorrectIds.some(id => id === event.target.id) && coordinateOfChess.length !== 0) {
         const [figure] = arrayOfSelectedNames
-        const [previousField,] = arrayOfSelectedFigures
         const currentFieldImg = event.target
 
         event.currentTarget.classList.add('field__chosen')
-        previousField.classList.remove(`figure__${figure}`)
-        previousField.classList.add('figure__empty')
+        selectedFigure.classList.remove(`figure__${figure}`)
+        selectedFigure.classList.add('figure__empty')
 
-        arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.target, event.currentTarget)
+        arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.currentTarget)
 
         currentFieldImg.className = ''
         currentFieldImg.classList.add('figure')
@@ -94,14 +93,8 @@ const moveChess = (event: any) => {
         figureNameAndColor = []
         fieldAndColumnNumber = []
 
-        let whoseTour = document.querySelector('.game__color')!
-
-        if (whoseTour.innerHTML === 'white') {
-            whoseTour.innerHTML = 'black'
-
-        } else if (whoseTour.innerHTML === 'black') {
-            whoseTour.innerHTML = 'white'
-        }
+        arrayOfSelectedFigures = removeChosenField(arrayOfSelectedFigures, event)
+        blackWhiteChangeTurn()
     }
 
     return
@@ -144,6 +137,9 @@ export function Field(props: any) {
                 className={`figure ${fillField(defaultChessArrangement, props.id)}`}
                 id={props.id}
                 alt={''}
+                // onMouseDown={event => moveFigure(event,props.className,props.id)}
+                // onMouseMove={event => mouseMoveFigure(event)}
+                // onMouseUp={event => moveChess(event)}
             >
             </img>
         </div>
