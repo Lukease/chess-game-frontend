@@ -1,37 +1,7 @@
-import {getAllPossibleMoves, getCorrectMoves} from '../possible-moves-utils'
+import {getAllPossibleMoves} from '../possible-moves-utils'
+import {getCorrectIds} from "./possible-move-utils";
 
 export const correctMovesOfRook = (columnNumber: number, fieldNumber: number, color: string) => {
-    const moves: Array<Array<number>> = [
-        [0, 1],
-        [0, 2],
-        [0, 3],
-        [0, 4],
-        [0, 5],
-        [0, 6],
-        [0, 7],
-        [0, -7],
-        [0, -6],
-        [0, -5],
-        [0, -4],
-        [0, -3],
-        [0, -2],
-        [0, -1],
-        [-1, 0],
-        [-2, 0],
-        [-3, 0],
-        [-4, 0],
-        [-5, 0],
-        [-6, 0],
-        [-7, 0],
-        [1, 0],
-        [2, 0],
-        [3, 0],
-        [4, 0],
-        [5, 0],
-        [6, 0],
-        [7, 0],
-    ]
-
     const movesTop: Array<Array<number>> = [
         [0, 1],
         [0, 2],
@@ -69,27 +39,12 @@ export const correctMovesOfRook = (columnNumber: number, fieldNumber: number, co
     const getCorrectFieldsIdBottom = getAllPossibleMoves(movesBottom, columnNumber, fieldNumber)
     const getCorrectFieldsIdLeft = getAllPossibleMoves(movesLeft, columnNumber, fieldNumber)
     const getCorrectFieldsIdRight = getAllPossibleMoves(movesRight, columnNumber, fieldNumber)
+    const leftSide = getCorrectIds(getCorrectFieldsIdLeft, color)
+    const rightSide = getCorrectIds(getCorrectFieldsIdRight, color)
+    const topSide = getCorrectIds(getCorrectFieldsIdTop, color)
+    const bottomSide = getCorrectIds(getCorrectFieldsIdBottom, color)
 
-    console.log(getCorrectFieldsIdTop)
-    console.log(getCorrectFieldsIdLeft)
-    console.log(getCorrectFieldsIdRight)
-    console.log(getCorrectFieldsIdBottom)
-
-    const bottom = getCorrectFieldsIdLeft.reduce((acc, item, index) => {
-
-        const field: HTMLElement = document.getElementById(item)!
-
-        if(!field.className.includes(`figure__${color}`) ){
-
-            return acc + index
-        } return acc
-
-    }, '')
-
-    console.log(bottom)
-
-    const getCorrectFieldsId = getAllPossibleMoves(moves, columnNumber, fieldNumber)
-
-    return getCorrectMoves(getCorrectFieldsId, color)
+    return [...leftSide,...rightSide,...topSide,...bottomSide].filter(id => id !== 'last')
 }
+
 

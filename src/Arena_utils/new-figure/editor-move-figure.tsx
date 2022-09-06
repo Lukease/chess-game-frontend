@@ -71,12 +71,12 @@ export const editorAddNewFigure = (event: any) => {
             mouseUpTarget.forEach(element => {
 
                 if (element.id !== '' && element.id !== 'root') {
+                    removeChessFromLocalStorage(previousFigure.id)
                     element.classList.add(secondClass)
                     element.classList.remove('figure__empty')
                     figure = ''
                     previousFigure = ''
 
-                    removeChessFromLocalStorage(previousFigure.id)
                     const columnNumber: number = (element.id.charAt(0)).charCodeAt(0) - 64
                     const fieldNumber: number = parseInt(element.id.charAt(1))
                     const localStorageChess: Array<Figure> = getItemFromLocalStorage()
@@ -95,20 +95,6 @@ export const editorAddNewFigure = (event: any) => {
         if (!isEmptyFigure) {
             previousFigure.classList.add(secondClass)
             previousFigure.classList.remove('figure__empty')
-
-            const chess = previousFigure.id
-            const columnNumber: number = (chess.charAt(0)).charCodeAt(0) - 64
-            const fieldNumber: number = parseInt(chess.charAt(1))
-            const localStorageChess: Array<Figure> = getItemFromLocalStorage()
-            let gameArrangement: Array<Figure> = localStorageChess.concat({
-                id: chess,
-                name: nameOfFigure,
-                position: [columnNumber, fieldNumber],
-                color: color
-            })
-
-            setArrayToLocalStorage(gameArrangement)
-
             figure = ''
             previousFigure = ''
         }
