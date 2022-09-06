@@ -1,4 +1,6 @@
 import React from 'react'
+import {setArrayToLocalStorage} from '../data-base'
+import {defaultChessArrangement} from '../../chess_arrangement/default-chess-arrangement'
 
 export class GameNavigation extends React.Component<any, any> {
     constructor(props: any) {

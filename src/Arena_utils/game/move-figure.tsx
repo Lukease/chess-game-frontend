@@ -1,7 +1,7 @@
 import {checkPossibleMoves} from "../possible-moves-utils"
 import {showPossibleMoves} from "./show-possible-moves"
-import {blackWhiteChangeTurn} from "./black-white-change-turn";
-import {removePossibleMoves} from "./remove-possible-moves";
+import { blackWhiteChangeTurn } from './black-white-change-turn'
+import { removePossibleMoves } from './remove-possible-moves'
 
 let nameOfFigure: string
 let isMoving = false

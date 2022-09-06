@@ -1,3 +1,6 @@
+import {Figure} from '../../types'
+import {getItemFromLocalStorage, removeChessFromLocalStorage, setArrayToLocalStorage} from '../data-base'
+
 let nameOfFigure: string
 let isMoving = false
 let figure: any
@@ -72,6 +75,19 @@ export const editorAddNewFigure = (event: any) => {
                     element.classList.remove('figure__empty')
                     figure = ''
                     previousFigure = ''
+
+                    removeChessFromLocalStorage(previousFigure.id)
+                    const columnNumber: number = (element.id.charAt(0)).charCodeAt(0) - 64
+                    const fieldNumber: number = parseInt(element.id.charAt(1))
+                    const localStorageChess: Array<Figure> = getItemFromLocalStorage()
+                    let gameArrangement: Array<Figure> = localStorageChess.concat({
+                        id: element.id,
+                        name: nameOfFigure,
+                        position: [columnNumber, fieldNumber],
+                        color: color
+                    })
+
+                    setArrayToLocalStorage(gameArrangement)
                 }
             })
         }
@@ -79,6 +95,20 @@ export const editorAddNewFigure = (event: any) => {
         if (!isEmptyFigure) {
             previousFigure.classList.add(secondClass)
             previousFigure.classList.remove('figure__empty')
+
+            const chess = previousFigure.id
+            const columnNumber: number = (chess.charAt(0)).charCodeAt(0) - 64
+            const fieldNumber: number = parseInt(chess.charAt(1))
+            const localStorageChess: Array<Figure> = getItemFromLocalStorage()
+            let gameArrangement: Array<Figure> = localStorageChess.concat({
+                id: chess,
+                name: nameOfFigure,
+                position: [columnNumber, fieldNumber],
+                color: color
+            })
+
+            setArrayToLocalStorage(gameArrangement)
+
             figure = ''
             previousFigure = ''
         }

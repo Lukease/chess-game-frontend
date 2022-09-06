@@ -9,8 +9,11 @@ import {
     hideShowFigures
 } from './Arena_utils/new-figure'
 import { GameNavigation } from './Arena_utils/start-game'
+import {setArrayToLocalStorage} from "./Arena_utils/data-base";
+import {defaultChessArrangement} from "./chess_arrangement/default-chess-arrangement";
 
 class Board extends React.Component<any, any> {
+
     renderLetters() {
         const alpha: Array<number> = Array.from(Array(8)).map((e, i) => i + 65)
         const arrayOfLetters: Array<string> = alpha.map(letter => String.fromCharCode(letter))
@@ -105,21 +108,32 @@ class Board extends React.Component<any, any> {
     }
 }
 
-function Arena() {
+export class Arena extends React.Component<any, any> {
+    setDefaultChessPosition() {
+        setArrayToLocalStorage(defaultChessArrangement)
+        window.location.reload()
+    }
 
-    return (
-        <div className={'navigation'}
-             onMouseDown={event => editorGetFigure(event)}
-             onMouseMove={event => editorMouseMoveFigure(event)}
-             onMouseUp={event => editorAddNewFigure(event)}
-             onClick={event => hideShowFigures(event)}
-        >
-            <AddFigure color={'white'}/>
-            <GameNavigation/>
-            <Board/>
-            <AddFigure color={'black'}/>
-        </div>
-    )
+    render() {
+        return (
+            <div className={'navigation'}
+                 onMouseDown={event => editorGetFigure(event)}
+                 onMouseMove={event => editorMouseMoveFigure(event)}
+                 onMouseUp={event => editorAddNewFigure(event)}
+                 onClick={event => hideShowFigures(event)}
+            >
+                <AddFigure color={'white'}/>
+                <GameNavigation/>
+                <Board/>
+                <AddFigure color={'black'}/>
+                <div
+                    className={'game__navigation--default'}
+                    onClick={this.setDefaultChessPosition}
+                >
+                </div>
+            </div>
+        )
+    }
 }
 
 export default Arena

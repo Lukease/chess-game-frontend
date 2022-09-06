@@ -1,5 +1,6 @@
 export type Figure = {
+    id: string
     name: string
-    id: Array<number>
+    position: Array<number>
     color: string
 }
