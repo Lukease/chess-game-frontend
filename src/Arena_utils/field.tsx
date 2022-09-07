@@ -5,7 +5,6 @@ import {checkPossibleMoves} from './possible-moves-utils'
 import {blackWhiteChangeTurn, showPossibleMoves, removePossibleMoves, removeChosenField} from './game'
 import {getItemFromLocalStorage, setArrayToLocalStorage, removeChessFromLocalStorage} from './data-base'
 
-export let currentGameArrangement: Array<Figure> = []
 let coordinateOfChess: Array<any> = []
 let arrayOfSelectedNames: Array<string> = []
 let arrayOfSelectedFigures: Array<any> = []
@@ -14,6 +13,7 @@ let fieldAndColumnNumber: Array<number> = []
 let figureNameAndColor: Array<string> = []
 let lastMoveId: Array<string> = []
 let selectedFigure: any = []
+let parentOfTarget: any
 
 const fillField = (chessArray: Array<Figure>, fieldId: string) => {
     const figure: Array<string> = chessArray.map((figure, index) => {
@@ -35,9 +35,19 @@ const fillField = (chessArray: Array<Figure>, fieldId: string) => {
 }
 
 const selectChess = (id: string, event: any) => {
+    removePossibleMoves(arrayOfCorrectIds)
+
+    coordinateOfChess = []
+    arrayOfSelectedNames = []
+    arrayOfSelectedFigures = []
+    arrayOfCorrectIds = []
+    fieldAndColumnNumber = []
+    figureNameAndColor = []
+
     const columnNumber: number = (id.charAt(0)).charCodeAt(0) - 64
     const fieldNumber: number = parseInt(id.charAt(1))
 
+    parentOfTarget = event.currentTarget
     fieldAndColumnNumber = fieldAndColumnNumber.concat(columnNumber, fieldNumber)
     lastMoveId = lastMoveId.concat(id)
 
@@ -59,25 +69,11 @@ const selectChess = (id: string, event: any) => {
     return
 }
 
-const unCheckChess = () => {
-    removePossibleMoves(arrayOfCorrectIds)
-
-    coordinateOfChess = []
-    arrayOfSelectedNames = []
-    arrayOfSelectedFigures = []
-    arrayOfCorrectIds = []
-    fieldAndColumnNumber = []
-    figureNameAndColor = []
-
-    return
-}
-
 const moveChess = (event: any) => {
-    removePossibleMoves(arrayOfCorrectIds)
-
     const currentFieldImg = event.target
 
     if (arrayOfCorrectIds.some(id => id === currentFieldImg.id) && coordinateOfChess.length !== 0) {
+        removePossibleMoves(arrayOfCorrectIds)
         const [figure] = arrayOfSelectedNames
         const currentColumnNumber: number = (currentFieldImg.id.charAt(0))
             .charCodeAt(0) - 64
@@ -146,13 +142,9 @@ export function Field(props: any) {
         const trashIconChosen: Element = document.querySelector('.navigation__trash')!
 
         if (!trashIconChosen.classList.contains('navigation__trash--chosen')) {
-            if (event.target.className.includes(`figure__${color}`) && coordinateOfChess.length === 0) {
+            if (event.target.className.includes(`figure__${color}`) ) {
                 setIsChosen(!isChosen)
                 selectChess(id, event)
-
-            } else if (event.target.className !== 'figure__empty' && coordinateOfChess.includes(id)) {
-                setIsChosen(!isChosen)
-                unCheckChess()
 
             } else {
                 moveChess(event)

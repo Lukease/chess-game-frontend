@@ -1,40 +1,22 @@
-import { getAllPossibleMoves } from '../possible-moves-utils'
+import {getAllPossibleMoves} from '../possible-moves-utils'
 import {getCorrectIds} from './possible-move-utils'
 
 export const correctMovesOfBishop = (columnNumber: number, fieldNumber: number, color: string) => {
-    const movesLeftBottom: Array<Array<number>> = [
-        [ - 1,  - 1],
-        [ - 2,  - 2],
-        [ - 3,  - 3],
-        [ - 4,  - 4],
-        [ - 5,  - 5],
-        [ - 6,  - 6],
-        [ - 7,  - 7]]
-    const movesRightBottom: Array<Array<number>> = [
-        [  1,  - 1],
-        [  2,  - 2],
-        [  3,  - 3],
-        [  4,  - 4],
-        [  5,  - 5],
-        [  6,  - 6],
-        [  7,  - 7]]
-    const movesLeftTop: Array<Array<number>> = [
-        [ - 1,   1],
-        [ - 2,   2],
-        [ - 3,   3],
-        [ - 4,   4],
-        [ - 5,   5],
-        [ - 6,   6],
-        [ - 7,   7]]
-    const movesRightTop: Array<Array<number>> = [
-        [  1,   1],
-        [  2,   2],
-        [  3,   3],
-        [  4,   4],
-        [  5,   5],
-        [  6,   6],
-        [  7,   7],
-    ]
+    const movesLeftBottom: Array<Array<number>> =  Array(7).fill('').map((name ,index)=>{
+            return [-(index + 1), -(index + 1)]
+        })
+
+    const movesRightBottom: Array<Array<number>> = Array(7).fill('').map((name, index) => {
+        return [index + 1, -(index + 1)]
+    })
+
+    const movesLeftTop: Array<Array<number>> = Array(7).fill('').map((name, index) => {
+        return [-(index + 1), index + 1]
+    })
+
+    const movesRightTop: Array<Array<number>> = Array(7).fill('').map((name, index) => {
+        return [index + 1, index + 1]
+    })
 
     const getCorrectFieldsIdLeftTop = getAllPossibleMoves(movesLeftTop, columnNumber, fieldNumber)
     const getCorrectFieldsIdRightBottom = getAllPossibleMoves(movesRightBottom, columnNumber, fieldNumber)
@@ -46,5 +28,5 @@ export const correctMovesOfBishop = (columnNumber: number, fieldNumber: number, 
     const leftBottomSide = getCorrectIds(getCorrectFieldsIdLeftBottom, color)
     const rightBottomSide = getCorrectIds(getCorrectFieldsIdRightBottom, color)
 
-    return [...leftTopSide,...rightTopSide,...leftBottomSide,...rightBottomSide].filter(id => id !== 'last')
+    return [...leftTopSide, ...rightTopSide, ...leftBottomSide, ...rightBottomSide].filter(id => id !== 'last')
 }

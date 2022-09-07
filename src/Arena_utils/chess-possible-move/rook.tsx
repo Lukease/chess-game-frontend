@@ -2,38 +2,18 @@ import {getAllPossibleMoves} from '../possible-moves-utils'
 import {getCorrectIds} from "./possible-move-utils";
 
 export const correctMovesOfRook = (columnNumber: number, fieldNumber: number, color: string) => {
-    const movesTop: Array<Array<number>> = [
-        [0, 1],
-        [0, 2],
-        [0, 3],
-        [0, 4],
-        [0, 5],
-        [0, 6],
-        [0, 7]]
-    const movesBottom: Array<Array<number>> = [
-        [0, -1],
-        [0, -2],
-        [0, -3],
-        [0, -4],
-        [0, -5],
-        [0, -6],
-        [0, -7]]
-    const movesLeft: Array<Array<number>> = [
-        [-1, 0],
-        [-2, 0],
-        [-3, 0],
-        [-4, 0],
-        [-5, 0],
-        [-6, 0],
-        [-7, 0]]
-    const movesRight: Array<Array<number>> = [
-        [1, 0],
-        [2, 0],
-        [3, 0],
-        [4, 0],
-        [5, 0],
-        [6, 0],
-        [7, 0]]
+    const movesTop: Array<Array<number>> =  Array(7).fill('').map((name ,index)=>{
+            return [0, index + 1]
+        })
+    const movesBottom: Array<Array<number>> =  Array(7).fill('').map((name ,index)=>{
+            return [0, -(index + 1)]
+        })
+    const movesLeft: Array<Array<number>> =  Array(7).fill('').map((name ,index)=>{
+            return [-(index + 1), 0]
+        })
+    const movesRight: Array<Array<number>> =  Array(7).fill('').map((name ,index)=>{
+            return [index + 1, 0]
+        })
 
     const getCorrectFieldsIdTop = getAllPossibleMoves(movesTop, columnNumber, fieldNumber)
     const getCorrectFieldsIdBottom = getAllPossibleMoves(movesBottom, columnNumber, fieldNumber)
