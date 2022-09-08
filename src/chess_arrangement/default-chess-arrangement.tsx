@@ -1,4 +1,4 @@
-import {Figure} from '../types'
+import { Figure } from '../types'
 
 export const defaultChessArrangement: Array<Figure> = [
     {id: 'A1', name: 'white-Rook', position: [1, 1], color: 'white'},

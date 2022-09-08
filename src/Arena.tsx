@@ -16,6 +16,7 @@ import { GameNavigation } from './Arena_utils/start-game'
 import {setArrayToLocalStorage} from './Arena_utils/data-base'
 import {defaultChessArrangement} from './chess_arrangement/default-chess-arrangement'
 import {setCurrentColorToLocalStorage} from './Arena_utils/data-base'
+import {HistoryOfMoves} from './Arena_utils/history'
 
 class Board extends React.Component<any, any> {
 
@@ -129,27 +130,7 @@ export class Arena extends React.Component<any, any> {
                  onMouseUp={event => editorAddNewFigure(event)}
                  onClick={event => hideShowFigures(event)}
             >
-                <div
-                    className={'history'}
-                >
-                    <p>
-                        History:
-                    </p>
-                    <div
-                    className={'history__colors'}
-                    >
-                        <div
-                            className={'history__colors--white'}
-                        >
-                            white
-                        </div>
-                        <div
-                            className={'history__colors--black'}
-                        >
-                            black
-                        </div>
-                    </div>
-                </div>
+                <HistoryOfMoves/>
                 <AddFigure color={'white'}/>
                 <GameNavigation/>
                 <Board/>
