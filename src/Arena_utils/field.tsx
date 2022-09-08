@@ -2,8 +2,16 @@ import React, {useState} from 'react'
 import '../Arena.css'
 import {Figure} from '../types'
 import {checkPossibleMoves} from './possible-moves-utils'
-import {blackWhiteChangeTurn, showPossibleMoves, removePossibleMoves, removeChosenField} from './game'
-import {getItemFromLocalStorage, setArrayToLocalStorage, removeChessFromLocalStorage} from './data-base'
+import {
+    blackWhiteChangeTurn,
+    showPossibleMoves,
+    removePossibleMoves,
+    removeChosenField} from './game'
+import {
+    getItemFromLocalStorage,
+    setArrayToLocalStorage,
+    removeChessFromLocalStorage
+} from './data-base'
 
 let coordinateOfChess: Array<any> = []
 let arrayOfSelectedNames: Array<string> = []
@@ -36,10 +44,10 @@ const fillField = (chessArray: Array<Figure>, fieldId: string) => {
 
 const selectChess = (id: string, event: any) => {
     removePossibleMoves(arrayOfCorrectIds)
+    arrayOfSelectedFigures = removeChosenField(arrayOfSelectedFigures, event)
 
     coordinateOfChess = []
     arrayOfSelectedNames = []
-    arrayOfSelectedFigures = []
     arrayOfCorrectIds = []
     fieldAndColumnNumber = []
     figureNameAndColor = []
@@ -56,7 +64,7 @@ const selectChess = (id: string, event: any) => {
     const figureNameAndColorSplit: Array<string> = figure.split('-')
     const [figureColor, figureName] = figureNameAndColorSplit
     const coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
-
+    console.log(coordinate)
     showPossibleMoves(coordinate)
 
     arrayOfCorrectIds = arrayOfCorrectIds.concat(coordinate)
@@ -142,7 +150,7 @@ export function Field(props: any) {
         const trashIconChosen: Element = document.querySelector('.navigation__trash')!
 
         if (!trashIconChosen.classList.contains('navigation__trash--chosen')) {
-            if (event.target.className.includes(`figure__${color}`) ) {
+            if (event.target.className.includes(`figure__${color}`)) {
                 setIsChosen(!isChosen)
                 selectChess(id, event)
 

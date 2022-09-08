@@ -15,3 +15,12 @@ export const removeChessFromLocalStorage = (deletedFigureId: string) => {
 
     setArrayToLocalStorage(gameArrangement)
 }
+
+export const setCurrentColorToLocalStorage = (color: string) => {
+    localStorage.setItem('color', JSON.stringify(color))
+}
+
+export const getColorFromLocalStorage = () => {
+
+    return JSON.parse(localStorage.getItem('color')!)
+}

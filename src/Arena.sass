@@ -9,7 +9,7 @@
 
 .navigation
   display: flex
-  width: 90%
+  width: 100%
   height: 100%
   flex-direction: row
   align-items: center
@@ -171,6 +171,7 @@
     text-align: center
     color: aliceblue
 
+
 .figure
   display: flex
   width: 100%
@@ -261,6 +262,39 @@
     background-size: contain
     background-position: center
     background-repeat: no-repeat
+
+.history
+  position: absolute
+  display: flex
+  flex-direction: column
+  top: 1%
+  left: 1%
+  width: 10%
+  min-height: 12%
+  background-color: gray
+  border-style: solid
+  border-color: aliceblue
+  border-radius: 20px
+  text-align: center
+
+  &__colors
+    display: flex
+    border-top: aliceblue solid
+
+    &--white
+      display: flex
+      width: 50%
+      height: 100%
+      justify-content: center
+      flex-direction: column
+      border-right: aliceblue solid
+
+    &--black
+      display: flex
+      width: 50%
+      height: 100%
+      justify-content: center
+      flex-direction: column
 
 .figure__move-empty:hover
   width: 100%

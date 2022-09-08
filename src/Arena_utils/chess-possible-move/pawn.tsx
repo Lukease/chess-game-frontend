@@ -1,5 +1,5 @@
 import {getAllPossibleMoves, getCorrectMoves} from '../possible-moves-utils'
-import { getCorrectIdsOfPawn} from "./possible-move-utils";
+import { getCorrectIdsOfPawn} from './possible-move-utils'
 
 export const correctMovesOfPawn = (columnNumber: number, fieldNumber: number, color: string) => {
     const moveOfBlackPawn: Array<number> = [0, -1]

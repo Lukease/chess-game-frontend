@@ -1,6 +1,5 @@
 import React from 'react'
-import {setArrayToLocalStorage} from '../data-base'
-import {defaultChessArrangement} from '../../chess_arrangement/default-chess-arrangement'
+import {getColorFromLocalStorage} from '../data-base'
 
 export class GameNavigation extends React.Component<any, any> {
     constructor(props: any) {
@@ -23,8 +22,8 @@ export class GameNavigation extends React.Component<any, any> {
             }
         })
 
-        document.getElementById('color')!.innerHTML = 'white'
-        alert('let s start! White starts.')
+        document.getElementById('color')!.innerHTML = getColorFromLocalStorage()
+        alert('let s start!')
     }
 
     render() {
