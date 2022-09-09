@@ -12,14 +12,6 @@ export class HistoryOfMoves extends React.Component<any, any> {
                 <div
                     className={'history__nav'}
                 >
-                    <div
-                        className={'history__nav--column'}
-                    >
-                    </div>
-                    <div
-                        className={'history__nav--column'}
-                    >
-                    </div>
                 </div>
             </div>
         )

@@ -2,8 +2,8 @@ import {getHistoryFromLocalStorage, setHistoryOfMovesToLocalStorage} from '../da
 import {LastMove} from '../../types'
 
 export const addMoveToHistory = (figureName: string, nameBefore: string, id: string, currentId: string) => {
-    const historyNav = document.querySelectorAll('.history__nav--column')!
-    const move = document.querySelectorAll('.history__button')!
+    const historyNav = document.querySelector('.history__nav')!
+    const move = document.querySelectorAll('.history__container')!
     let historyOfMoves: Array<LastMove> = []
     const localStorageHistory: Array<LastMove> = getHistoryFromLocalStorage()
 
@@ -24,15 +24,27 @@ export const addMoveToHistory = (figureName: string, nameBefore: string, id: str
     setHistoryOfMovesToLocalStorage(historyOfMoves)
 
     historyOfMoves.forEach((move, index) => {
-        const buttonHistory = document.createElement('button')
+        const buttonsContainer = document.createElement('div')
 
-        buttonHistory.classList.add('history__button')
-        buttonHistory.innerHTML = `${index + 1}. ${move.idBefore} ${move.currentId} `
+        buttonsContainer.classList.add('history__container')
+        historyNav.appendChild(buttonsContainer)
 
-        if (!(index % 2)){
-            historyNav[0].appendChild(buttonHistory)
-        } else {
-            historyNav[1].appendChild(buttonHistory)
-        }
+        const numberOfMove = document.createElement('button')
+
+        numberOfMove.classList.add('history__number')
+        buttonsContainer.appendChild(numberOfMove)
+        numberOfMove.innerHTML = `#${index + 1}`
+
+        const moveBefore = document.createElement('div')
+
+        moveBefore.classList.add('history__button')
+        moveBefore.innerHTML = `${move.idBefore} `
+        buttonsContainer.appendChild(moveBefore)
+
+        const moveAfter = document.createElement('div')
+
+        moveAfter.classList.add('history__button')
+        moveAfter.innerHTML = `${move.currentId} `
+        buttonsContainer.appendChild(moveAfter)
     })
 }
