@@ -116,9 +116,11 @@ class Board extends React.Component<any, any> {
 
 export class Arena extends React.Component<any, any> {
     setDefaultChessPosition() {
+        localStorage.clear()
         setArrayToLocalStorage(defaultChessArrangement)
-        document.querySelector('.game__color')!.innerHTML = 'white'
-        setCurrentColorToLocalStorage('white')
+        const color = document.querySelector('.game__color')!.innerHTML = 'white'
+
+        setCurrentColorToLocalStorage(color)
         window.location.reload()
     }
 

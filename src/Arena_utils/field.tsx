@@ -6,20 +6,23 @@ import {
     blackWhiteChangeTurn,
     showPossibleMoves,
     removePossibleMoves,
-    removeChosenField} from './game'
+    removeChosenField
+} from './game'
 import {
     getItemFromLocalStorage,
     setArrayToLocalStorage,
     removeChessFromLocalStorage
 } from './data-base'
+import {addMoveToHistory} from './history/add-to-history'
 
+let nameOfFigure: string
 let coordinateOfChess: Array<any> = []
 let arrayOfSelectedNames: Array<string> = []
 let arrayOfSelectedFigures: Array<any> = []
 let arrayOfCorrectIds: Array<string> = []
 let fieldAndColumnNumber: Array<number> = []
 let figureNameAndColor: Array<string> = []
-let lastMoveId: Array<string> = []
+let movedFigureId: string
 let selectedFigure: any = []
 let parentOfTarget: any
 
@@ -57,15 +60,17 @@ const selectChess = (id: string, event: any) => {
 
     parentOfTarget = event.currentTarget
     fieldAndColumnNumber = fieldAndColumnNumber.concat(columnNumber, fieldNumber)
-    lastMoveId = lastMoveId.concat(id)
+    movedFigureId = id
 
     const figureClass: string = event.target.className.split(' ')[1]
     const figure: string = figureClass.split('__')[1]
     const figureNameAndColorSplit: Array<string> = figure.split('-')
     const [figureColor, figureName] = figureNameAndColorSplit
     const coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
-    console.log(coordinate)
+
+    // console.log(coordinate)
     showPossibleMoves(coordinate)
+    nameOfFigure = figure
 
     arrayOfCorrectIds = arrayOfCorrectIds.concat(coordinate)
     figureNameAndColor = figureNameAndColor.concat(figureColor, figureName)
@@ -91,6 +96,8 @@ const moveChess = (event: any) => {
         const currentFigure: string = currentFigureClass.split('__')[1]
         const figureNameAndColorSplit: Array<string> = currentFigure.split('-')
         const [figureColor,] = figureNameAndColorSplit
+
+        addMoveToHistory(nameOfFigure, currentFigure , movedFigureId, currentFieldImg.id)
 
         if (currentFieldImg.classList.contains(`figure__empty`)) {
             const localStorageChess: Array<Figure> = getItemFromLocalStorage()

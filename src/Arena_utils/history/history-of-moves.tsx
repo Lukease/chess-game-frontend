@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 export class HistoryOfMoves extends React.Component<any, any> {
     render() {
@@ -10,17 +10,15 @@ export class HistoryOfMoves extends React.Component<any, any> {
                     History:
                 </p>
                 <div
-                    className={'history__colors'}
+                    className={'history__nav'}
                 >
                     <div
-                        className={'history__colors--white'}
+                        className={'history__nav--column'}
                     >
-                        white
                     </div>
                     <div
-                        className={'history__colors--black'}
+                        className={'history__nav--column'}
                     >
-                        black
                     </div>
                 </div>
             </div>

@@ -277,24 +277,23 @@
   border-radius: 20px
   text-align: center
 
-  &__colors
+  &__nav
     display: flex
     border-top: aliceblue solid
+    padding: 8px
 
-    &--white
+    &--column
       display: flex
       width: 50%
-      height: 100%
-      justify-content: center
+      min-height: auto
+      align-items: center
       flex-direction: column
-      border-right: aliceblue solid
 
-    &--black
-      display: flex
-      width: 50%
-      height: 100%
-      justify-content: center
-      flex-direction: column
+  &__button
+    height: auto
+    width: auto
+    text-align: center
+    justify-content: space-around
 
 .figure__move-empty:hover
   width: 100%
