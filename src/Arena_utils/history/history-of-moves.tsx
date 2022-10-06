@@ -17,3 +17,4 @@ export class HistoryOfMoves extends React.Component<any, any> {
         )
     }
 }
+

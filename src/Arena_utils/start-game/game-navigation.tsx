@@ -23,7 +23,6 @@ export class GameNavigation extends React.Component<any, any> {
         })
 
         document.getElementById('color')!.innerHTML = getColorFromLocalStorage()
-        alert('let s start!')
     }
 
     render() {

@@ -68,7 +68,6 @@ const selectChess = (id: string, event: any) => {
     const [figureColor, figureName] = figureNameAndColorSplit
     const coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
 
-    // console.log(coordinate)
     showPossibleMoves(coordinate)
     nameOfFigure = figure
 
@@ -87,6 +86,7 @@ const moveChess = (event: any) => {
 
     if (arrayOfCorrectIds.some(id => id === currentFieldImg.id) && coordinateOfChess.length !== 0) {
         removePossibleMoves(arrayOfCorrectIds)
+
         const [figure] = arrayOfSelectedNames
         const currentColumnNumber: number = (currentFieldImg.id.charAt(0))
             .charCodeAt(0) - 64
