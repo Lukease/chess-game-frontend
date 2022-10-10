@@ -17,7 +17,6 @@ import {setArrayToLocalStorage} from './Arena_utils/data-base'
 import {defaultChessArrangement} from './chess_arrangement/default-chess-arrangement'
 import {setCurrentColorToLocalStorage} from './Arena_utils/data-base'
 import {HistoryOfMoves} from './Arena_utils/history'
-import {addMoveToHistory} from "./Arena_utils/history/add-to-history";
 
 class Board extends React.Component<any, any> {
 

@@ -3,4 +3,5 @@ export type LastMove = {
     currentId: string
     nameBefore: string
     idBefore: string
+    idInArray: number
 }

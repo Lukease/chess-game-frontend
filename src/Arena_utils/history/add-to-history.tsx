@@ -1,5 +1,6 @@
 import {getHistoryFromLocalStorage, setHistoryOfMovesToLocalStorage} from '../data-base'
 import {LastMove} from '../../types'
+import {showHistoryMove} from "./show-history-move";
 
 export const addMoveToHistory = (figureName: string, nameBefore: string, id: string, currentId: string) => {
     const move = document.querySelectorAll('.history__container')!
@@ -19,7 +20,8 @@ export const addMoveToHistory = (figureName: string, nameBefore: string, id: str
             currentName: figureName,
             currentId: currentId,
             nameBefore: nameBefore,
-            idBefore: id
+            idBefore: id,
+            idInArray: historyOfMoves.length
         })
 
         setHistoryOfMovesToLocalStorage(historyOfMoves)
@@ -50,6 +52,9 @@ export const renderHistoryFromLocalStorage = (localStorageHistory: Array<LastMov
                 moveWhite.classList.add('history__button')
                 moveWhite.innerHTML = `${move.currentId} `
                 buttonsContainer.appendChild(moveWhite)
+                moveWhite.id = `his-${index}`
+
+                showHistoryMove(moveWhite)
             }
 
             if (!move.currentName.includes('white')) {
@@ -60,6 +65,9 @@ export const renderHistoryFromLocalStorage = (localStorageHistory: Array<LastMov
                 moveBlack.classList.add('history__button')
                 moveBlack.innerHTML = `${move.currentId} `
                 buttonsContainer[size].appendChild(moveBlack)
+                moveBlack.id = `his-${index}`
+
+                showHistoryMove(moveBlack)
             }
         })
     }
