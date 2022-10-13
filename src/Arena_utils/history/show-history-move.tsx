@@ -1,31 +1,59 @@
-import {getHistoryFromLocalStorage, setCurrentColorToLocalStorage, setHistoryOfMovesToLocalStorage} from '../data-base'
+import {getHistoryFromLocalStorage} from '../data-base'
 import {LastMove} from '../../types'
+
+const showChosenFieldHistory = (move: LastMove) => {
+    let moveTo: HTMLElement = document.getElementById(move.currentId)!.parentElement!
+    let moveFrom: HTMLElement = document.getElementById(move.idBefore)!.parentElement!
+
+    moveTo.classList.add('field__chosen')
+    moveFrom.classList.add('field__chosen')
+}
+
+const showMoveOfFiguresBack = (historyOfMoves: Array<LastMove>) => {
+    historyOfMoves.forEach((move) => {
+        let moveTo: HTMLElement = document.getElementById(move.currentId)!
+
+        moveTo.classList.remove(`figure__${move.currentName}`)
+        moveTo.classList.add(`figure__${move.nameBefore}`)
+
+        let moveFrom: HTMLElement = document.getElementById(move.idBefore)!
+
+        moveFrom.classList.remove('figure__empty')
+        moveFrom.classList.add(`figure__${move.currentName}`)
+    })
+}
+
+const backToActualPosition = (historyOfMoves: Array<LastMove>) => {
+    historyOfMoves.forEach((move) => {
+        let moveTo: HTMLElement = document.getElementById(move.currentId)!
+
+        moveTo.className = ''
+        moveTo.classList.add(`figure`)
+        moveTo.classList.add(`figure__${move.currentName}`)
+
+        let moveFrom: HTMLElement = document.getElementById(move.idBefore)!
+
+        moveFrom.className = ''
+        moveFrom.classList.add(`figure`)
+        moveFrom.classList.add(`figure__empty`)
+    })
+}
 
 export const showHistoryMove = (listenerElement: HTMLDivElement) => {
     const history: Array<LastMove> = getHistoryFromLocalStorage()
-
+console.log(history)
     listenerElement.addEventListener('click', () => {
             const elementId: number = parseInt(listenerElement.id.split('-')[1])
             const historyToClickedMove: Array<LastMove> = history.filter((move: LastMove) => move.idInArray < elementId)
-            const historyFromClickedMove: Array<LastMove> = history.filter((move: LastMove) => move.idInArray > elementId - 1)
+            const historyFromClickedMove: Array<LastMove> = history.filter((move: LastMove) => move.idInArray > elementId )
             const historyFromClickedMoveReverse: Array<LastMove> = historyFromClickedMove.reverse()
             const fieldChosen: NodeListOf<Element> = document.querySelectorAll('.field__chosen')
 
-
-            setHistoryOfMovesToLocalStorage(historyToClickedMove)
-
-            if (elementId % 2) {
-                setCurrentColorToLocalStorage('black')
-            }
-                setCurrentColorToLocalStorage('white')
+            backToActualPosition(history)
 
             historyToClickedMove.forEach((move, index) => {
                 if (index === (historyToClickedMove.length - 1)) {
-                    let moveTo: HTMLElement = document.getElementById(move.currentId)!.parentElement!
-                    let moveFrom: HTMLElement = document.getElementById(move.idBefore)!.parentElement!
-
-                    moveTo.classList.add('field__chosen')
-                    moveFrom.classList.add('field__chosen')
+                    showChosenFieldHistory(move)
                 }
             })
 
@@ -33,17 +61,8 @@ export const showHistoryMove = (listenerElement: HTMLDivElement) => {
                 field.classList.remove('field__chosen')
             })
 
-            historyFromClickedMoveReverse.forEach((move, index) => {
-                let moveTo: HTMLElement = document.getElementById(move.currentId)!
+            showMoveOfFiguresBack(historyFromClickedMoveReverse)
 
-                moveTo.classList.remove(`figure__${move.currentName}`)
-                moveTo.classList.add(`figure__${move.nameBefore}`)
-
-                let moveFrom: HTMLElement = document.getElementById(move.idBefore)!
-
-                moveFrom.classList.remove('figure__empty')
-                moveFrom.classList.add(`figure__${move.currentName}`)
-            })
         }
     )
 }
