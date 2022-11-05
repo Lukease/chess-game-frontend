@@ -33,6 +33,7 @@ export class PromotePawn extends React.Component<any, any> {
         const selectedFigure: string = `${color}-${props.target.innerHTML}`.replace(' ', '')
 
         localStorageChess[arraySize].name = selectedFigure
+        localStorageChess[arraySize].color = color
 
         const currentFieldImg: HTMLElement = document.getElementById(localStorageChess[arraySize].id)!
 
@@ -79,17 +80,17 @@ export class PromotePawn extends React.Component<any, any> {
     }
 }
 
-export const promotionOfPawn = (fieldNumber: number, fieldId: string, nameOfFigure: string, nameAndColorOfFigure: string, columnNumber: number, figureColor: string) => {
+export const promotionOfPawn = (fieldNumber: number, fieldId: string, nameOfFigure: string) => {
     if (fieldNumber === 1 || fieldNumber === 8) {
         if (nameOfFigure === 'Pawn') {
             const selectFigureContainer: Element = document.querySelector('.select')!
 
             selectFigureContainer.setAttribute('style', 'display: flex')
 
-            const localStorageChess: Array<Figure> = getItemFromLocalStorage()
-            let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== fieldId)
-
-            setArrayToLocalStorage(gameArrangement)
+            // const localStorageChess: Array<Figure> = getItemFromLocalStorage()
+            // let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== fieldId)
+            //
+            // setArrayToLocalStorage(gameArrangement)
         }
     }
 }

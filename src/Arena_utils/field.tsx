@@ -14,7 +14,7 @@ import {
     removeChessFromLocalStorage
 } from './data-base'
 import {addMoveToHistory} from './history/add-to-history'
-import {promotionOfPawn} from "./game/promotion-of-pawn";
+import {promotionOfPawn} from './game/promotion-of-pawn'
 
 let nameOfFigure: string
 let coordinateOfChess: Array<any> = []
@@ -24,7 +24,7 @@ let movedFigureId: string
 let selectedFigure: any = []
 
 const fillField = (chessArray: Array<Figure>, fieldId: string) => {
-    const figure: Array<string> = chessArray.map((figure, index) => {
+    const figure: Array<string> = chessArray.map((figure) => {
         const column: number = (fieldId.charAt(0)).charCodeAt(0) - 64
         const number: number = parseInt(fieldId.charAt(1))
         const [figureColumn, figureField] = figure.position
@@ -87,7 +87,7 @@ const moveChess = (event: any) => {
         const [figureColor, ] = figureNameAndColorSplit
         const figure: string = nameOfFigure.split('-')[1]
 
-        promotionOfPawn(currentFieldNumber, currentFieldImg.id, figure, nameOfFigure, currentColumnNumber, figureColor)
+        promotionOfPawn(currentFieldNumber, currentFieldImg.id, figure)
         addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
 
         if (currentFieldImg.classList.contains(`figure__empty`)) {
