@@ -27,7 +27,7 @@ export const correctMovesOfPawn = (columnNumber: number, fieldNumber: number, co
         ])
     }
 
-    if (fieldNumber !== 2 && color === 'black') {
+    if (fieldNumber !== 7 && color === 'black') {
         moves = moves.concat([
             moveOfBlackPawn
         ])

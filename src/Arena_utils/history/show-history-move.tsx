@@ -41,24 +41,24 @@ const backToActualPosition = (historyOfMoves: Array<LastMove>) => {
 
 export const showHistoryMove = (listenerElement: HTMLDivElement) => {
     const history: Array<LastMove> = getHistoryFromLocalStorage()
-console.log(history)
+
     listenerElement.addEventListener('click', () => {
             const elementId: number = parseInt(listenerElement.id.split('-')[1])
-            const historyToClickedMove: Array<LastMove> = history.filter((move: LastMove) => move.idInArray < elementId)
-            const historyFromClickedMove: Array<LastMove> = history.filter((move: LastMove) => move.idInArray > elementId )
+            const historyToClickedMove: Array<LastMove> = history.filter((move: LastMove) => move.idInArray < elementId + 1)
+            const historyFromClickedMove: Array<LastMove> = history.filter((move: LastMove) => move.idInArray > elementId)
             const historyFromClickedMoveReverse: Array<LastMove> = historyFromClickedMove.reverse()
             const fieldChosen: NodeListOf<Element> = document.querySelectorAll('.field__chosen')
 
             backToActualPosition(history)
 
+            fieldChosen.forEach(field => {
+                field.classList.remove('field__chosen')
+            })
+
             historyToClickedMove.forEach((move, index) => {
                 if (index === (historyToClickedMove.length - 1)) {
                     showChosenFieldHistory(move)
                 }
-            })
-
-            fieldChosen.forEach(field => {
-                field.classList.remove('field__chosen')
             })
 
             showMoveOfFiguresBack(historyFromClickedMoveReverse)

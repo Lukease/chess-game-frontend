@@ -312,6 +312,38 @@
     width: 40%
     text-align: center
 
+.select
+  min-width: 20%
+  min-height: 20%
+  position: fixed
+  align-items: center
+  flex-direction: column
+  z-index: 2
+  top: 20%
+  left: 45%
+  background-color: #6E6D70
+  border-style: solid
+  border-color: aliceblue
+  border-radius: 6px
+
+  &__new-figure
+    max-width: 50%
+    height: auto
+    padding: 5px
+    text-align: center
+    border-radius: 10%
+    border-style: solid
+    background: no-repeat center
+
+  &__nav
+    width: auto
+    height: auto
+    text-align: center
+    font-size: 30px
+
+.select__new-figure:hover
+  background-color: aqua
+
 .figure__move-empty:hover
   width: 100%
   height: 100%

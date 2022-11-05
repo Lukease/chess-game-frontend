@@ -17,6 +17,7 @@ import {setArrayToLocalStorage} from './Arena_utils/data-base'
 import {defaultChessArrangement} from './chess_arrangement/default-chess-arrangement'
 import {setCurrentColorToLocalStorage} from './Arena_utils/data-base'
 import {HistoryOfMoves} from './Arena_utils/history'
+import {PromotePawn} from "./Arena_utils/game/promotion-of-pawn";
 
 class Board extends React.Component<any, any> {
 
@@ -137,6 +138,7 @@ export class Arena extends React.Component<any, any> {
                 <GameNavigation/>
                 <Board/>
                 <AddFigure color={'black'}/>
+                <PromotePawn />
                 <div
                     className={'game__navigation--default'}
                     onClick={this.setDefaultChessPosition}

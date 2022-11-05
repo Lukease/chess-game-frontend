@@ -1,15 +1,17 @@
 import React from 'react'
-import {getColorFromLocalStorage} from '../data-base'
+import {getColorFromLocalStorage, getHistoryFromLocalStorage} from '../data-base'
+import {renderHistoryFromLocalStorage} from '../history/add-to-history'
+import {LastMove} from '../../types'
 
 export class GameNavigation extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
 
         this.state = {isToggleOn: false}
-        this.handleClick = this.handleClick.bind(this)
+        this.StartGame = this.StartGame.bind(this)
     }
 
-    handleClick() {
+    StartGame() {
         this.setState((prevState: { isToggleOn: boolean }) => ({
             isToggleOn: !prevState.isToggleOn,
         }))
@@ -23,6 +25,12 @@ export class GameNavigation extends React.Component<any, any> {
         })
 
         document.getElementById('color')!.innerHTML = getColorFromLocalStorage()
+
+        const historyOfMoves: Array<LastMove> = getHistoryFromLocalStorage()!
+
+        if (historyOfMoves) {
+            renderHistoryFromLocalStorage(historyOfMoves)
+        }
     }
 
     render() {
@@ -30,7 +38,7 @@ export class GameNavigation extends React.Component<any, any> {
             <div className={'game__navigation'}>
                 <button
                     className={'game__navigation--start'}
-                    onClick={this.handleClick}
+                    onClick={this.StartGame}
                     disabled={!!this.state.isToggleOn}
                 >
                     Start Game

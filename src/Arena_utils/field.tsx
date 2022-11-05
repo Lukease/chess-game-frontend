@@ -14,17 +14,14 @@ import {
     removeChessFromLocalStorage
 } from './data-base'
 import {addMoveToHistory} from './history/add-to-history'
+import {promotionOfPawn} from "./game/promotion-of-pawn";
 
 let nameOfFigure: string
 let coordinateOfChess: Array<any> = []
-let arrayOfSelectedNames: Array<string> = []
 let arrayOfSelectedFigures: Array<any> = []
 let arrayOfCorrectIds: Array<string> = []
-let fieldAndColumnNumber: Array<number> = []
-let figureNameAndColor: Array<string> = []
 let movedFigureId: string
 let selectedFigure: any = []
-let parentOfTarget: any
 
 const fillField = (chessArray: Array<Figure>, fieldId: string) => {
     const figure: Array<string> = chessArray.map((figure, index) => {
@@ -50,16 +47,11 @@ const selectChess = (id: string, event: any) => {
     arrayOfSelectedFigures = removeChosenField(arrayOfSelectedFigures, event)
 
     coordinateOfChess = []
-    arrayOfSelectedNames = []
     arrayOfCorrectIds = []
-    fieldAndColumnNumber = []
-    figureNameAndColor = []
 
     const columnNumber: number = (id.charAt(0)).charCodeAt(0) - 64
     const fieldNumber: number = parseInt(id.charAt(1))
 
-    parentOfTarget = event.currentTarget
-    fieldAndColumnNumber = fieldAndColumnNumber.concat(columnNumber, fieldNumber)
     movedFigureId = id
 
     const figureClass: string = event.target.className.split(' ')[1]
@@ -72,9 +64,7 @@ const selectChess = (id: string, event: any) => {
     nameOfFigure = figure
 
     arrayOfCorrectIds = arrayOfCorrectIds.concat(coordinate)
-    figureNameAndColor = figureNameAndColor.concat(figureColor, figureName)
     coordinateOfChess = coordinateOfChess.concat(id)
-    arrayOfSelectedNames = arrayOfSelectedNames.concat(figure)
     selectedFigure = event.target
     arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.currentTarget)
 
@@ -87,7 +77,6 @@ const moveChess = (event: any) => {
     if (arrayOfCorrectIds.some(id => id === currentFieldImg.id) && coordinateOfChess.length !== 0) {
         removePossibleMoves(arrayOfCorrectIds)
 
-        const [figure] = arrayOfSelectedNames
         const currentColumnNumber: number = (currentFieldImg.id.charAt(0))
             .charCodeAt(0) - 64
         const currentFieldNumber: number = parseInt(currentFieldImg.id.charAt(1))
@@ -95,9 +84,11 @@ const moveChess = (event: any) => {
             .split(' ')[1]
         const currentFigure: string = currentFigureClass.split('__')[1]
         const figureNameAndColorSplit: Array<string> = currentFigure.split('-')
-        const [figureColor,] = figureNameAndColorSplit
+        const [figureColor, ] = figureNameAndColorSplit
+        const figure: string = nameOfFigure.split('-')[1]
 
-        addMoveToHistory(nameOfFigure, currentFigure , movedFigureId, currentFieldImg.id)
+        promotionOfPawn(currentFieldNumber, currentFieldImg.id, figure, nameOfFigure, currentColumnNumber, figureColor)
+        addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
 
         if (currentFieldImg.classList.contains(`figure__empty`)) {
             const localStorageChess: Array<Figure> = getItemFromLocalStorage()
@@ -105,7 +96,7 @@ const moveChess = (event: any) => {
 
             gameArrangement = gameArrangement.concat({
                 id: currentFieldImg.id,
-                name: figure,
+                name: nameOfFigure,
                 position: [currentColumnNumber, currentFieldNumber],
                 color: figureColor
             })
@@ -120,7 +111,7 @@ const moveChess = (event: any) => {
             gameArrangement = gameArrangement.filter(chess => chess.id !== currentFieldImg.id)
             gameArrangement = gameArrangement.concat({
                 id: currentFieldImg.id,
-                name: figure,
+                name: nameOfFigure,
                 position: [currentColumnNumber, currentFieldNumber],
                 color: figureColor
             })
@@ -129,19 +120,16 @@ const moveChess = (event: any) => {
         }
 
         event.currentTarget.classList.add('field__chosen')
-        selectedFigure.classList.remove(`figure__${figure}`)
+        selectedFigure.classList.remove(`figure__${nameOfFigure}`)
         selectedFigure.classList.add('figure__empty')
 
         arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.currentTarget)
 
         currentFieldImg.className = ''
         currentFieldImg.classList.add('figure')
-        currentFieldImg.classList.add(`figure__${figure}`)
-        arrayOfSelectedNames = []
+        currentFieldImg.classList.add(`figure__${nameOfFigure}`)
         coordinateOfChess = []
         arrayOfCorrectIds = []
-        figureNameAndColor = []
-        fieldAndColumnNumber = []
 
         arrayOfSelectedFigures = removeChosenField(arrayOfSelectedFigures, event)
         blackWhiteChangeTurn()
