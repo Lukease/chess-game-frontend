@@ -80,17 +80,12 @@ export class PromotePawn extends React.Component<any, any> {
     }
 }
 
-export const promotionOfPawn = (fieldNumber: number, fieldId: string, nameOfFigure: string) => {
+export const showNewFigureForPlayer = (fieldNumber: number, fieldId: string, nameOfFigure: string) => {
     if (fieldNumber === 1 || fieldNumber === 8) {
         if (nameOfFigure === 'Pawn') {
             const selectFigureContainer: Element = document.querySelector('.select')!
 
             selectFigureContainer.setAttribute('style', 'display: flex')
-
-            // const localStorageChess: Array<Figure> = getItemFromLocalStorage()
-            // let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== fieldId)
-            //
-            // setArrayToLocalStorage(gameArrangement)
         }
     }
 }

@@ -4,7 +4,7 @@ import {
     Field,
     FieldNumber,
     Letter
-} from './Arena_utils'
+} from './Arena_utils/fields-settings'
 import {
     editorAddNewFigure,
     editorGetFigure,
@@ -17,7 +17,7 @@ import {setArrayToLocalStorage} from './Arena_utils/data-base'
 import {defaultChessArrangement} from './chess_arrangement/default-chess-arrangement'
 import {setCurrentColorToLocalStorage} from './Arena_utils/data-base'
 import {HistoryOfMoves} from './Arena_utils/history'
-import {PromotePawn} from "./Arena_utils/game/promotion-of-pawn";
+import {PromotePawn} from './Arena_utils/game'
 
 class Board extends React.Component<any, any> {
 

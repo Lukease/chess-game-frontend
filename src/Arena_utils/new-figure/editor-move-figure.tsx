@@ -77,14 +77,16 @@ export const editorAddNewFigure = (event: any) => {
                     figure = ''
                     previousFigure = ''
 
+                    const name: string = secondClass.split('__')[1]
+                    const figureColor: string = name.split('-')[0]
                     const columnNumber: number = (element.id.charAt(0)).charCodeAt(0) - 64
                     const fieldNumber: number = parseInt(element.id.charAt(1))
                     const localStorageChess: Array<Figure> = getItemFromLocalStorage()
                     let gameArrangement: Array<Figure> = localStorageChess.concat({
                         id: element.id,
-                        name: nameOfFigure,
+                        name: name,
                         position: [columnNumber, fieldNumber],
-                        color: color
+                        color: figureColor
                     })
 
                     setArrayToLocalStorage(gameArrangement)
