@@ -6,7 +6,7 @@ import {
     blackWhiteChangeTurn,
     showPossibleMoves,
     removePossibleMoves,
-    removeChosenField
+    removeChosenField, castleKing
 } from '../game'
 import {
     getItemFromLocalStorage,
@@ -92,6 +92,10 @@ const moveChess = (event: any) => {
         showNewFigureForPlayer(currentFieldNumber, currentFieldImg.id, figure)
         addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
 
+        if (figure === 'King'){
+            castleKing(currentFieldImg.id)
+        }
+
         if (currentFieldImg.classList.contains(`figure__empty`)) {
             const localStorageChess: Array<Figure> = getItemFromLocalStorage()
             let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== selectedFigure.id)
@@ -154,8 +158,8 @@ export function Field(props: any) {
                 selectChess(id, event)
 
             } else {
-                kingCheck()
                 moveChess(event)
+                kingCheck()
             }
         } else if (trashIconChosen.classList.contains('navigation__trash--chosen') && event.target.className.includes('figure') && !event.target.classList.value.includes('King')) {
             event.target.className = ''

@@ -21,8 +21,8 @@ export class PromotePawn extends React.Component<any, any> {
         }))
 
         let localStorageChess: Array<Figure> = getItemFromLocalStorage()
-        // let localStorageChessHistory: Array<LastMove> = getHistoryFromLocalStorage()
-        // const historySize: number = localStorageChessHistory.length - 1
+        let localStorageChessHistory: Array<LastMove> = getHistoryFromLocalStorage()
+        const historySize: number = localStorageChessHistory.length - 1
         const arraySize: number = localStorageChess.length - 1
         let color: string = 'white'
 
@@ -41,10 +41,10 @@ export class PromotePawn extends React.Component<any, any> {
         currentFieldImg.classList.add('figure')
         currentFieldImg.classList.add(`figure__${selectedFigure}`)
 
-        // localStorageChessHistory[historySize].currentName = selectedFigure
+        localStorageChessHistory[historySize].currentName = selectedFigure
 
         setArrayToLocalStorage(localStorageChess)
-        // setHistoryOfMovesToLocalStorage(localStorageChessHistory)
+        setHistoryOfMovesToLocalStorage(localStorageChessHistory)
     }
 
     render() {
