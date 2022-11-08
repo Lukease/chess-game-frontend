@@ -1,6 +1,6 @@
 import {getHistoryFromLocalStorage, setHistoryOfMovesToLocalStorage} from '../data-base'
 import {LastMove} from '../../types'
-import {showHistoryMove} from "./show-history-move";
+import {showHistoryMove} from './show-history-move'
 
 export const addMoveToHistory = (figureName: string, nameBefore: string, id: string, currentId: string) => {
     const move = document.querySelectorAll('.history__container')!
