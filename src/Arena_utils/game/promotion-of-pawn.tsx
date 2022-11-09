@@ -15,7 +15,7 @@ export class PromotePawn extends React.Component<any, any> {
         this.SelectFigure = this.SelectFigure.bind(this)
     }
 
-    SelectFigure(props: any) {
+    SelectFigure(event: any): void {
         this.setState((prevState: { isToggleOn: boolean }) => ({
             isToggleOn: !prevState.isToggleOn,
         }))
@@ -26,11 +26,11 @@ export class PromotePawn extends React.Component<any, any> {
         const arraySize: number = localStorageChess.length - 1
         let color: string = 'white'
 
-        if (localStorageChess[arraySize].name.includes('black')){
+        if (localStorageChess[arraySize].name.includes('black')) {
             color = 'black'
         }
 
-        const selectedFigure: string = `${color}-${props.target.innerHTML}`.replace(' ', '')
+        const selectedFigure: string = `${color}-${event.target.title}`.replace(' ', '')
 
         localStorageChess[arraySize].name = selectedFigure
         localStorageChess[arraySize].color = color
@@ -53,34 +53,34 @@ export class PromotePawn extends React.Component<any, any> {
                  id={'select-container'}
                  style={{display: !this.state.isToggleOn ? 'none' : 'flex'}}
             >
-                <div className={`select__nav`}> Select new figure:</div>
-                <div className={`select__new-figure`}
-                     onClick={this.SelectFigure}
-                     title={'Queen'}
-                > Queen
+                <div className={`select__nav`}>
+                    <div className={`select__new-figure`}
+                         onClick={this.SelectFigure}
+                         title={'Queen'}
+                    > ♕
+                    </div>
+                    <div className={`select__new-figure`}
+                         onClick={this.SelectFigure}
+                         title={'Knight'}
+                    > ♘
+                    </div>
+                    <div className={`select__new-figure`}
+                         onClick={this.SelectFigure}
+                         title={'Rook'}
+                    > ♖
+                    </div>
+                    <div className={`select__new-figure`}
+                         onClick={this.SelectFigure}
+                         title={'Bishop'}
+                    > ♗
+                    </div>
                 </div>
-                <div className={`select__new-figure`}
-                     onClick={this.SelectFigure}
-                     title={'Knight'}
-                > Knight
-                </div>
-                <div className={`select__new-figure`}
-                     onClick={this.SelectFigure}
-                     title={'Rook'}
-                > Rook
-                </div>
-                <div className={`select__new-figure`}
-                     onClick={this.SelectFigure}
-                     title={'Bishop'}
-                > Bishop
-                </div>
-                <div className={`select__nav`}> ♕ ♘ ♖ ♗</div>
             </div>
         )
     }
 }
 
-export const showNewFigureForPlayer = (fieldNumber: number, fieldId: string, nameOfFigure: string) => {
+export const showNewFigureForPlayer = (fieldNumber: number, fieldId: string, nameOfFigure: string, event: any) => {
     if (fieldNumber === 1 || fieldNumber === 8) {
         if (nameOfFigure === 'Pawn') {
             const selectFigureContainer: Element = document.querySelector('.select')!

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import '../../Arena.css'
 import {Figure} from '../../types'
 import {checkPossibleMoves} from '../possible-moves-utils'
@@ -11,7 +11,7 @@ import {
 import {
     getItemFromLocalStorage,
     setArrayToLocalStorage,
-    removeChessFromLocalStorage
+    removeChessFromLocalStorage, getColorFromLocalStorage
 } from '../data-base'
 import {addMoveToHistory} from '../history/add-to-history'
 import {showNewFigureForPlayer} from '../game'
@@ -89,10 +89,10 @@ const moveChess = (event: any) => {
         const currentFigure: string = currentFigureClass.split('__')[1]
         const figure: string = nameOfFigure.split('-')[1]
 
-        showNewFigureForPlayer(currentFieldNumber, currentFieldImg.id, figure)
+        showNewFigureForPlayer(currentFieldNumber, currentFieldImg.id, figure, event)
         addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
 
-        if (figure === 'King'){
+        if (figure === 'King') {
             castleKing(currentFieldImg.id)
         }
 
@@ -148,18 +148,18 @@ const moveChess = (event: any) => {
 export function Field(props: any) {
     const [isChosen, setIsChosen] = useState(false)
     const game = (id: string, event: any) => {
-        const color: string = document.querySelector('.game__color')!.innerHTML
+        const color: string = getColorFromLocalStorage()
         const trashIconChosen: Element = document.querySelector('.navigation__trash')!
 
         if (!trashIconChosen.classList.contains('navigation__trash--chosen')) {
             if (event.target.className.includes(`figure__${color}`)) {
-                kingCheck()
+                kingCheck(color)
                 setIsChosen(!isChosen)
                 selectChess(id, event)
 
             } else {
                 moveChess(event)
-                kingCheck()
+                kingCheck(color)
             }
         } else if (trashIconChosen.classList.contains('navigation__trash--chosen') && event.target.className.includes('figure') && !event.target.classList.value.includes('King')) {
             event.target.className = ''

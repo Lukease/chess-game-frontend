@@ -3,11 +3,14 @@ import {Figure, IsCheck} from '../../types'
 import { getItemFromLocalStorage} from '../data-base'
 import {setCheckToLocalStorage} from '../data-base/check'
 
-export const kingCheck = () => {
+export const kingCheck = (color: string) => {
     removeCheckKingToField()
 
     let localStorageChess: Array<Figure> = getItemFromLocalStorage()
-    const uniqueCorrectMoves = getAllMoves(localStorageChess)
+    const opponentChess = localStorageChess.filter(chess=> chess.color !== color)
+
+    const uniqueCorrectMoves = getAllMoves(opponentChess)
+
     const whiteKing: Figure = localStorageChess.find(chess => chess.name === 'white-King')!
     const blackKing: Figure = localStorageChess.find(chess => chess.name === 'black-King')!
 
