@@ -14,6 +14,8 @@ export const removeChessFromLocalStorage = (deletedFigureId: string) => {
     let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== deletedFigureId)
 
     setArrayToLocalStorage(gameArrangement)
+
+    return gameArrangement
 }
 
 export const setCurrentColorToLocalStorage = (color: string) => {

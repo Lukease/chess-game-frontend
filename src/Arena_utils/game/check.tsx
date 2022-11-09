@@ -1,6 +1,6 @@
 import {checkPossibleMoves} from '../possible-moves-utils'
 import {Figure, IsCheck} from '../../types'
-import {getColorFromLocalStorage, getItemFromLocalStorage} from '../data-base'
+import { getItemFromLocalStorage} from '../data-base'
 import {setCheckToLocalStorage} from '../data-base/check'
 
 export const kingCheck = () => {

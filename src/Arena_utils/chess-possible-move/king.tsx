@@ -4,8 +4,9 @@ import {Figure, LastMove} from '../../types'
 import {getCheckFromLocalStorage} from '../data-base/check'
 
 export const correctMovesOfKing = (columnNumber: number, fieldNumber: number, color: string) => {
-        let smallCastleId: string = ''
-        let bigCastleId: string = ''
+    let smallCastleId: string = ''
+    let bigCastleId: string = ''
+    const isCheck: boolean = getCheckFromLocalStorage().check
 
     const moves: Array<Array<number>> = [
         [0, 1],
@@ -18,7 +19,7 @@ export const correctMovesOfKing = (columnNumber: number, fieldNumber: number, co
         [-1, 1],
     ]
 
-    if (!getCheckFromLocalStorage()) {
+    if (!isCheck) {
         const whoseTurn: string = document.getElementById('color')!.innerHTML
 
         smallCastleId = smallCastle(whoseTurn)
@@ -49,10 +50,10 @@ const smallCastle = (color: string) => {
 
     const correctPositions = checkCorrectPositionsForCastle(history, chessArrangement, color, rookId, bishopId, knightId)
 
-    if (!correctPositions.find(isFalse => isFalse !== undefined)){
+    if (!correctPositions.find(isFalse => isFalse !== undefined)) {
         return `B${fieldNumber}`
     }
-        return ''
+    return ''
 }
 
 const bigCastle = (color: string) => {
@@ -75,10 +76,10 @@ const bigCastle = (color: string) => {
     const correctPositions = checkCorrectPositionsForCastle(history, chessArrangement, color, rookId, bishopId, knightId)
     const queen = chessArrangement.find(chess => chess.id === queenId)
 
-    if (!correctPositions.find(isFalse => isFalse !== undefined) && !queen){
+    if (!correctPositions.find(isFalse => isFalse !== undefined) && !queen) {
         return `F${fieldNumber}`
     }
-        return ''
+    return ''
 }
 
 const checkCorrectPositionsForCastle = (history: Array<LastMove>, chessArrangement: Array<Figure>, color: string, rookId: string, bishopId: string, knightId: string) => {

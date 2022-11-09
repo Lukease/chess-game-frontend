@@ -32,43 +32,67 @@ export const addMoveToHistory = (figureName: string, nameBefore: string, id: str
 
 export const renderHistoryFromLocalStorage = (localStorageHistory: Array<LastMove>) => {
     if (localStorageHistory.length !== 0) {
-        const historyNav = document.querySelector('.history__nav')!
+        const historyNav: Element = document.querySelector('.history__nav')!
 
         localStorageHistory.forEach((move, index) => {
-            if (move.currentName.includes('white')) {
-                const buttonsContainer = document.createElement('div')
+            const color: string = move.nameBefore
+            const nameOfFigure: string = move.currentName
+            const currentId: string = move.currentId
 
-                buttonsContainer.classList.add('history__container')
-                historyNav.appendChild(buttonsContainer)
-
-                const numberOfMove = document.createElement('button')
-
-                numberOfMove.classList.add('history__number')
-                buttonsContainer.appendChild(numberOfMove)
-                numberOfMove.innerHTML = `#${(index / 2) + 1}`
-
-                const moveWhite = document.createElement('div')
-
-                moveWhite.classList.add('history__button')
-                moveWhite.innerHTML = `${move.currentId} `
-                buttonsContainer.appendChild(moveWhite)
-                moveWhite.id = `his-${index}`
-
-                showHistoryMove(moveWhite)
-            }
-
-            if (!move.currentName.includes('white')) {
-                const buttonsContainer = document.getElementsByClassName('history__container')
-                const moveBlack = document.createElement('div')
-                const size = buttonsContainer.length - 1
-
-                moveBlack.classList.add('history__button')
-                moveBlack.innerHTML = `${move.currentId} `
-                buttonsContainer[size].appendChild(moveBlack)
-                moveBlack.id = `his-${index}`
-
-                showHistoryMove(moveBlack)
+            if (nameOfFigure === 'OO') {
+                if (color === 'white') {
+                    whiteFigure(historyNav, index, nameOfFigure)
+                }
+                if (color === 'black'){
+                    blackFigure(nameOfFigure,index)
+                }
+            } else if (nameOfFigure === 'OOO') {
+                if (color === 'white'){
+                    whiteFigure(historyNav,index,nameOfFigure)
+                }
+                if (color === 'black'){
+                    blackFigure(nameOfFigure, index)
+                }
+            } else if (nameOfFigure.includes('white')) {
+                whiteFigure(historyNav, index, currentId)
+            } else if (!nameOfFigure.includes('white')) {
+                blackFigure(currentId, index)
             }
         })
     }
+}
+
+const whiteFigure = (historyNav: Element, index: number, currentId: string) => {
+    const buttonsContainer = document.createElement('div')
+
+    buttonsContainer.classList.add('history__container')
+    historyNav.appendChild(buttonsContainer)
+
+    const numberOfMove = document.createElement('button')
+
+    numberOfMove.classList.add('history__number')
+    buttonsContainer.appendChild(numberOfMove)
+    numberOfMove.innerHTML = `#${(index / 2) + 1}`
+
+    const moveWhite = document.createElement('div')
+
+    moveWhite.classList.add('history__button')
+    moveWhite.innerHTML = `${currentId} `
+    buttonsContainer.appendChild(moveWhite)
+    moveWhite.id = `his-${index}`
+
+    showHistoryMove(moveWhite)
+}
+
+const blackFigure = (currentId: string, index: number) => {
+    const buttonsContainer = document.getElementsByClassName('history__container')
+    const moveBlack = document.createElement('div')
+    const size = buttonsContainer.length - 1
+
+    moveBlack.classList.add('history__button')
+    moveBlack.innerHTML = `${currentId} `
+    buttonsContainer[size].appendChild(moveBlack)
+    moveBlack.id = `his-${index}`
+
+    showHistoryMove(moveBlack)
 }
