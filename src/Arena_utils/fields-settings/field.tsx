@@ -11,12 +11,15 @@ import {
 import {
     getItemFromLocalStorage,
     setArrayToLocalStorage,
-    removeChessFromLocalStorage, getColorFromLocalStorage
+    removeChessFromLocalStorage,
+    getColorFromLocalStorage
 } from '../data-base'
 import {addMoveToHistory} from '../history/add-to-history'
 import {showNewFigureForPlayer} from '../game'
-import {kingCheck} from '../game/check'
-import {endGame} from '../game'
+import {
+    kingCheck,
+    endGame
+} from '../game'
 
 let nameOfFigure: string
 let colorOfFigure: string
@@ -48,19 +51,19 @@ const fillField = (chessArray: Array<Figure>, fieldId: string) => {
 const selectChess = (id: string, event: any) => {
     removePossibleMoves(arrayOfCorrectIds)
     arrayOfSelectedFigures = removeChosenField(arrayOfSelectedFigures, event)
-
+    selectedFigure = event.target
     coordinateOfChess = []
     arrayOfCorrectIds = []
-
-    const columnNumber: number = (id.charAt(0)).charCodeAt(0) - 64
-    const fieldNumber: number = parseInt(id.charAt(1))
-
     movedFigureId = id
 
-    const figureClass: string = event.target.className.split(' ')[1]
-    const figure: string = figureClass.split('__')[1]
+    const localStorageChess: Array<Figure> = getItemFromLocalStorage()
+    const figureInArray: Figure = localStorageChess.find(chess => chess.id === selectedFigure.id)!
+    const figure: string = figureInArray.name
     const figureNameAndColorSplit: Array<string> = figure.split('-')
     const [figureColor, figureName] = figureNameAndColorSplit
+    const position: Array<number> = figureInArray.position
+    const [columnNumber, fieldNumber] = position
+
     const coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
 
     showPossibleMoves(coordinate)
@@ -69,7 +72,6 @@ const selectChess = (id: string, event: any) => {
 
     arrayOfCorrectIds = arrayOfCorrectIds.concat(coordinate)
     coordinateOfChess = coordinateOfChess.concat(id)
-    selectedFigure = event.target
     arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.currentTarget)
 
     return
@@ -89,8 +91,7 @@ const moveChess = (event: any) => {
         const currentFigure: string = currentFigureClass.split('__')[1]
         const figure: string = nameOfFigure.split('-')[1]
 
-        showNewFigureForPlayer(currentFieldNumber, currentFieldImg.id, figure, event)
-        addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
+        showNewFigureForPlayer(currentFieldNumber, currentFieldImg.id, figure)
 
         if (figure === 'King') {
             castleKing(currentFieldImg.id)
@@ -140,6 +141,8 @@ const moveChess = (event: any) => {
         arrayOfSelectedFigures = removeChosenField(arrayOfSelectedFigures, event)
         blackWhiteChangeTurn()
         endGame(currentFigure, colorOfFigure)
+        kingCheck()
+        addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
     }
 
     return
@@ -150,21 +153,21 @@ export function Field(props: any) {
     const game = (id: string, event: any) => {
         const color: string = getColorFromLocalStorage()
         const trashIconChosen: Element = document.querySelector('.navigation__trash')!
+        const target = event.target
 
         if (!trashIconChosen.classList.contains('navigation__trash--chosen')) {
-            if (event.target.className.includes(`figure__${color}`)) {
-                kingCheck(color)
+            if (target.className.includes(`figure__${color}`)) {
+                kingCheck()
                 setIsChosen(!isChosen)
                 selectChess(id, event)
 
             } else {
                 moveChess(event)
-                kingCheck(color)
             }
-        } else if (trashIconChosen.classList.contains('navigation__trash--chosen') && event.target.className.includes('figure') && !event.target.classList.value.includes('King')) {
-            event.target.className = ''
-            event.target.classList.add('figure')
-            event.target.classList.add('figure__empty')
+        } else if (trashIconChosen.classList.contains('navigation__trash--chosen') && target.className.includes('figure') && !target.classList.value.includes('King')) {
+            target.className = ''
+            target.classList.add('figure')
+            target.classList.add('figure__empty')
 
             removeChessFromLocalStorage(props.id)
         }

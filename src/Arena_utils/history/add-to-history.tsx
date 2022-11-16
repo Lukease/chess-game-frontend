@@ -1,11 +1,16 @@
 import {getHistoryFromLocalStorage, setHistoryOfMovesToLocalStorage} from '../data-base'
-import {LastMove} from '../../types'
+import {IsCheck, LastMove} from '../../types'
 import {showHistoryMove} from './show-history-move'
+import {iconType} from "./move-type/icon-type";
+import {isTake} from "./move-type/is-Take";
+import {getCheckFromLocalStorage} from "../data-base/check";
+import {MoveType} from "../../types/moveType";
 
 export const addMoveToHistory = (figureName: string, nameBefore: string, id: string, currentId: string) => {
     const move = document.querySelectorAll('.history__container')!
     let historyOfMoves: Array<LastMove> = []
     let localStorageHistory: Array<LastMove> = getHistoryFromLocalStorage()
+    const check: IsCheck = getCheckFromLocalStorage()
 
     if (localStorageHistory) {
         historyOfMoves = historyOfMoves.concat(localStorageHistory)
@@ -21,7 +26,8 @@ export const addMoveToHistory = (figureName: string, nameBefore: string, id: str
             currentId: currentId,
             nameBefore: nameBefore,
             idBefore: id,
-            idInArray: historyOfMoves.length
+            idInArray: historyOfMoves.length,
+            isCheck: check
         })
 
         setHistoryOfMovesToLocalStorage(historyOfMoves)
@@ -38,31 +44,39 @@ export const renderHistoryFromLocalStorage = (localStorageHistory: Array<LastMov
             const color: string = move.nameBefore
             const nameOfFigure: string = move.currentName
             const currentId: string = move.currentId
+            const iconHistoryType: string = iconType(move)
+            const take: string = isTake(move).toLowerCase()
+
+            const moveType: MoveType = {
+                iconType: iconHistoryType,
+                isCheck: move.isCheck,
+                isTake: take
+            }
 
             if (nameOfFigure === 'OO') {
                 if (color === 'white') {
-                    whiteFigure(historyNav, index, nameOfFigure)
+                    whiteFigure(historyNav, index, nameOfFigure, moveType)
                 }
-                if (color === 'black'){
-                    blackFigure(nameOfFigure,index)
+                if (color === 'black') {
+                    blackFigure(nameOfFigure, index, moveType)
                 }
             } else if (nameOfFigure === 'OOO') {
-                if (color === 'white'){
-                    whiteFigure(historyNav,index,nameOfFigure)
+                if (color === 'white') {
+                    whiteFigure(historyNav, index, nameOfFigure, moveType)
                 }
-                if (color === 'black'){
-                    blackFigure(nameOfFigure, index)
+                if (color === 'black') {
+                    blackFigure(nameOfFigure, index, moveType)
                 }
             } else if (nameOfFigure.includes('white')) {
-                whiteFigure(historyNav, index, currentId)
+                whiteFigure(historyNav, index, currentId, moveType)
             } else if (!nameOfFigure.includes('white')) {
-                blackFigure(currentId, index)
+                blackFigure(currentId, index, moveType)
             }
         })
     }
 }
 
-const whiteFigure = (historyNav: Element, index: number, currentId: string) => {
+const whiteFigure = (historyNav: Element, index: number, currentId: string, moveType: MoveType) => {
     const buttonsContainer = document.createElement('div')
 
     buttonsContainer.classList.add('history__container')
@@ -76,23 +90,23 @@ const whiteFigure = (historyNav: Element, index: number, currentId: string) => {
 
     const moveWhite = document.createElement('div')
 
-    moveWhite.classList.add('history__button')
-    moveWhite.innerHTML = `${currentId} `
+    createContainerHistory(moveWhite, currentId, index, moveType)
     buttonsContainer.appendChild(moveWhite)
-    moveWhite.id = `his-${index}`
-
-    showHistoryMove(moveWhite)
 }
 
-const blackFigure = (currentId: string, index: number) => {
-    const buttonsContainer = document.getElementsByClassName('history__container')
-    const moveBlack = document.createElement('div')
-    const size = buttonsContainer.length - 1
+const blackFigure = (currentId: string, index: number, moveType: MoveType) => {
+    const buttonsContainer: HTMLCollectionOf<Element> = document.getElementsByClassName('history__container')
+    const moveBlack: HTMLDivElement = document.createElement('div')
+    const size: number = buttonsContainer.length - 1
 
-    moveBlack.classList.add('history__button')
-    moveBlack.innerHTML = `${currentId} `
+    createContainerHistory(moveBlack, currentId, index, moveType)
     buttonsContainer[size].appendChild(moveBlack)
-    moveBlack.id = `his-${index}`
+}
 
-    showHistoryMove(moveBlack)
+const createContainerHistory = (container: HTMLDivElement, currentId: string, index: number, moveType: MoveType) => {
+    container.classList.add('history__button')
+    container.innerHTML = `${moveType.iconType}${moveType.isTake}${currentId.toLowerCase()}${moveType.isCheck.check ? '+' : ''} `
+    container.id = `his-${index}`
+
+    showHistoryMove(container)
 }

@@ -11,14 +11,14 @@ export class PromotePawn extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
 
-        this.state = {isToggleOn: false}
         this.SelectFigure = this.SelectFigure.bind(this)
     }
 
     SelectFigure(event: any): void {
-        this.setState((prevState: { isToggleOn: boolean }) => ({
-            isToggleOn: !prevState.isToggleOn,
-        }))
+
+        const selectFigureContainer: Element = document.querySelector('.select')!
+
+        selectFigureContainer.setAttribute('style', 'display: none')
 
         let localStorageChess: Array<Figure> = getItemFromLocalStorage()
         let localStorageChessHistory: Array<LastMove> = getHistoryFromLocalStorage()
@@ -51,7 +51,7 @@ export class PromotePawn extends React.Component<any, any> {
         return (
             <div className={`select`}
                  id={'select-container'}
-                 style={{display: !this.state.isToggleOn ? 'none' : 'flex'}}
+                 style={{display: `none` }}
             >
                 <div className={`select__nav`}>
                     <div className={`select__new-figure`}
@@ -80,7 +80,7 @@ export class PromotePawn extends React.Component<any, any> {
     }
 }
 
-export const showNewFigureForPlayer = (fieldNumber: number, fieldId: string, nameOfFigure: string, event: any) => {
+export const showNewFigureForPlayer = (fieldNumber: number, fieldId: string, nameOfFigure: string) => {
     if (fieldNumber === 1 || fieldNumber === 8) {
         if (nameOfFigure === 'Pawn') {
             const selectFigureContainer: Element = document.querySelector('.select')!

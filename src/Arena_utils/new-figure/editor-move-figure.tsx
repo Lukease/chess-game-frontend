@@ -1,5 +1,9 @@
 import {Figure} from '../../types'
-import {getItemFromLocalStorage, removeChessFromLocalStorage, setArrayToLocalStorage} from '../data-base'
+import {
+    getItemFromLocalStorage,
+    removeChessFromLocalStorage,
+    setArrayToLocalStorage
+} from '../data-base'
 
 let nameOfFigure: string
 let isMoving = false
@@ -8,7 +12,7 @@ let previousFigure: any
 
 export const editorGetFigure = (event: any) => {
     const [figureClass,] = event.target.classList
-    const color = document.querySelector('.game__color')!.innerHTML
+    const color = document.getElementById('color')!.innerHTML
     const trashIconChosen = document.querySelector('.navigation__trash')!
 
     previousFigure = event.target

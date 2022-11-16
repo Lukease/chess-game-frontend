@@ -1,5 +1,5 @@
 import {getAllPossibleMoves, getCorrectMoves} from '../possible-moves-utils'
-import {getHistoryFromLocalStorage, getItemFromLocalStorage} from '../data-base'
+import {getColorFromLocalStorage, getHistoryFromLocalStorage, getItemFromLocalStorage} from '../data-base'
 import {Figure, LastMove} from '../../types'
 import {getCheckFromLocalStorage} from '../data-base/check'
 
@@ -7,6 +7,7 @@ export const correctMovesOfKing = (columnNumber: number, fieldNumber: number, co
     let smallCastleId: string = ''
     let bigCastleId: string = ''
     const isCheck: boolean = getCheckFromLocalStorage().check
+    const whoseTurn: string = getColorFromLocalStorage()
 
     const moves: Array<Array<number>> = [
         [0, 1],
@@ -20,8 +21,6 @@ export const correctMovesOfKing = (columnNumber: number, fieldNumber: number, co
     ]
 
     if (!isCheck) {
-        const whoseTurn: string = document.getElementById('color')!.innerHTML
-
         smallCastleId = smallCastle(whoseTurn)
         bigCastleId = bigCastle(whoseTurn)
     }
@@ -29,6 +28,7 @@ export const correctMovesOfKing = (columnNumber: number, fieldNumber: number, co
     const getCorrectFieldsId = getAllPossibleMoves(moves, columnNumber, fieldNumber)
     const correctIds: Array<string> = getCorrectMoves(getCorrectFieldsId, color)
     const correctIdsAndCastle: Array<string> = [...correctIds, smallCastleId, bigCastleId]
+    // const opponentChess: Array<Figure> =
 
     return correctIdsAndCastle.filter(id => id !== '')
 }

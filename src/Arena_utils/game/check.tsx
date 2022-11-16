@@ -1,16 +1,13 @@
 import {checkPossibleMoves} from '../possible-moves-utils'
 import {Figure, IsCheck} from '../../types'
-import { getItemFromLocalStorage} from '../data-base'
+import {getItemFromLocalStorage} from '../data-base'
 import {setCheckToLocalStorage} from '../data-base/check'
 
-export const kingCheck = (color: string) => {
+export const kingCheck = () => {
     removeCheckKingToField()
 
     let localStorageChess: Array<Figure> = getItemFromLocalStorage()
-    const opponentChess = localStorageChess.filter(chess=> chess.color !== color)
-
-    const uniqueCorrectMoves = getAllMoves(opponentChess)
-
+    const uniqueCorrectMoves = getAllMoves(localStorageChess)
     const whiteKing: Figure = localStorageChess.find(chess => chess.name === 'white-King')!
     const blackKing: Figure = localStorageChess.find(chess => chess.name === 'black-King')!
 
@@ -45,7 +42,7 @@ const removeCheckKingToField = () => {
     })
 }
 
-const getAllMoves = (figureArray: Array<Figure>) => {
+export const getAllMoves = (figureArray: Array<Figure>) => {
     const allPossibleMovesOfAllFigure = figureArray.map(chess => {
         const figureName: string = chess.name.split('-')[1]
         const fieldAndColumnNumber: Array<number> = chess.position
