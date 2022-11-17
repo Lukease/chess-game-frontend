@@ -14,12 +14,13 @@ import {
     removeChessFromLocalStorage,
     getColorFromLocalStorage
 } from '../data-base'
-import {addMoveToHistory} from '../history/add-to-history'
+import {addMoveToHistory} from '../history'
 import {showNewFigureForPlayer} from '../game'
 import {
     kingCheck,
     endGame
 } from '../game'
+import {enPassantAddCorrectMove} from "../en-passant/en-passant-add-correct-move";
 
 let nameOfFigure: string
 let colorOfFigure: string
@@ -63,9 +64,12 @@ const selectChess = (id: string, event: any) => {
     const [figureColor, figureName] = figureNameAndColorSplit
     const position: Array<number> = figureInArray.position
     const [columnNumber, fieldNumber] = position
+    let coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
+    const enPassant: string = enPassantAddCorrectMove(figureName,id, figureColor)!
 
-    const coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
-
+    if (enPassant){
+        coordinate = coordinate.concat(enPassant)
+    }
     showPossibleMoves(coordinate)
     nameOfFigure = figure
     colorOfFigure = figureColor

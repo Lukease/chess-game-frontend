@@ -1,5 +1,5 @@
 import {getAllPossibleMoves, getCorrectMoves} from '../possible-moves-utils'
-import { getCorrectIdsOfPawn} from './possible-move-utils'
+import {getCorrectIdsOfPawn} from './possible-move-utils'
 
 export const correctMovesOfPawn = (columnNumber: number, fieldNumber: number, color: string) => {
     const moveOfBlackPawn: Array<number> = [0, -1]
@@ -53,13 +53,13 @@ export const correctMovesOfPawn = (columnNumber: number, fieldNumber: number, co
     const attackFigure = getCorrectFieldsIdLeftRight.map(id => {
         const field: HTMLElement = document.getElementById(id)!
 
-        if (!field.className.includes(`figure__empty`)){
+        if (!field.className.includes(`figure__empty`)) {
             return id
         }
-            return 'last'
+        return 'last'
     })
 
-   const correctMoves = [...correctIds, ...attackFigure].filter(id => id !== 'last')
+    const correctMoves = [...correctIds, ...attackFigure].filter(id => id !== 'last')
 
     return getCorrectMoves(correctMoves, color)
 }

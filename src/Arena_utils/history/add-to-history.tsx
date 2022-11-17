@@ -1,10 +1,19 @@
-import {getHistoryFromLocalStorage, setHistoryOfMovesToLocalStorage} from '../data-base'
-import {IsCheck, LastMove} from '../../types'
-import {showHistoryMove} from './show-history-move'
-import {iconType} from "./move-type/icon-type";
-import {isTake} from "./move-type/is-Take";
-import {getCheckFromLocalStorage} from "../data-base/check";
-import {MoveType} from "../../types/moveType";
+import {
+    getHistoryFromLocalStorage,
+    setHistoryOfMovesToLocalStorage
+} from '../data-base'
+import {
+    IsCheck,
+    LastMove
+} from '../../types'
+import { showHistoryMove } from './show-history-move'
+import {
+    iconType,
+    isTake
+}
+    from './move-type'
+import { getCheckFromLocalStorage } from '../data-base/check'
+import { MoveType } from '../../types'
 
 export const addMoveToHistory = (figureName: string, nameBefore: string, id: string, currentId: string) => {
     const move = document.querySelectorAll('.history__container')!

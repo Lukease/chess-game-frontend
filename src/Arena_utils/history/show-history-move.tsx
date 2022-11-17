@@ -1,5 +1,5 @@
-import {getHistoryFromLocalStorage} from '../data-base'
-import {LastMove} from '../../types'
+import { getHistoryFromLocalStorage } from '../data-base'
+import { LastMove } from '../../types'
 
 const showChosenFieldHistory = (move: LastMove) => {
     const currentId: string = move.currentId
@@ -25,7 +25,6 @@ const showChosenFieldHistory = (move: LastMove) => {
             currentRookId = 'D8'
             currentKingId = 'H8'
         }
-
         addFieldChosen(currentRookId, currentKingId)
 
     } else {
@@ -133,9 +132,7 @@ const backToCurrentPosition = (historyOfMoves: Array<LastMove>) => {
 
             let moveFrom: HTMLElement = document.getElementById(move.idBefore)!
 
-            moveFrom.className = ''
-            moveFrom.classList.add(`figure`)
-            moveFrom.classList.add(`figure__empty`)
+            addEmptyClassMoveFrom(moveFrom)
         }
     })
 }
