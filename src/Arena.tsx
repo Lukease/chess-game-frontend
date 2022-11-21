@@ -18,8 +18,8 @@ import {defaultChessArrangement} from './chess_arrangement/default-chess-arrange
 import {setCurrentColorToLocalStorage} from './Arena_utils/data-base'
 import {HistoryOfMoves} from './Arena_utils/history'
 import {PromotePawn} from './Arena_utils/game'
-import {IsCheck} from "./types";
-import {setCheckToLocalStorage} from "./Arena_utils/data-base/check";
+import {setCheckToLocalStorage} from './Arena_utils/data-base/check'
+import {setSpecialMoveToLocalStorage} from './Arena_utils/data-base'
 
 class Board extends React.Component<any, any> {
 
@@ -121,14 +121,16 @@ export class Arena extends React.Component<any, any> {
     setDefaultChessPosition() {
         localStorage.clear()
         setArrayToLocalStorage(defaultChessArrangement)
+
         const color = document.querySelector('.game__color')!.innerHTML = 'white'
 
         setCurrentColorToLocalStorage(color)
         window.location.reload()
 
-        const check: IsCheck = {check: false}
+        const check: boolean =  false
 
         setCheckToLocalStorage(check)
+        setSpecialMoveToLocalStorage('')
     }
 
     render() {

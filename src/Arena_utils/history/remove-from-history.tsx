@@ -1,15 +1,17 @@
 import { addMoveToHistory } from './add-to-history'
-import { LastMove } from '../../types'
+import {Figure} from '../../types'
 import {
-    getHistoryFromLocalStorage,
-    setHistoryOfMovesToLocalStorage
+    getItemFromLocalStorage,
+    setArrayToLocalStorage,
 } from '../data-base'
 
 export const removeKingAndAddCastleToHistory = (figureName: string, nameBefore: string, id: string, currentId: string) => {
-    let localStorageHistory: Array<LastMove> = getHistoryFromLocalStorage()
-    const kingInHistory: LastMove = localStorageHistory.find(history => history.currentName === `${nameBefore}-King`)!
+    let allChessPositionArray: Array<Figure> = getItemFromLocalStorage()
+    const kingInArray: Figure = allChessPositionArray.find(figure => figure.name === figureName)!
 
-    localStorageHistory = localStorageHistory.filter(move => move !== kingInHistory)
-    setHistoryOfMovesToLocalStorage(localStorageHistory)
+    allChessPositionArray = allChessPositionArray.filter(figure => figure !== kingInArray)
+    kingInArray.id = id
+    allChessPositionArray = allChessPositionArray.concat(kingInArray)
+    setArrayToLocalStorage(allChessPositionArray)
     addMoveToHistory(figureName, nameBefore, id, currentId)
 }

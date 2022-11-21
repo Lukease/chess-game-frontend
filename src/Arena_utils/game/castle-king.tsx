@@ -1,15 +1,17 @@
 import {
     getColorFromLocalStorage,
     removeChessFromLocalStorage,
-    setArrayToLocalStorage
+    setArrayToLocalStorage, setSpecialMoveToLocalStorage
 } from '../data-base'
 import {Figure} from '../../types'
-import {addMoveToHistory} from '../history/add-to-history'
-import {removeKingAndAddCastleToHistory} from '../history/remove-from-history'
+import {removeKingAndAddCastleToHistory} from '../history'
 
 
 export const castleKing = (currentFieldId: string) => {
     const color: string = getColorFromLocalStorage()
+    const king: string = 'King'
+    const rook: string= 'Rook'
+    let oldKingId: string = 'D8'
 
     if (color === 'black') {
         if (currentFieldId === 'B8') {
@@ -18,7 +20,8 @@ export const castleKing = (currentFieldId: string) => {
 
             removeAndAddRookCastled(oldRookId, newRookId, color, 3, 8)
             changeRookPosition(oldRookId, newRookId , color)
-            removeKingAndAddCastleToHistory('OO',color, currentFieldId, '0')
+            setSpecialMoveToLocalStorage('OO')
+            removeKingAndAddCastleToHistory(`${color}-${king}`,`${color}-${rook}`, `${oldKingId}-${currentFieldId}`, `${oldRookId}-${newRookId}`)
         }
 
         if (currentFieldId === 'F8') {
@@ -27,18 +30,22 @@ export const castleKing = (currentFieldId: string) => {
 
             removeAndAddRookCastled(oldRookId, newRookId, color, 5, 8)
             changeRookPosition(oldRookId, newRookId , color)
-            removeKingAndAddCastleToHistory('OOO',color, '0', '0')
+            setSpecialMoveToLocalStorage('OOO')
+            removeKingAndAddCastleToHistory(`${color}-${king}`,`${color}-${rook}`, `${oldKingId}-${currentFieldId}`, `${oldRookId}-${newRookId}`)
         }
     }
 
     if (color === 'white') {
+        oldKingId = 'D1'
+
         if (currentFieldId === 'B1') {
             const oldRookId: string = 'A1'
             const newRookId: string = 'C1'
 
             removeAndAddRookCastled(oldRookId, newRookId, color, 3, 1)
             changeRookPosition(oldRookId, newRookId , color)
-            removeKingAndAddCastleToHistory('OO',color, currentFieldId, '0')
+            setSpecialMoveToLocalStorage('OO')
+            removeKingAndAddCastleToHistory(`${color}-${king}`,`${color}-${rook}`, `${oldKingId}-${currentFieldId}`, `${oldRookId}-${newRookId}`)
         }
 
         if (currentFieldId === 'F1') {
@@ -47,7 +54,8 @@ export const castleKing = (currentFieldId: string) => {
 
             removeAndAddRookCastled(oldRookId, newRookId, color, 5, 1)
             changeRookPosition(oldRookId, newRookId , color)
-            removeKingAndAddCastleToHistory('OOO',color, currentFieldId, '0')
+            setSpecialMoveToLocalStorage('OOO')
+            removeKingAndAddCastleToHistory(`${color}-${king}`,`${color}-${rook}`, `${oldKingId}-${currentFieldId}`, `${oldRookId}-${newRookId}`)
         }
     }
 }

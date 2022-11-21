@@ -6,13 +6,13 @@ import {
     blackWhiteChangeTurn,
     showPossibleMoves,
     removePossibleMoves,
-    removeChosenField, castleKing
+    removeChosenField,
+    castleKing
 } from '../game'
 import {
     getItemFromLocalStorage,
-    setArrayToLocalStorage,
     removeChessFromLocalStorage,
-    getColorFromLocalStorage
+    getColorFromLocalStorage, setSpecialMoveToLocalStorage, getSpecialMoveFromLocalStorage
 } from '../data-base'
 import {addMoveToHistory} from '../history'
 import {showNewFigureForPlayer} from '../game'
@@ -20,7 +20,14 @@ import {
     kingCheck,
     endGame
 } from '../game'
-import {enPassantAddCorrectMove} from "../en-passant/en-passant-add-correct-move";
+import {
+    enPassantAddCorrectMove,
+    enPassantMakeMove,
+} from '../en-passant'
+import {
+    fillField,
+    addArrayToDataBase
+} from './fields-utils'
 
 let nameOfFigure: string
 let colorOfFigure: string
@@ -30,26 +37,8 @@ let arrayOfCorrectIds: Array<string> = []
 let movedFigureId: string
 let selectedFigure: any = []
 
-const fillField = (chessArray: Array<Figure>, fieldId: string) => {
-    const figure: Array<string> = chessArray.map((figure) => {
-        const column: number = (fieldId.charAt(0)).charCodeAt(0) - 64
-        const number: number = parseInt(fieldId.charAt(1))
-        const [figureColumn, figureField] = figure.position
-
-        if (column === figureColumn && number === figureField) {
-
-            return `figure__${figure.name}`
-        } else {
-            return 'figure__empty'
-        }
-    })
-
-    const figureName = figure.find(name => name !== 'figure__empty')
-
-    return (figureName ? figureName : 'figure__empty')
-}
-
 const selectChess = (id: string, event: any) => {
+    setSpecialMoveToLocalStorage('')
     removePossibleMoves(arrayOfCorrectIds)
     arrayOfSelectedFigures = removeChosenField(arrayOfSelectedFigures, event)
     selectedFigure = event.target
@@ -65,15 +54,14 @@ const selectChess = (id: string, event: any) => {
     const position: Array<number> = figureInArray.position
     const [columnNumber, fieldNumber] = position
     let coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
-    const enPassant: string = enPassantAddCorrectMove(figureName,id, figureColor)!
+    const enPassant: string = enPassantAddCorrectMove(figureName, id, figureColor)!
 
-    if (enPassant){
+    if (enPassant) {
         coordinate = coordinate.concat(enPassant)
     }
     showPossibleMoves(coordinate)
     nameOfFigure = figure
     colorOfFigure = figureColor
-
     arrayOfCorrectIds = arrayOfCorrectIds.concat(coordinate)
     coordinateOfChess = coordinateOfChess.concat(id)
     arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.currentTarget)
@@ -87,6 +75,8 @@ const moveChess = (event: any) => {
     if (arrayOfCorrectIds.some(id => id === currentFieldImg.id) && coordinateOfChess.length !== 0) {
         removePossibleMoves(arrayOfCorrectIds)
 
+        const localStorageChess: Array<Figure> = getItemFromLocalStorage()
+        let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== selectedFigure.id)
         const currentColumnNumber: number = (currentFieldImg.id.charAt(0))
             .charCodeAt(0) - 64
         const currentFieldNumber: number = parseInt(currentFieldImg.id.charAt(1))
@@ -94,40 +84,35 @@ const moveChess = (event: any) => {
             .split(' ')[1]
         const currentFigure: string = currentFigureClass.split('__')[1]
         const figure: string = nameOfFigure.split('-')[1]
-
-        showNewFigureForPlayer(currentFieldNumber, currentFieldImg.id, figure)
+        const pawnPromotionCondition: boolean = currentFieldImg.id.includes('8') || currentFieldImg.id.includes('1')
 
         if (figure === 'King') {
             castleKing(currentFieldImg.id)
         }
 
-        if (currentFieldImg.classList.contains(`figure__empty`)) {
-            const localStorageChess: Array<Figure> = getItemFromLocalStorage()
-            let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== selectedFigure.id)
+        if (figure === 'Pawn' && pawnPromotionCondition) {
+            setSpecialMoveToLocalStorage('P=')
+            showNewFigureForPlayer(currentFieldNumber, currentFieldImg.id, figure, movedFigureId)
+        }
 
-            gameArrangement = gameArrangement.concat({
-                id: currentFieldImg.id,
-                name: nameOfFigure,
-                position: [currentColumnNumber, currentFieldNumber],
-                color: colorOfFigure
-            })
+        if (currentFieldImg.classList.contains(`field__e-p`)) {
+            addArrayToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
+            addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
+            enPassantMakeMove(colorOfFigure, currentFieldImg.id, movedFigureId)
+        }
 
-            setArrayToLocalStorage(gameArrangement)
+        const specialMove = getSpecialMoveFromLocalStorage()
 
+        if (!specialMove) {
+            if (currentFieldImg.classList.contains(`figure__empty`)) {
+                addArrayToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
+                addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
 
-        } else if (!currentFieldImg.classList.contains(`figure__empty`)) {
-            const localStorageChess: Array<Figure> = getItemFromLocalStorage()
-            let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== selectedFigure.id)
-
-            gameArrangement = gameArrangement.filter(chess => chess.id !== currentFieldImg.id)
-            gameArrangement = gameArrangement.concat({
-                id: currentFieldImg.id,
-                name: nameOfFigure,
-                position: [currentColumnNumber, currentFieldNumber],
-                color: colorOfFigure
-            })
-
-            setArrayToLocalStorage(gameArrangement)
+            } else if (!currentFieldImg.classList.contains(`figure__empty`)) {
+                gameArrangement = gameArrangement.filter(chess => chess.id !== currentFieldImg.id)
+                addArrayToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
+                addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
+            }
         }
 
         event.currentTarget.classList.add('field__chosen')
@@ -146,7 +131,6 @@ const moveChess = (event: any) => {
         blackWhiteChangeTurn()
         endGame(currentFigure, colorOfFigure)
         kingCheck()
-        addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
     }
 
     return
@@ -185,7 +169,6 @@ export function Field(props: any) {
             }}
         >
             <img
-                // ${fillField(defaultChessArrangement, props.id)}
                 className={`figure ${fillField(JSON.parse(localStorage.getItem('chess')!), props.id)}`}
                 id={props.id}
                 alt={''}

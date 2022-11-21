@@ -1,6 +1,4 @@
-import {IsCheck} from '../../types'
-
-export const setCheckToLocalStorage = (check: IsCheck) => {
+export const setCheckToLocalStorage = (check: boolean) => {
     localStorage.setItem('check', JSON.stringify(check))
 }
 

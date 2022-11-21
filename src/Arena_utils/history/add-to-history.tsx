@@ -1,25 +1,25 @@
 import {
-    getHistoryFromLocalStorage,
+    getHistoryFromLocalStorage, getSpecialMoveFromLocalStorage,
     setHistoryOfMovesToLocalStorage
 } from '../data-base'
 import {
-    IsCheck,
     LastMove
 } from '../../types'
-import { showHistoryMove } from './show-history-move'
+import {showHistoryMove} from './show-history-move'
 import {
     iconType,
     isTake
 }
     from './move-type'
-import { getCheckFromLocalStorage } from '../data-base/check'
-import { MoveType } from '../../types'
+import {getCheckFromLocalStorage} from '../data-base/check'
+import {MoveType} from '../../types'
 
 export const addMoveToHistory = (figureName: string, nameBefore: string, id: string, currentId: string) => {
     const move = document.querySelectorAll('.history__container')!
     let historyOfMoves: Array<LastMove> = []
     let localStorageHistory: Array<LastMove> = getHistoryFromLocalStorage()
-    const check: IsCheck = getCheckFromLocalStorage()
+    const check: boolean = getCheckFromLocalStorage()
+    const specialMove: string = getSpecialMoveFromLocalStorage()
 
     if (localStorageHistory) {
         historyOfMoves = historyOfMoves.concat(localStorageHistory)
@@ -30,15 +30,7 @@ export const addMoveToHistory = (figureName: string, nameBefore: string, id: str
             element.remove()
         })
 
-        historyOfMoves = historyOfMoves.concat({
-            currentName: figureName,
-            currentId: currentId,
-            nameBefore: nameBefore,
-            idBefore: id,
-            idInArray: historyOfMoves.length,
-            isCheck: check
-        })
-
+        historyOfMoves = historyOfMoves.concat(createNewHistoryMove(figureName, currentId, nameBefore, id, historyOfMoves.length, check, specialMove))
         setHistoryOfMovesToLocalStorage(historyOfMoves)
     }
     renderHistoryFromLocalStorage(historyOfMoves)
@@ -50,11 +42,11 @@ export const renderHistoryFromLocalStorage = (localStorageHistory: Array<LastMov
         const historyNav: Element = document.querySelector('.history__nav')!
 
         localStorageHistory.forEach((move, index) => {
-            const color: string = move.nameBefore
             const nameOfFigure: string = move.currentName
             const currentId: string = move.currentId
             const iconHistoryType: string = iconType(move)
             const take: string = isTake(move).toLowerCase()
+            const specialMove: string = move.specialMove
 
             const moveType: MoveType = {
                 iconType: iconHistoryType,
@@ -62,30 +54,16 @@ export const renderHistoryFromLocalStorage = (localStorageHistory: Array<LastMov
                 isTake: take
             }
 
-            if (nameOfFigure === 'OO') {
-                if (color === 'white') {
-                    whiteFigure(historyNav, index, nameOfFigure, moveType)
-                }
-                if (color === 'black') {
-                    blackFigure(nameOfFigure, index, moveType)
-                }
-            } else if (nameOfFigure === 'OOO') {
-                if (color === 'white') {
-                    whiteFigure(historyNav, index, nameOfFigure, moveType)
-                }
-                if (color === 'black') {
-                    blackFigure(nameOfFigure, index, moveType)
-                }
-            } else if (nameOfFigure.includes('white')) {
-                whiteFigure(historyNav, index, currentId, moveType)
-            } else if (!nameOfFigure.includes('white')) {
-                blackFigure(currentId, index, moveType)
+            if (nameOfFigure.includes('white')) {
+                whiteFigure(historyNav, index, currentId, moveType,specialMove)
+            } else {
+                blackFigure(currentId, index, moveType,specialMove)
             }
         })
     }
 }
 
-const whiteFigure = (historyNav: Element, index: number, currentId: string, moveType: MoveType) => {
+const whiteFigure = (historyNav: Element, index: number, currentId: string, moveType: MoveType, specialMove: string) => {
     const buttonsContainer = document.createElement('div')
 
     buttonsContainer.classList.add('history__container')
@@ -99,23 +77,38 @@ const whiteFigure = (historyNav: Element, index: number, currentId: string, move
 
     const moveWhite = document.createElement('div')
 
-    createContainerHistory(moveWhite, currentId, index, moveType)
+    createContainerHistory(moveWhite, currentId, index, moveType, specialMove)
     buttonsContainer.appendChild(moveWhite)
 }
 
-const blackFigure = (currentId: string, index: number, moveType: MoveType) => {
+const blackFigure = (currentId: string, index: number, moveType: MoveType, specialMove: string) => {
     const buttonsContainer: HTMLCollectionOf<Element> = document.getElementsByClassName('history__container')
     const moveBlack: HTMLDivElement = document.createElement('div')
     const size: number = buttonsContainer.length - 1
 
-    createContainerHistory(moveBlack, currentId, index, moveType)
+    createContainerHistory(moveBlack, currentId, index, moveType, specialMove)
     buttonsContainer[size].appendChild(moveBlack)
 }
 
-const createContainerHistory = (container: HTMLDivElement, currentId: string, index: number, moveType: MoveType) => {
+const createContainerHistory = (container: HTMLDivElement, currentId: string, index: number, moveType: MoveType, specialMove: string) => {
     container.classList.add('history__button')
-    container.innerHTML = `${moveType.iconType}${moveType.isTake}${currentId.toLowerCase()}${moveType.isCheck.check ? '+' : ''} `
+    if (specialMove !== ''){
+        container.innerHTML = `${specialMove}`
+    } else {
+        container.innerHTML = `${moveType.iconType}${moveType.isTake}${currentId.toLowerCase()}${moveType.isCheck ? '+' : ''} `
+    }
     container.id = `his-${index}`
-
     showHistoryMove(container)
+}
+
+const createNewHistoryMove = (figureName: string, currentId: string, nameBefore: string, id: string, arrayLength: number, check: boolean, specialMove: string) => {
+    return ({
+        currentName: figureName,
+        currentId: currentId,
+        nameBefore: nameBefore,
+        idBefore: id,
+        idInArray: arrayLength,
+        isCheck: check,
+        specialMove: specialMove
+    })
 }

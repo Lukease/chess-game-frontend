@@ -22,10 +22,9 @@ export const enPassantAddCorrectMove = (figureName: string, currentId: string, c
             const correctLastMoveIds = findIdSmallerAndLarger(currentId, moveFrom, moveTo, lastMove)
 
             if (correctLastMoveIds) {
-                const column: string = correctLastMoveIds.charAt(0)
-                const number: number = parseInt(correctLastMoveIds.charAt(1))
-                const fieldNumber: number = number + plusOrMinusOne
-                const id: string = `${column}${fieldNumber}`
+                const id: string = findOneGreaterId(correctLastMoveIds, plusOrMinusOne)
+
+                document.getElementById(id)!.classList.add('field__e-p')
 
                 return id
             }
@@ -49,4 +48,13 @@ const findIdSmallerAndLarger = (currentId: string, moveFrom: number, moveTo: num
     if (rightCondition) {
         return rightFrom
     }
+}
+
+export const findOneGreaterId = (correctLastMoveIds:string, plusOrMinusOne: number) => {
+    const column: string = correctLastMoveIds.charAt(0)
+    const number: number = parseInt(correctLastMoveIds.charAt(1))
+    const fieldNumber: number = number + plusOrMinusOne
+    const id: string = `${column}${fieldNumber}`
+
+    return  id
 }

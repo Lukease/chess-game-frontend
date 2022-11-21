@@ -1,11 +1,13 @@
 import React from 'react'
 import {
-    getHistoryFromLocalStorage,
     getItemFromLocalStorage,
     setArrayToLocalStorage,
-    setHistoryOfMovesToLocalStorage
 } from '../data-base'
-import {Figure, LastMove} from '../../types'
+import {Figure} from '../../types'
+import {addMoveToHistory} from '../history'
+
+let id: string
+let oldId: string
 
 export class PromotePawn extends React.Component<any, any> {
     constructor(props: any) {
@@ -15,43 +17,42 @@ export class PromotePawn extends React.Component<any, any> {
     }
 
     SelectFigure(event: any): void {
-
         const selectFigureContainer: Element = document.querySelector('.select')!
 
         selectFigureContainer.setAttribute('style', 'display: none')
-
         let localStorageChess: Array<Figure> = getItemFromLocalStorage()
-        let localStorageChessHistory: Array<LastMove> = getHistoryFromLocalStorage()
-        const historySize: number = localStorageChessHistory.length - 1
-        const arraySize: number = localStorageChess.length - 1
-        let color: string = 'white'
+        const newFigureId: string = id
+        const newId: string =  id.charAt(0)
+        let pawnId: string = oldId
+        let figureColor: string = 'white'
+        const currentFieldImg: HTMLElement = document.getElementById(newFigureId)!
+        const promotedField: Figure = localStorageChess.find(figure => figure.id === newFigureId)!
+        const oldFigureName: string = promotedField.name
 
-        if (localStorageChess[arraySize].name.includes('black')) {
-            color = 'black'
+        if (id.includes('1')){
+            pawnId = `${newId}2`
+            figureColor = 'black'
         }
 
-        const selectedFigure: string = `${color}-${event.target.title}`.replace(' ', '')
+        const selectedFigure: string = `${figureColor}-${event.target.title}`.replace(' ', '')
+        const newFigure: Figure = localStorageChess.find(figure => figure.id === pawnId)!
 
-        localStorageChess[arraySize].name = selectedFigure
-        localStorageChess[arraySize].color = color
-
-        const currentFieldImg: HTMLElement = document.getElementById(localStorageChess[arraySize].id)!
-
+        newFigure.name = selectedFigure
+        newFigure.id = newFigureId
+        newFigure.position[1] = 8
         currentFieldImg.className = ''
         currentFieldImg.classList.add('figure')
         currentFieldImg.classList.add(`figure__${selectedFigure}`)
 
-        localStorageChessHistory[historySize].currentName = selectedFigure
-
+        addMoveToHistory(selectedFigure, oldFigureName, pawnId, newFigureId)
         setArrayToLocalStorage(localStorageChess)
-        setHistoryOfMovesToLocalStorage(localStorageChessHistory)
     }
 
     render() {
         return (
             <div className={`select`}
                  id={'select-container'}
-                 style={{display: `none` }}
+                 style={{display: `none`}}
             >
                 <div className={`select__nav`}>
                     <div className={`select__new-figure`}
@@ -80,11 +81,13 @@ export class PromotePawn extends React.Component<any, any> {
     }
 }
 
-export const showNewFigureForPlayer = (fieldNumber: number, fieldId: string, nameOfFigure: string) => {
+export const showNewFigureForPlayer = (fieldNumber: number, fieldId: string, nameOfFigure: string, idBefore:string) => {
     if (fieldNumber === 1 || fieldNumber === 8) {
         if (nameOfFigure === 'Pawn') {
             const selectFigureContainer: Element = document.querySelector('.select')!
 
+            oldId = idBefore
+            id = fieldId
             selectFigureContainer.setAttribute('style', 'display: flex')
         }
     }

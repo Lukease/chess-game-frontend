@@ -1,5 +1,5 @@
 import {checkPossibleMoves} from '../possible-moves-utils'
-import {Figure, IsCheck} from '../../types'
+import {Figure} from '../../types'
 import {getItemFromLocalStorage} from '../data-base'
 import {setCheckToLocalStorage} from '../data-base/check'
 
@@ -10,20 +10,16 @@ export const kingCheck = () => {
     const uniqueCorrectMoves = getAllMoves(localStorageChess)
     const whiteKing: Figure = localStorageChess.find(chess => chess.name === 'white-King')!
     const blackKing: Figure = localStorageChess.find(chess => chess.name === 'black-King')!
+    let check: boolean = true
 
     if (uniqueCorrectMoves.has(whiteKing.id)) {
-        const check: IsCheck = {check: true}
-
         setCheckToLocalStorage(check)
         addCheckKingToField(whiteKing.id)
     } else if (uniqueCorrectMoves.has(blackKing.id)) {
-        const check: IsCheck = {check: true}
-
         setCheckToLocalStorage(check)
         addCheckKingToField(blackKing.id)
     } else {
-        const check: IsCheck = {check: false}
-
+        check = false
         setCheckToLocalStorage(check)
     }
 }
@@ -52,7 +48,6 @@ export const getAllMoves = (figureArray: Array<Figure>) => {
     })
 
     const allMovesFlat = allPossibleMovesOfAllFigure.flat(1)
-
 
     return new Set(allMovesFlat)
 }
