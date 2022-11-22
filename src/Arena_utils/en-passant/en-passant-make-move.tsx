@@ -26,6 +26,5 @@ export const enPassantMakeMove = (color:string, id: string, idBefore: string) =>
     deletedPawnByEP.classList.add('figure')
     deletedPawnByEP.classList.add('figure__empty')
     setArrayToLocalStorage(gameArrangement)
-    addMoveToHistory('EnPassant',id,newId,idBefore)
-
+    addMoveToHistory(`${color}-Pawn`,newId,idBefore,id)
 }

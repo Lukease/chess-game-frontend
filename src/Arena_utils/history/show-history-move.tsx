@@ -18,39 +18,56 @@ const showChosenFieldHistory = (move: LastMove) => {
 
 const showMoveOfFiguresBack = (historyOfMoves: Array<LastMove>) => {
     historyOfMoves.forEach((move) => {
-        const currentId: string = move.currentId
-        const idBefore: string = move.idBefore
-        const color: string = move.nameBefore
-        const specialMoves: string = move.specialMove
-        const currentNumber: number = 0
-        const oldNumber: number = 1
+            const currentId: string = move.currentId
+            const idBefore: string = move.idBefore
+            const color: string = move.currentName.split('-')[0]
+            const specialMoves: string = move.specialMove
+            const currentNumber: number = 0
+            const oldNumber: number = 1
 
-        if (specialMoves === 'OO' || specialMoves === 'OOO') {
-            castleIds(move, currentNumber, oldNumber, color)
-        }else {
-            let moveTo: HTMLElement = document.getElementById(currentId)!
+            if (specialMoves === 'OO' || specialMoves === 'OOO') {
+                castleIds(move, currentNumber, oldNumber)
+            } else if (specialMoves === 'P=') {
+                pawnPromotionHistoryBack(move, idBefore, currentId, color)
+            } else if (specialMoves === 'e.p.') {
+                let capturedPawnColor = 'white'
 
-            moveTo.classList.remove(`figure__${move.currentName}`)
-            moveTo.classList.add(`figure__${move.nameBefore}`)
+                if (color === 'white') {
+                    capturedPawnColor = 'black'
+                }
+                enPassantHistoryBack(move, currentId, idBefore, capturedPawnColor)
+            } else {
+                let moveTo: HTMLElement = document.getElementById(currentId)!
 
-            let moveFrom: HTMLElement = document.getElementById(idBefore)!
+                moveTo.classList.remove(`figure__${move.currentName}`)
+                moveTo.classList.add(`figure__${move.nameBefore}`)
 
-            moveFrom.classList.remove('figure__empty')
-            moveFrom.classList.add(`figure__${move.currentName}`)
+                let moveFrom: HTMLElement = document.getElementById(idBefore)!
+
+                moveFrom.classList.remove('figure__empty')
+                moveFrom.classList.add(`figure__${move.currentName}`)
+            }
         }
-    })
+    )
 }
 
 const backToCurrentPosition = (historyOfMoves: Array<LastMove>) => {
     historyOfMoves.forEach((move) => {
         const specialMove: string = move.specialMove
-        const color: string = move.nameBefore
         const currentNumber: number = 1
         const oldNumber: number = 0
+        const color: string = move.currentName.split('-')[0]
+        let capturedPawnColor = 'white'
+
+        if (color === 'white') {
+            capturedPawnColor = 'black'
+        }
 
         if (specialMove === 'OO' || specialMove === 'OOO') {
-            castleIds(move, currentNumber, oldNumber, color)
+            castleIds(move, currentNumber, oldNumber)
 
+        } else if (specialMove === 'e.p.') {
+            enPassantHistoryBackToCurrent(move, capturedPawnColor)
         } else {
             let moveTo: HTMLElement = document.getElementById(move.currentId)!
 
@@ -92,7 +109,7 @@ export const showHistoryMove = (listenerElement: HTMLDivElement) => {
     )
 }
 
-const castleBackToCurrent = (currentRookId: string, currentKingId: string, oldRookId: string, oldKingId: string, color: string, king: string, rook: string) => {
+const castleBackToCurrent = (currentRookId: string, currentKingId: string, oldRookId: string, oldKingId: string, king: string, rook: string) => {
     let moveRookTo: HTMLElement = document.getElementById(currentRookId)!
 
     addClassMoveTo(moveRookTo, rook)
@@ -131,11 +148,60 @@ const addFieldChosen = (currentId: string, idBefore: string) => {
     moveFrom.classList.add('field__chosen')
 }
 
-const castleIds = (move: LastMove, currentNumber: number, oldNumber: number, color: string) => {
+const castleIds = (move: LastMove, currentNumber: number, oldNumber: number) => {
     const currentRookId: string = move.currentId.split('-')[currentNumber]
     const currentKingId: string = move.idBefore.split('-')[currentNumber]
     const oldKingId: string = move.idBefore.split('-')[oldNumber]
     const oldRookId: string = move.currentId.split('-')[oldNumber]
 
-    castleBackToCurrent(currentRookId, currentKingId, oldRookId, oldKingId, color, move.currentName, move.nameBefore)
+    castleBackToCurrent(currentRookId, currentKingId, oldRookId, oldKingId, move.currentName, move.nameBefore)
+}
+
+const pawnPromotionHistoryBack = (move: LastMove, idBefore: string, currentId: string, color: string) => {
+    let moveTo: HTMLElement = document.getElementById(currentId)!
+
+    moveTo.classList.remove(`figure__${move.currentName}`)
+    moveTo.classList.add(`figure__${move.nameBefore}`)
+
+    let moveFrom: HTMLElement = document.getElementById(idBefore)!
+
+    moveFrom.classList.remove('figure__empty')
+    moveFrom.classList.add(`figure__${color}-Pawn`)
+}
+
+const enPassantHistoryBack = (move: LastMove, currentId: string, idBefore: string, color: string) => {
+    let moveTo: HTMLElement = document.getElementById(currentId)!
+
+    moveTo.classList.remove(`figure__${move.currentName}`)
+    moveTo.classList.add(`figure__empty`)
+
+    let moveFrom: HTMLElement = document.getElementById(idBefore)!
+
+    moveFrom.classList.remove('figure__empty')
+    moveFrom.classList.add(`figure__${move.currentName}`)
+
+    let capturedPawn: HTMLElement = document.getElementById(move.nameBefore)!
+
+    capturedPawn.classList.remove('figure__empty')
+    capturedPawn.classList.add(`figure__${color}-Pawn`)
+}
+
+const enPassantHistoryBackToCurrent = (move: LastMove, color: string) => {
+    const currentId: string = move.currentId
+    const idBefore: string = move.idBefore
+
+    let moveTo: HTMLElement = document.getElementById(currentId)!
+
+    moveTo.classList.remove(`figure__empty`)
+    moveTo.classList.add(`figure__${move.currentName}`)
+
+    let moveFrom: HTMLElement = document.getElementById(idBefore)!
+
+    moveFrom.classList.remove(`figure__${move.currentName}`)
+    moveFrom.classList.add(`figure__empty`)
+
+    let capturedPawn: HTMLElement = document.getElementById(move.nameBefore)!
+
+    capturedPawn.classList.remove(`figure__${color}-Pawn`)
+    capturedPawn.classList.add(`figure__empty`)
 }

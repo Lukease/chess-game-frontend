@@ -26,8 +26,14 @@ export class PromotePawn extends React.Component<any, any> {
         let pawnId: string = oldId
         let figureColor: string = 'white'
         const currentFieldImg: HTMLElement = document.getElementById(newFigureId)!
-        const promotedField: Figure = localStorageChess.find(figure => figure.id === newFigureId)!
-        const oldFigureName: string = promotedField.name
+        const promotedField: Figure = localStorageChess.find(figure => figure.id === id)!
+        let oldFigureName: string
+
+        if (!promotedField){
+            oldFigureName = 'empty'
+        } else {
+            oldFigureName = promotedField.name
+        }
 
         if (id.includes('1')){
             pawnId = `${newId}2`
