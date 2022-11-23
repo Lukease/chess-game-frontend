@@ -97,7 +97,6 @@ const moveChess = (event: any) => {
 
         if (currentFieldImg.classList.contains(`field__e-p`)) {
             addArrayToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
-            // addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
             enPassantMakeMove(colorOfFigure, currentFieldImg.id, movedFigureId)
         }
 
