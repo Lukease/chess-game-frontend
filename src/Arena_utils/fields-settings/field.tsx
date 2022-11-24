@@ -12,7 +12,10 @@ import {
 import {
     getItemFromLocalStorage,
     removeChessFromLocalStorage,
-    getColorFromLocalStorage, setSpecialMoveToLocalStorage, getSpecialMoveFromLocalStorage
+    getColorFromLocalStorage,
+    setSpecialMoveToLocalStorage,
+    getSpecialMoveFromLocalStorage,
+    setCorrectMovesOfOpponentToLocalStorage
 } from '../data-base'
 import {addMoveToHistory} from '../history'
 import {showNewFigureForPlayer} from '../game'
@@ -144,7 +147,9 @@ export function Field(props: any) {
 
         if (!trashIconChosen.classList.contains('navigation__trash--chosen')) {
             if (target.className.includes(`figure__${color}`)) {
-                kingCheck()
+                const opponentMovesIdsArray: Array<string> = kingCheck()
+
+                setCorrectMovesOfOpponentToLocalStorage(opponentMovesIdsArray)
                 setIsChosen(!isChosen)
                 selectChess(id, event)
 

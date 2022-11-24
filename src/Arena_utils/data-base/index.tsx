@@ -17,3 +17,8 @@ export {
     setSpecialMoveToLocalStorage
 }
     from './special-move'
+export {
+    getCorrectMovesOfOpponentFromLocalStorage,
+    setCorrectMovesOfOpponentToLocalStorage
+}
+    from './correct-moves-of-opponent'
