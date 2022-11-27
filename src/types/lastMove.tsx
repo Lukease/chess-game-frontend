@@ -6,4 +6,5 @@ export type LastMove = {
     idInArray: number
     isCheck: boolean
     specialMove: string
+    color: string
 }

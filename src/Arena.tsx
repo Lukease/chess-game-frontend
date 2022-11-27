@@ -13,11 +13,16 @@ import {
     hideShowFigures
 } from './Arena_utils/new-figure'
 import {GameNavigation} from './Arena_utils/start-game'
-import {setArrayToLocalStorage, setCorrectMovesOfOpponentToLocalStorage} from './Arena_utils/data-base'
+import {
+    setArrayToLocalStorage,
+    setCorrectMovesOfOpponentToLocalStorage
+} from './Arena_utils/data-base'
 import {defaultChessArrangement} from './chess_arrangement/default-chess-arrangement'
 import {setCurrentColorToLocalStorage} from './Arena_utils/data-base'
 import {HistoryOfMoves} from './Arena_utils/history'
-import {getAllMoves, kingCheck, PromotePawn} from './Arena_utils/game'
+import {
+    PromotePawn
+} from './Arena_utils/game'
 import {setCheckToLocalStorage} from './Arena_utils/data-base/check'
 import {setSpecialMoveToLocalStorage} from './Arena_utils/data-base'
 
@@ -59,7 +64,7 @@ class Board extends React.Component<any, any> {
 
             return (
                 <Field
-                    value={(id + index) % 2 ? 'white' : 'black'}
+                    value={(id + index) % 2 ? 'black' : 'white'}
                     key={index}
                     id={columnLetter + (index + 1)}
                 />
@@ -118,6 +123,13 @@ class Board extends React.Component<any, any> {
 }
 
 export class Arena extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props)
+
+        this.setDefaultChessPosition = this.setDefaultChessPosition.bind(this)
+    }
+
+
     setDefaultChessPosition() {
         window.location.reload()
         localStorage.clear()
@@ -131,8 +143,7 @@ export class Arena extends React.Component<any, any> {
 
         setCheckToLocalStorage(check)
         setSpecialMoveToLocalStorage('')
-
-        const opponentMovesIdsArray: Array<string> = Array.from(getAllMoves())
+        const opponentMovesIdsArray: Array<string> = ['A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5']
 
         setCorrectMovesOfOpponentToLocalStorage(opponentMovesIdsArray)
     }

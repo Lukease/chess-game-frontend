@@ -1,14 +1,14 @@
-import {Figure} from '../../types'
 import {findOneGreaterId} from './en-passant-add-correct-move'
 import {
     getItemFromLocalStorage,
     setArrayToLocalStorage, setSpecialMoveToLocalStorage
 } from '../data-base'
 import {addMoveToHistory} from '../history'
+import {Piece} from '../chess-possible-move'
 
 export const enPassantMakeMove = (color:string, id: string, idBefore: string) => {
     let plusOrMinusOne: number = -1
-    let gameArrangement: Array<Figure> = getItemFromLocalStorage()
+    let gameArrangement: Array<Piece> = getItemFromLocalStorage()
 
     setSpecialMoveToLocalStorage('e.p.')
 
@@ -26,5 +26,5 @@ export const enPassantMakeMove = (color:string, id: string, idBefore: string) =>
     deletedPawnByEP.classList.add('figure')
     deletedPawnByEP.classList.add('figure__empty')
     setArrayToLocalStorage(gameArrangement)
-    addMoveToHistory(`${color}-Pawn`,newId,idBefore,id)
+    addMoveToHistory(`${color}-Pawn`,newId,idBefore,id, color)
 }

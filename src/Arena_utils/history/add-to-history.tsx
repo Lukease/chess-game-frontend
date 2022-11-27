@@ -14,7 +14,7 @@ import {
 import {getCheckFromLocalStorage} from '../data-base/check'
 import {MoveType} from '../../types'
 
-export const addMoveToHistory = (figureName: string, nameBefore: string, id: string, currentId: string) => {
+export const addMoveToHistory = (figureName: string, nameBefore: string, id: string, currentId: string, color: string) => {
     const move = document.querySelectorAll('.history__container')!
     let historyOfMoves: Array<LastMove> = []
     let localStorageHistory: Array<LastMove> = getHistoryFromLocalStorage()
@@ -30,7 +30,7 @@ export const addMoveToHistory = (figureName: string, nameBefore: string, id: str
             element.remove()
         })
 
-        historyOfMoves = historyOfMoves.concat(createNewHistoryMove(figureName, currentId, nameBefore, id, historyOfMoves.length, check, specialMove))
+        historyOfMoves = historyOfMoves.concat(createNewHistoryMove(figureName, currentId, nameBefore, id, historyOfMoves.length, check, specialMove, color))
         setHistoryOfMovesToLocalStorage(historyOfMoves)
     }
     renderHistoryFromLocalStorage(historyOfMoves)
@@ -42,7 +42,7 @@ export const renderHistoryFromLocalStorage = (localStorageHistory: Array<LastMov
         const historyNav: Element = document.querySelector('.history__nav')!
 
         localStorageHistory.forEach((move, index) => {
-            const nameOfFigure: string = move.currentName
+            const figureColor: string = move.color
             const currentId: string = move.currentId
             const iconHistoryType: string = iconType(move)
             const take: string = isTake(move).toLowerCase()
@@ -54,7 +54,7 @@ export const renderHistoryFromLocalStorage = (localStorageHistory: Array<LastMov
                 isTake: take
             }
 
-            if (nameOfFigure.includes('white')) {
+            if (figureColor.includes('white')) {
                 whiteFigure(historyNav, index, currentId, moveType,specialMove)
             } else {
                 blackFigure(currentId, index, moveType,specialMove)
@@ -101,7 +101,7 @@ const createContainerHistory = (container: HTMLDivElement, currentId: string, in
     showHistoryMove(container)
 }
 
-const createNewHistoryMove = (figureName: string, currentId: string, nameBefore: string, id: string, arrayLength: number, check: boolean, specialMove: string) => {
+const createNewHistoryMove = (figureName: string, currentId: string, nameBefore: string, id: string, arrayLength: number, check: boolean, specialMove: string, figureColor: string) => {
     return ({
         currentName: figureName,
         currentId: currentId,
@@ -109,6 +109,7 @@ const createNewHistoryMove = (figureName: string, currentId: string, nameBefore:
         idBefore: id,
         idInArray: arrayLength,
         isCheck: check,
-        specialMove: specialMove
+        specialMove: specialMove,
+        color: figureColor
     })
 }

@@ -3,72 +3,71 @@ import {
     removeChessFromLocalStorage,
     setArrayToLocalStorage, setSpecialMoveToLocalStorage
 } from '../data-base'
-import {Figure} from '../../types'
 import {removeKingAndAddCastleToHistory} from '../history'
+import {Piece, Rook} from '../chess-possible-move'
 
 
 export const castleKing = (currentFieldId: string) => {
     const color: string = getColorFromLocalStorage()
     const king: string = 'King'
-    const rook: string= 'Rook'
-    let oldKingId: string = 'D8'
+    const rook: string = 'Rook'
+    let oldKingId: string = 'E8'
+    let specialMove: string = 'OO'
+    let columnNumber: number = 3
+    let fieldNumber: number = 8
+    let oldRookId: string = 'A8'
+    let newRookId: string = 'D8'
 
     if (color === 'black') {
-        if (currentFieldId === 'B8') {
-            const oldRookId: string = 'A8'
-            const newRookId: string = 'C8'
-
-            removeAndAddRookCastled(oldRookId, newRookId, color, 3, 8)
-            changeRookPosition(oldRookId, newRookId , color)
-            setSpecialMoveToLocalStorage('OO')
-            removeKingAndAddCastleToHistory(`${color}-${king}`,`${color}-${rook}`, `${oldKingId}-${currentFieldId}`, `${oldRookId}-${newRookId}`)
+        if (currentFieldId === 'C8') {
+            oldRookId = 'A8'
+            newRookId = 'D8'
+            specialMove = 'OOO'
+            columnNumber = 4
+            fieldNumber = 8
         }
 
-        if (currentFieldId === 'F8') {
-            const oldRookId: string = 'H8'
-            const newRookId: string = 'E8'
-
-            removeAndAddRookCastled(oldRookId, newRookId, color, 5, 8)
-            changeRookPosition(oldRookId, newRookId , color)
-            setSpecialMoveToLocalStorage('OOO')
-            removeKingAndAddCastleToHistory(`${color}-${king}`,`${color}-${rook}`, `${oldKingId}-${currentFieldId}`, `${oldRookId}-${newRookId}`)
+        if (currentFieldId === 'G8') {
+            oldRookId = 'H8'
+            newRookId = 'F8'
+            specialMove = 'OO'
+            columnNumber = 6
+            fieldNumber = 8
         }
     }
 
     if (color === 'white') {
-        oldKingId = 'D1'
+        oldKingId = 'E1'
 
-        if (currentFieldId === 'B1') {
-            const oldRookId: string = 'A1'
-            const newRookId: string = 'C1'
-
-            removeAndAddRookCastled(oldRookId, newRookId, color, 3, 1)
-            changeRookPosition(oldRookId, newRookId , color)
-            setSpecialMoveToLocalStorage('OO')
-            removeKingAndAddCastleToHistory(`${color}-${king}`,`${color}-${rook}`, `${oldKingId}-${currentFieldId}`, `${oldRookId}-${newRookId}`)
+        if (currentFieldId === 'C1') {
+            oldRookId = 'A1'
+            newRookId = 'D1'
+            specialMove = 'OOO'
+            columnNumber = 4
+            fieldNumber = 1
         }
 
-        if (currentFieldId === 'F1') {
-            const oldRookId: string = 'H1'
-            const newRookId: string = 'E1'
-
-            removeAndAddRookCastled(oldRookId, newRookId, color, 5, 1)
-            changeRookPosition(oldRookId, newRookId , color)
-            setSpecialMoveToLocalStorage('OOO')
-            removeKingAndAddCastleToHistory(`${color}-${king}`,`${color}-${rook}`, `${oldKingId}-${currentFieldId}`, `${oldRookId}-${newRookId}`)
+        if (currentFieldId === 'G1') {
+            oldRookId = 'H1'
+            newRookId = 'F1'
+            specialMove = 'OO'
+            columnNumber = 6
+            fieldNumber = 1
         }
+    }
+
+    if (currentFieldId === 'C8'|| currentFieldId === 'G8'||currentFieldId === 'C1'||currentFieldId === 'G1') {
+        removeAndAddRookCastled(oldRookId, newRookId, color, columnNumber, fieldNumber)
+        changeRookPosition(oldRookId, newRookId, color)
+        setSpecialMoveToLocalStorage(specialMove)
+        removeKingAndAddCastleToHistory(`${color}-${king}`, `${color}-${rook}`, `${oldKingId}-${currentFieldId}`, `${oldRookId}-${newRookId}`, color)
     }
 }
 
 const removeAndAddRookCastled = (deleteId: string, newId: string, color: string, columnNumber: number, fieldNumber: number) => {
-    let newChessArray:Array<Figure> = removeChessFromLocalStorage(deleteId)
+    let newChessArray: Array<Piece> = removeChessFromLocalStorage(deleteId)
 
-    const newRook: Figure = {
-        id: newId,
-        name: `${color}-Rook`,
-        position: [columnNumber, fieldNumber],
-        color: color
-    }
+    const newRook: Piece = new Rook(color,newId,[columnNumber, fieldNumber],'Rook')
 
     newChessArray = newChessArray.concat(newRook)
     setArrayToLocalStorage(newChessArray)

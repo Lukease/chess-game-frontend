@@ -1,6 +1,6 @@
-import {Figure} from '../../types'
+import {Piece} from '../chess-possible-move'
 
-export const setArrayToLocalStorage = (chess: Array<Figure>) => {
+export const setArrayToLocalStorage = (chess: Array<Piece>) => {
     localStorage.setItem('chess', JSON.stringify(chess))
 }
 
@@ -10,8 +10,8 @@ export const getItemFromLocalStorage = () => {
 }
 
 export const removeChessFromLocalStorage = (deletedFigureId: string) => {
-    const localStorageChess: Array<Figure> = getItemFromLocalStorage()
-    let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== deletedFigureId)
+    const localStorageChess: Array<Piece> = getItemFromLocalStorage()
+    let gameArrangement: Array<Piece> = localStorageChess.filter(chess => chess.id !== deletedFigureId)
 
     setArrayToLocalStorage(gameArrangement)
 

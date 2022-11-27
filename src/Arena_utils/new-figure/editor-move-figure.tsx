@@ -1,9 +1,10 @@
-import {Figure} from '../../types'
 import {
     getItemFromLocalStorage,
     removeChessFromLocalStorage,
     setArrayToLocalStorage
 } from '../data-base'
+import {Piece} from '../chess-possible-move'
+import {addPiece} from './add-figure'
 
 let nameOfFigure: string
 let isMoving = false
@@ -12,8 +13,8 @@ let previousFigure: any
 
 export const editorGetFigure = (event: any) => {
     const [figureClass,] = event.target.classList
-    const color = document.getElementById('color')!.innerHTML
-    const trashIconChosen = document.querySelector('.navigation__trash')!
+    const color: string = document.getElementById('color')!.innerHTML
+    const trashIconChosen: Element = document.querySelector('.navigation__trash')!
 
     previousFigure = event.target
     if (figureClass === 'figure' && color === 'black/white' && !trashIconChosen.classList.contains('navigation__trash--chosen')) {
@@ -53,11 +54,11 @@ export const editorAddNewFigure = (event: any) => {
     if (isMoving) {
         isMoving = false
 
-        const color = document.querySelector('.game__color')!.innerHTML
-        const trashIconChosen = document.querySelector('.navigation__trash')!
+        const color: string = document.querySelector('.game__color')!.innerHTML
+        const trashIconChosen: Element = document.querySelector('.navigation__trash')!
         let x: number = event.clientX
         let y: number = event.clientY
-        const mouseUpTarget = document.elementsFromPoint(x, y)
+        const mouseUpTarget: Array<Element> = document.elementsFromPoint(x, y)
         const isEmptyFigure = mouseUpTarget.reduce((acc, item) => {
             if (item.classList.value === 'figure figure__empty') {
                 return true
@@ -81,17 +82,14 @@ export const editorAddNewFigure = (event: any) => {
                     figure = ''
                     previousFigure = ''
 
-                    const name: string = secondClass.split('__')[1]
-                    const figureColor: string = name.split('-')[0]
+                    const figureClass: string = secondClass.split('__')[1]
+                    const figureColor: string = figureClass.split('-')[0]
+                    const figureName: string = figureClass.split('-')[1]
                     const columnNumber: number = (element.id.charAt(0)).charCodeAt(0) - 64
                     const fieldNumber: number = parseInt(element.id.charAt(1))
-                    const localStorageChess: Array<Figure> = getItemFromLocalStorage()
-                    let gameArrangement: Array<Figure> = localStorageChess.concat({
-                        id: element.id,
-                        name: name,
-                        position: [columnNumber, fieldNumber],
-                        color: figureColor
-                    })
+                    const newFigure: Piece = addPiece(figureName,columnNumber,fieldNumber,figureColor,element.id)!
+                    const localStorageChess: Array<Piece> = getItemFromLocalStorage()
+                    const gameArrangement: Array<Piece> = localStorageChess.concat(newFigure)
 
                     setArrayToLocalStorage(gameArrangement)
                 }

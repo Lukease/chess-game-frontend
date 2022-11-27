@@ -1,5 +1,18 @@
 import {getAllPossibleMoves, getCorrectMoves} from '../possible-moves-utils'
 import {getCorrectIdsOfPawn} from './possible-move-utils'
+import {Move} from './move'
+import {Piece} from './piece'
+
+export class Pawn extends Piece {
+    getAllPossibleMoves(): Move[] {
+        let pawn: Move = new Move(false, 'A1')
+        return [pawn]
+    }
+
+    getImageUrl(): string {
+        return `${this.color}-Pawn`
+    }
+}
 
 export const correctMovesOfPawn = (columnNumber: number, fieldNumber: number, color: string) => {
     const moveOfBlackPawn: Array<number> = [0, -1]

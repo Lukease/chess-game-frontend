@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import '../../Arena.css'
 import {Figure} from '../../types'
 import {checkPossibleMoves} from '../possible-moves-utils'
@@ -28,9 +28,9 @@ import {
     enPassantMakeMove,
 } from '../en-passant'
 import {
-    fillField,
-    addArrayToDataBase
+    addArrayToDataBase, fillField
 } from './fields-utils'
+import {Piece} from '../chess-possible-move'
 
 let nameOfFigure: string
 let colorOfFigure: string
@@ -51,9 +51,8 @@ const selectChess = (id: string, event: any) => {
 
     const localStorageChess: Array<Figure> = getItemFromLocalStorage()
     const figureInArray: Figure = localStorageChess.find(chess => chess.id === selectedFigure.id)!
-    const figure: string = figureInArray.name
-    const figureNameAndColorSplit: Array<string> = figure.split('-')
-    const [figureColor, figureName] = figureNameAndColorSplit
+    const figureName: string = figureInArray.name
+    const figureColor: string = figureInArray.color
     const position: Array<number> = figureInArray.position
     const [columnNumber, fieldNumber] = position
     let coordinate: Array<string> = checkPossibleMoves(figureName, columnNumber, fieldNumber, figureColor)!
@@ -62,8 +61,9 @@ const selectChess = (id: string, event: any) => {
     if (enPassant) {
         coordinate = coordinate.concat(enPassant)
     }
+
     showPossibleMoves(coordinate)
-    nameOfFigure = figure
+    nameOfFigure = figureName
     colorOfFigure = figureColor
     arrayOfCorrectIds = arrayOfCorrectIds.concat(coordinate)
     coordinateOfChess = coordinateOfChess.concat(id)
@@ -78,15 +78,21 @@ const moveChess = (event: any) => {
     if (arrayOfCorrectIds.some(id => id === currentFieldImg.id) && coordinateOfChess.length !== 0) {
         removePossibleMoves(arrayOfCorrectIds)
 
-        const localStorageChess: Array<Figure> = getItemFromLocalStorage()
-        let gameArrangement: Array<Figure> = localStorageChess.filter(chess => chess.id !== selectedFigure.id)
+        const color: string = getColorFromLocalStorage()
+        let capturedFigureColor: string = 'white'
+
+        if (color === 'white'){
+            capturedFigureColor = 'black'
+        }
+        const localStorageChess: Array<Piece> = getItemFromLocalStorage()
+        let gameArrangement: Array<Piece> = localStorageChess.filter(chess => chess.id !== selectedFigure.id)
         const currentColumnNumber: number = (currentFieldImg.id.charAt(0))
             .charCodeAt(0) - 64
         const currentFieldNumber: number = parseInt(currentFieldImg.id.charAt(1))
         const currentFigureClass: string = currentFieldImg.className
             .split(' ')[1]
         const currentFigure: string = currentFigureClass.split('__')[1]
-        const figure: string = nameOfFigure.split('-')[1]
+        const figure: string = nameOfFigure
         const pawnPromotionCondition: boolean = currentFieldImg.id.includes('8') || currentFieldImg.id.includes('1')
 
         if (figure === 'King') {
@@ -108,24 +114,25 @@ const moveChess = (event: any) => {
         if (!specialMove) {
             if (currentFieldImg.classList.contains(`figure__empty`)) {
                 addArrayToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
-                addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
+                addMoveToHistory(`${colorOfFigure}-${nameOfFigure}`, currentFigure, movedFigureId, currentFieldImg.id, color)
 
             } else if (!currentFieldImg.classList.contains(`figure__empty`)) {
                 gameArrangement = gameArrangement.filter(chess => chess.id !== currentFieldImg.id)
                 addArrayToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
-                addMoveToHistory(nameOfFigure, currentFigure, movedFigureId, currentFieldImg.id)
+                addMoveToHistory(`${colorOfFigure}-${nameOfFigure}`, `${capturedFigureColor}-${currentFigure}`, movedFigureId, currentFieldImg.id, color)
             }
         }
 
         event.currentTarget.classList.add('field__chosen')
-        selectedFigure.classList.remove(`figure__${nameOfFigure}`)
+        selectedFigure.className = ''
+        selectedFigure.classList.add('figure')
         selectedFigure.classList.add('figure__empty')
 
         arrayOfSelectedFigures = arrayOfSelectedFigures.concat(event.currentTarget)
 
         currentFieldImg.className = ''
         currentFieldImg.classList.add('figure')
-        currentFieldImg.classList.add(`figure__${nameOfFigure}`)
+        currentFieldImg.classList.add(`figure__${color}-${nameOfFigure}`)
         coordinateOfChess = []
         arrayOfCorrectIds = []
 
@@ -138,19 +145,28 @@ const moveChess = (event: any) => {
     return
 }
 
-export function Field(props: any) {
-    const [isChosen, setIsChosen] = useState(false)
-    const game = (id: string, event: any) => {
+export class Field extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props)
+        this.state = {isChosen: false}
+    }
+
+
+    game = (id: string, event: any) => {
+
         const color: string = getColorFromLocalStorage()
         const trashIconChosen: Element = document.querySelector('.navigation__trash')!
         const target = event.target
 
         if (!trashIconChosen.classList.contains('navigation__trash--chosen')) {
             if (target.className.includes(`figure__${color}`)) {
+                this.setState((state: { isChosen: boolean }) => ({
+                    isChosen: !state.isChosen
+                }))
+
                 const opponentMovesIdsArray: Array<string> = kingCheck()
 
                 setCorrectMovesOfOpponentToLocalStorage(opponentMovesIdsArray)
-                setIsChosen(!isChosen)
                 selectChess(id, event)
 
             } else {
@@ -161,26 +177,29 @@ export function Field(props: any) {
             target.classList.add('figure')
             target.classList.add('figure__empty')
 
-            removeChessFromLocalStorage(props.id)
+            removeChessFromLocalStorage(this.props.id)
         }
     }
 
-    return (
-        <div
-            className={isChosen ? `field  field__${props.value} field__chosen` : `field  field__${props.value}`}
-            onClick={event => {
-                game(props.id, event)
-            }}
-        >
-            <img
-                className={`figure ${fillField(JSON.parse(localStorage.getItem('chess')!), props.id)}`}
-                id={props.id}
-                alt={''}
-                // onMouseDown={event => moveFigure(event,props.className,props.id)}
-                // onMouseMove={event => mouseMoveFigure(event)}
-                // onMouseUp={event => moveChess(event)}
+    render() {
+        return (
+            <div
+                className={this.state.isChosen ? `field  field__${this.props.value} field__chosen` : `field  field__${this.props.value}`}
+                onClick={event => {
+                    this.game(this.props.id, event)
+                }}
             >
-            </img>
-        </div>
-    )
+                <img
+                    className={`figure ${fillField(JSON.parse(localStorage.getItem('chess')!), this.props.id)}`}
+                    id={this.props.id}
+                    alt={''}
+
+                    // onMouseDown={event => moveFigure(event,props.className,props.id)}
+                    // onMouseMove={event => mouseMoveFigure(event)}
+                    // onMouseUp={event => moveChess(event)}
+                >
+                </img>
+            </div>
+        )
+    }
 }

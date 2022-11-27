@@ -7,6 +7,19 @@ import {
 } from '../data-base'
 import {Figure, LastMove} from '../../types'
 import {getCheckFromLocalStorage} from '../data-base/check'
+import {Move} from './move'
+import {Piece} from './piece'
+
+export class King extends Piece {
+    getAllPossibleMoves(): Move[] {
+        let king: Move = new Move(false, 'A1')
+        return [king]
+    }
+
+    getImageUrl(): string {
+        return `${this.color}-King`
+    }
+}
 
 export const correctMovesOfKing = (columnNumber: number, fieldNumber: number, color: string) => {
     let smallCastleId: string = ''
@@ -40,15 +53,15 @@ export const correctMovesOfKing = (columnNumber: number, fieldNumber: number, co
 const smallCastle = (color: string, opponentMovesIds: Array<string>) => {
     const history: Array<LastMove> = getHistoryFromLocalStorage()
     const chessArrangement: Array<Figure> = getItemFromLocalStorage()
-    let rookId: string = 'A1'
-    let bishopId: string = 'C1'
-    let knightId: string = 'B1'
+    let rookId: string = 'H1'
+    let bishopId: string = 'F1'
+    let knightId: string = 'G1'
     let fieldNumber: string = '1'
 
         if (color === 'black') {
-            rookId = 'A8'
-            bishopId = 'C8'
-            knightId = 'B8'
+            rookId = 'H8'
+            bishopId = 'F8'
+            knightId = 'G8'
             fieldNumber = '8'
         }
 
@@ -56,7 +69,7 @@ const smallCastle = (color: string, opponentMovesIds: Array<string>) => {
         const correctPositions = checkCorrectPositionsForCastle(history, chessArrangement, color, rookId, bishopId, knightId)
 
         if (!correctPositions.find(isFalse => isFalse !== undefined)) {
-            return `B${fieldNumber}`
+            return `G${fieldNumber}`
         }
         return ''
     // }
@@ -66,17 +79,17 @@ const smallCastle = (color: string, opponentMovesIds: Array<string>) => {
 const bigCastle = (color: string, opponentMovesIds: Array<string>) => {
     const history: Array<LastMove> = getHistoryFromLocalStorage()
     const chessArrangement: Array<Figure> = getItemFromLocalStorage()
-    let rookId: string = 'H1'
-    let queenId: string = 'E1'
-    let bishopId: string = 'F1'
-    let knightId: string = 'G1'
+    let rookId: string = 'A1'
+    let queenId: string = 'D1'
+    let bishopId: string = 'C1'
+    let knightId: string = 'B1'
     let fieldNumber: string = '1'
 
     if (color === 'black') {
-        rookId = 'H8'
-        queenId = 'E8'
-        bishopId = 'F8'
-        knightId = 'G8'
+        rookId = 'A8'
+        queenId = 'D8'
+        bishopId = 'C8'
+        knightId = 'B8'
         fieldNumber = '8'
     }
 
@@ -85,7 +98,7 @@ const bigCastle = (color: string, opponentMovesIds: Array<string>) => {
         const queen = chessArrangement.find(chess => chess.id === queenId)
 
         if (!correctPositions.find(isFalse => isFalse !== undefined) && !queen) {
-            return `F${fieldNumber}`
+            return `C${fieldNumber}`
         }
         return ''
     // }

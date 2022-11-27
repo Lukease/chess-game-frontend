@@ -3,8 +3,9 @@ import {
     getItemFromLocalStorage,
     setArrayToLocalStorage,
 } from '../data-base'
-import {Figure} from '../../types'
 import {addMoveToHistory} from '../history'
+import {Piece} from '../chess-possible-move'
+import {addPiece} from '../new-figure/add-figure'
 
 let figureId: string
 let oldId: string
@@ -21,43 +22,38 @@ export class PromotePawn extends React.Component<any, any> {
 
         selectFigureContainer.setAttribute('style', 'display: none')
 
-        let localStorageChess: Array<Figure> = getItemFromLocalStorage()
+        let localStorageChess: Array<Piece> = getItemFromLocalStorage()
         const newId: number = figureId.charAt(0).charCodeAt(0) - 64
         let figureColor: string = 'white'
         const currentFieldImg: HTMLElement = document.getElementById(figureId)!
-        let promotedField: Figure = localStorageChess.find(figure => figure.id === figureId)!
+        let promotedField: Piece = localStorageChess.find(figure => figure.id === figureId)!
         let oldFigureName: string = 'empty'
         let fieldNumber: number = 8
 
         if (promotedField) {
-            oldFigureName = promotedField.name
-
+            oldFigureName = `${promotedField.color}-${promotedField.name}`
         }
+
+        const figure = event.target.title
 
         if (figureId.includes('1')) {
             figureColor = 'black'
             fieldNumber = 1
         }
 
-        const selectedFigure: string = `${figureColor}-${event.target.title}`.replace(' ', '')
+        const selectedFigure: string = `${figureColor}-${figure}`.replace(' ', '')
 
         localStorageChess = localStorageChess.filter(figure => figure.id !== oldId)!
         localStorageChess = localStorageChess.filter(figure => figure.id !== figureId)!
 
-        const addFigure: Figure = ({
-            id: figureId,
-            name: selectedFigure,
-            position: [newId, fieldNumber],
-            color: figureColor
-        })
+        const addFigure: Piece = addPiece(figure,newId,fieldNumber,figureColor,figureId)!
 
         localStorageChess = localStorageChess.concat(addFigure)
-
         currentFieldImg.className = ''
         currentFieldImg.classList.add('figure')
         currentFieldImg.classList.add(`figure__${selectedFigure}`)
 
-        addMoveToHistory(selectedFigure, oldFigureName, oldId, figureId)
+        addMoveToHistory(selectedFigure, oldFigureName, oldId, figureId, figureColor)
         setArrayToLocalStorage(localStorageChess)
     }
 
