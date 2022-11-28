@@ -28,7 +28,7 @@ import {
     enPassantMakeMove,
 } from '../en-passant'
 import {
-    addArrayToDataBase, fillField
+    addPieceToDataBase, fillField
 } from './fields-utils'
 import {Piece} from '../chess-possible-move'
 
@@ -81,7 +81,7 @@ const moveChess = (event: any) => {
         const color: string = getColorFromLocalStorage()
         let capturedFigureColor: string = 'white'
 
-        if (color === 'white'){
+        if (color === 'white') {
             capturedFigureColor = 'black'
         }
         const localStorageChess: Array<Piece> = getItemFromLocalStorage()
@@ -105,7 +105,7 @@ const moveChess = (event: any) => {
         }
 
         if (currentFieldImg.classList.contains(`field__e-p`)) {
-            addArrayToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
+            addPieceToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
             enPassantMakeMove(colorOfFigure, currentFieldImg.id, movedFigureId)
         }
 
@@ -113,12 +113,12 @@ const moveChess = (event: any) => {
 
         if (!specialMove) {
             if (currentFieldImg.classList.contains(`figure__empty`)) {
-                addArrayToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
+                addPieceToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
                 addMoveToHistory(`${colorOfFigure}-${nameOfFigure}`, currentFigure, movedFigureId, currentFieldImg.id, color)
 
             } else if (!currentFieldImg.classList.contains(`figure__empty`)) {
                 gameArrangement = gameArrangement.filter(chess => chess.id !== currentFieldImg.id)
-                addArrayToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
+                addPieceToDataBase(gameArrangement, currentFieldImg, nameOfFigure, currentColumnNumber, currentFieldNumber, colorOfFigure)
                 addMoveToHistory(`${colorOfFigure}-${nameOfFigure}`, `${capturedFigureColor}-${currentFigure}`, movedFigureId, currentFieldImg.id, color)
             }
         }
@@ -146,14 +146,26 @@ const moveChess = (event: any) => {
 }
 
 export class Field extends React.Component<any, any> {
-    constructor(props: any) {
+    private rawNumber: number
+    private id: string
+    private columnNumber: number
+    private color: string
+    private piece: Piece
+
+    constructor(props: any, id: string, columnNumber: number, rawNumber: number, piece: Piece) {
         super(props)
+
+        this.id = id
+        this.columnNumber = columnNumber
+        this.rawNumber = rawNumber
+        this.color = (columnNumber + rawNumber) % 2 ? 'black' : 'white'
+        this.piece = piece
         this.state = {isChosen: false}
+        this.state = {isMoving: false}
     }
 
 
     game = (id: string, event: any) => {
-
         const color: string = getColorFromLocalStorage()
         const trashIconChosen: Element = document.querySelector('.navigation__trash')!
         const target = event.target
@@ -170,6 +182,9 @@ export class Field extends React.Component<any, any> {
                 selectChess(id, event)
 
             } else {
+                this.setState((state: { isMoving: boolean }) => ({
+                    isChosen: !state.isMoving
+                }))
                 moveChess(event)
             }
         } else if (trashIconChosen.classList.contains('navigation__trash--chosen') && target.className.includes('figure') && !target.classList.value.includes('King')) {
@@ -190,7 +205,7 @@ export class Field extends React.Component<any, any> {
                 }}
             >
                 <img
-                    className={`figure ${fillField(JSON.parse(localStorage.getItem('chess')!), this.props.id)}`}
+                    className={`figure ${fillField(getItemFromLocalStorage(), this.props.id)}`}
                     id={this.props.id}
                     alt={''}
 

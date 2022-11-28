@@ -25,8 +25,20 @@ import {
 } from './Arena_utils/game'
 import {setCheckToLocalStorage} from './Arena_utils/data-base/check'
 import {setSpecialMoveToLocalStorage} from './Arena_utils/data-base'
+import {Piece} from './Arena_utils/chess-possible-move'
 
 class Board extends React.Component<any, any> {
+    private pieces: Array<Piece>
+
+    constructor(props: any, pieces: Array<Piece>) {
+        super(props)
+
+        this.pieces = defaultChessArrangement
+    }
+
+    getPieceById(id: string) {
+        return this.pieces.find(piece => piece.id === id)
+    }
 
     renderLetters() {
         const alpha: Array<number> = Array.from(Array(8)).map((e, i) => i + 65)
@@ -59,19 +71,25 @@ class Board extends React.Component<any, any> {
         return arrayOfNumbers
     }
 
-    renderColumn(id: number, columnNumber: number, columnLetter: string) {
-        const fieldArray: Array<JSX.Element> = Array(8).fill('').map((name, index) => {
+    renderAllColumns() {
+        let output: string = ''
 
-            return (
-                <Field
-                    value={(id + index) % 2 ? 'black' : 'white'}
-                    key={index}
-                    id={columnLetter + (index + 1)}
+        for (let i = 1; i < 9; i++) {
+            const letter: string = String.fromCharCode(64 + i)
+
+            output += "<div className=/'field__column/'>"
+            for (let y = 1; y < 9; y++) {
+               output +=<Field
+                    rowNumber={y}
+                    id={`${letter}${y}`}
+                    columnNumber={y}
+                    piece={this.getPieceById(`${letter}${y}`)}
                 />
-            )
-        })
+            }
+            output+= "</div>"
+        }
 
-        return fieldArray
+        return output
     }
 
     render() {
@@ -86,28 +104,7 @@ class Board extends React.Component<any, any> {
                     </div>
                     <div className={'arena__chess'}>
                         <div className='field__column'>
-                            {this.renderColumn(1, 1, 'A')}
-                        </div>
-                        <div className='field__column'>
-                            {this.renderColumn(2, 2, 'B')}
-                        </div>
-                        <div className='field__column'>
-                            {this.renderColumn(1, 3, 'C')}
-                        </div>
-                        <div className='field__column'>
-                            {this.renderColumn(2, 4, 'D')}
-                        </div>
-                        <div className='field__column'>
-                            {this.renderColumn(1, 5, 'E')}
-                        </div>
-                        <div className='field__column'>
-                            {this.renderColumn(2, 6, 'F')}
-                        </div>
-                        <div className='field__column'>
-                            {this.renderColumn(1, 7, 'G')}
-                        </div>
-                        <div className='field__column'>
-                            {this.renderColumn(2, 8, 'H')}
+                            {this.renderAllColumns()}
                         </div>
                     </div>
                     <div className={'arena__numbers'}>
@@ -123,6 +120,7 @@ class Board extends React.Component<any, any> {
 }
 
 export class Arena extends React.Component<any, any> {
+
     constructor(props: any) {
         super(props)
 

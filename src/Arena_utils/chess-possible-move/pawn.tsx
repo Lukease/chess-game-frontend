@@ -2,8 +2,14 @@ import {getAllPossibleMoves, getCorrectMoves} from '../possible-moves-utils'
 import {getCorrectIdsOfPawn} from './possible-move-utils'
 import {Move} from './move'
 import {Piece} from './piece'
+import {MovingStrategies} from '../suppliers/moving-strategy-service'
 
 export class Pawn extends Piece {
+
+    constructor(color: string, id: string, position: Array<number>, name: string) {
+        super(color, id, position, name,[MovingStrategies.pawnMoving])
+    }
+
     getAllPossibleMoves(): Move[] {
         let pawn: Move = new Move(false, 'A1')
         return [pawn]

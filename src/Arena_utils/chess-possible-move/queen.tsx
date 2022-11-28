@@ -1,10 +1,12 @@
-import {correctMovesOfRook} from './rook'
-import {correctMovesOfBishop} from './bishop'
 import {Move} from './move'
 import {Piece} from './piece'
+import {MovingStrategies} from '../suppliers/moving-strategy-service'
 
 
 export class Queen extends Piece {
+  constructor(color: string, id: string, position: Array<number>, name: string) {
+    super(color, id, position, name,[MovingStrategies.diagonalMoving,MovingStrategies.lineMoving])
+  }
   getAllPossibleMoves(): Move[] {
     let queen: Move = new Move(false, 'A1')
     return [queen]
@@ -13,8 +15,4 @@ export class Queen extends Piece {
   getImageUrl(): string {
     return `${this.color}-Queen`
   }
-}
-
-export const correctMovesOfQueen = (columnNumber: number, fieldNumber: number, color: string) => {
-  return [...correctMovesOfRook(columnNumber,fieldNumber,color), ...correctMovesOfBishop(columnNumber,fieldNumber,color)]
 }

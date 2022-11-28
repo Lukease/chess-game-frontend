@@ -1,8 +1,13 @@
 import { getAllPossibleMoves, getCorrectMoves } from '../possible-moves-utils'
 import {Move} from './move'
 import {Piece} from './piece'
+import {MovingStrategies} from '../suppliers/moving-strategy-service'
 
 export class Knight extends Piece {
+    constructor(color: string, id: string, position: Array<number>, name: string) {
+        super(color, id, position, name,[MovingStrategies.knightMoving])
+    }
+
     getAllPossibleMoves(): Move[] {
         let knight: Move = new Move(false, 'A1')
         return [knight]

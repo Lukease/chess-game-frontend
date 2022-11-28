@@ -2,8 +2,12 @@ import {getAllPossibleMoves} from '../possible-moves-utils'
 import {getCorrectIds} from './possible-move-utils'
 import {Move} from './move'
 import {Piece} from './piece'
+import {MovingStrategies} from '../suppliers/moving-strategy-service'
 
 export class Rook extends Piece {
+    constructor(color: string, id: string, position: Array<number>, name: string) {
+        super(color, id, position, name,[MovingStrategies.lineMoving])
+    }
     getAllPossibleMoves(): Move[] {
         let rook: Move = new Move(false, 'A1')
         return [rook]
