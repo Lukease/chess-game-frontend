@@ -6,8 +6,8 @@ import {MovingStrategies} from '../suppliers/moving-strategy-service'
 
 export class Pawn extends Piece {
 
-    constructor(color: string, id: string, position: Array<number>, name: string) {
-        super(color, id, position, name,[MovingStrategies.pawnMoving])
+    constructor(color: string, id: string, name: string) {
+        super(color, id, name, [MovingStrategies.pawnMoving])
     }
 
     getAllPossibleMoves(): Move[] {
@@ -17,6 +17,10 @@ export class Pawn extends Piece {
 
     getImageUrl(): string {
         return `${this.color}-Pawn`
+    }
+
+    canJump(): boolean {
+        return false;
     }
 }
 

@@ -4,8 +4,8 @@ import {Piece} from './piece'
 import {MovingStrategies} from '../suppliers/moving-strategy-service'
 
 export class Knight extends Piece {
-    constructor(color: string, id: string, position: Array<number>, name: string) {
-        super(color, id, position, name,[MovingStrategies.knightMoving])
+    constructor(color: string, id: string,  name: string) {
+        super(color, id,  name,[MovingStrategies.knightMoving])
     }
 
     getAllPossibleMoves(): Move[] {
@@ -15,6 +15,10 @@ export class Knight extends Piece {
 
     getImageUrl(): string {
         return `${this.color}-Knight`
+    }
+
+    canJump(): boolean {
+        return true
     }
 }
 

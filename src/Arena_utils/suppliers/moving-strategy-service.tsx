@@ -12,6 +12,4 @@ export class MovingStrategies {
         static knightMoving = new KnightMovingStrategy()
         static kingMoving = new KingMovingStrategy()
         static pawnMoving = new PawnMovingStrategy()
-
-
 }

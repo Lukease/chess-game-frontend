@@ -5,8 +5,8 @@ import {Piece} from './piece'
 import {MovingStrategies} from '../suppliers/moving-strategy-service'
 
 export class Rook extends Piece {
-    constructor(color: string, id: string, position: Array<number>, name: string) {
-        super(color, id, position, name,[MovingStrategies.lineMoving])
+    constructor(color: string, id: string,  name: string) {
+        super(color, id,  name,[MovingStrategies.lineMoving])
     }
     getAllPossibleMoves(): Move[] {
         let rook: Move = new Move(false, 'A1')
@@ -15,6 +15,10 @@ export class Rook extends Piece {
 
     getImageUrl(): string {
         return `${this.color}-Rook`
+    }
+
+    canJump(): boolean {
+        return false;
     }
 }
 

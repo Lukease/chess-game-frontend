@@ -26,18 +26,53 @@ import {
 import {setCheckToLocalStorage} from './Arena_utils/data-base/check'
 import {setSpecialMoveToLocalStorage} from './Arena_utils/data-base'
 import {Piece} from './Arena_utils/chess-possible-move'
+import {CoordinateService} from "./Arena_utils/suppliers/coordinate-service";
+import {Coordinate} from "./Arena_utils/chess-possible-move/coordinate";
 
 class Board extends React.Component<any, any> {
     private pieces: Array<Piece>
 
-    constructor(props: any, pieces: Array<Piece>) {
+    constructor(props: any) {
         super(props)
 
         this.pieces = defaultChessArrangement
     }
 
+    getCorrectMoves(piece: Piece): Array<Coordinate> {
+
+        return piece.getAllPossibleMoves().filter(move => {
+            (this.canSee(move, piece.coordinate) || piece.canJump()) &&
+            this.isEmptyOrEnemy(move) && (this.isCheck() && this.canPreventCheck(move, piece.coordinate)) && this.dontCauseCheck()
+        })
+
+    }
+
+    dontCauseCheck(): boolean {
+        return true
+    }
+
+    isCheck(): boolean{
+        return false
+    }
+
+    canPreventCheck(coordinate1: Coordinate, coordinate2: Coordinate): boolean {
+        return false
+    }
+
+    isEmptyOrEnemy(coordinate: Coordinate): boolean {
+        return false
+    }
+
+    canSee(coordinate1: Coordinate, coordinate2: Coordinate): boolean {
+
+        return true
+    }
+
+
     getPieceById(id: string) {
-        return this.pieces.find(piece => piece.id === id)
+        const coordinate = CoordinateService.getCoordinateById(id)
+
+        return this.pieces.find(piece => piece.coordinate === coordinate)
     }
 
     renderLetters() {
@@ -79,14 +114,14 @@ class Board extends React.Component<any, any> {
 
             output += "<div className=/'field__column/'>"
             for (let y = 1; y < 9; y++) {
-               output +=<Field
+                output += <Field
                     rowNumber={y}
                     id={`${letter}${y}`}
                     columnNumber={y}
                     piece={this.getPieceById(`${letter}${y}`)}
                 />
             }
-            output+= "</div>"
+            output += "</div>"
         }
 
         return output

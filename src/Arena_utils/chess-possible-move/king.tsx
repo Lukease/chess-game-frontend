@@ -12,8 +12,11 @@ import {Piece} from './piece'
 import {MovingStrategies} from "../suppliers/moving-strategy-service";
 
 export class King extends Piece {
-    constructor(color: string, id: string, position: Array<number>, name: string) {
-        super(color, id, position, name,[MovingStrategies.kingMoving])
+    canJump(): boolean {
+        return false;
+    }
+    constructor(color: string, id: string, name: string) {
+        super(color, id, name,[MovingStrategies.kingMoving])
     }
     getAllPossibleMoves(): Move[] {
         let king: Move = new Move(false, 'A1')
