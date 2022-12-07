@@ -1,15 +1,14 @@
-import {getAllPossibleMoves} from '../possible-moves-utils'
 import {getCorrectIds} from './possible-move-utils'
-import {Move} from './move'
 import {Piece} from './piece'
 import {MovingStrategies} from '../suppliers/moving-strategy-service'
+import {Coordinate} from "./coordinate";
 
 export class Rook extends Piece {
     constructor(color: string, id: string,  name: string) {
         super(color, id,  name,[MovingStrategies.lineMoving])
     }
-    getAllPossibleMoves(): Move[] {
-        let rook: Move = new Move(false, 'A1')
+    getAllPossibleMoves(): Array<Coordinate> {
+        let rook: Coordinate = new Coordinate(1,1,'A','1')
         return [rook]
     }
 
@@ -36,10 +35,14 @@ export const correctMovesOfRook = (columnNumber: number, fieldNumber: number, co
             return [index + 1, 0]
         })
 
-    const getCorrectFieldsIdTop = getAllPossibleMoves(movesTop, columnNumber, fieldNumber)
-    const getCorrectFieldsIdBottom = getAllPossibleMoves(movesBottom, columnNumber, fieldNumber)
-    const getCorrectFieldsIdLeft = getAllPossibleMoves(movesLeft, columnNumber, fieldNumber)
-    const getCorrectFieldsIdRight = getAllPossibleMoves(movesRight, columnNumber, fieldNumber)
+    // const getCorrectFieldsIdTop = getAllPossibleMoves(movesTop, columnNumber, fieldNumber)
+    const getCorrectFieldsIdTop = ['A1']
+    // const getCorrectFieldsIdBottom = getAllPossibleMoves(movesBottom, columnNumber, fieldNumber)
+    const getCorrectFieldsIdBottom = ['A1']
+    // const getCorrectFieldsIdLeft = getAllPossibleMoves(movesLeft, columnNumber, fieldNumber)
+    const getCorrectFieldsIdLeft = ['A1']
+    // const getCorrectFieldsIdRight = getAllPossibleMoves(movesRight, columnNumber, fieldNumber)
+    const getCorrectFieldsIdRight = ['A1']
     const leftSide = getCorrectIds(getCorrectFieldsIdLeft, color)
     const rightSide = getCorrectIds(getCorrectFieldsIdRight, color)
     const topSide = getCorrectIds(getCorrectFieldsIdTop, color)

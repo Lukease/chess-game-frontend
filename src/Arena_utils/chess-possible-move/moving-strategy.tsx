@@ -1,6 +1,5 @@
-import {getAllPossibleMoves} from '../possible-moves-utils'
-import {Coordinate} from "./coordinate";
-import {CoordinateService} from "../suppliers/coordinate-service";
+import {Coordinate} from './coordinate'
+import {CoordinateService} from '../suppliers/coordinate-service'
 
 export abstract class MovingStrategy {
     abstract getAllPossibleMoves(position: Coordinate): Array<Coordinate>

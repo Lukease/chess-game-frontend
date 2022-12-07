@@ -28,14 +28,19 @@ import {setSpecialMoveToLocalStorage} from './Arena_utils/data-base'
 import {Piece} from './Arena_utils/chess-possible-move'
 import {CoordinateService} from "./Arena_utils/suppliers/coordinate-service";
 import {Coordinate} from "./Arena_utils/chess-possible-move/coordinate";
+import {GameService} from "./Arena_utils/suppliers/game-service";
 
 class Board extends React.Component<any, any> {
-    private pieces: Array<Piece>
+    pieces: Array<Piece>
+    gameService: GameService
+    allFields: Array<Field>
 
     constructor(props: any) {
         super(props)
 
         this.pieces = defaultChessArrangement
+        this.gameService = new GameService('white')
+        this.allFields = []
     }
 
     getCorrectMoves(piece: Piece): Array<Coordinate> {
@@ -51,7 +56,7 @@ class Board extends React.Component<any, any> {
         return true
     }
 
-    isCheck(): boolean{
+    isCheck(): boolean {
         return false
     }
 
@@ -72,7 +77,11 @@ class Board extends React.Component<any, any> {
     getPieceById(id: string) {
         const coordinate = CoordinateService.getCoordinateById(id)
 
-        return this.pieces.find(piece => piece.coordinate === coordinate)
+        return this.pieces.find(piece => piece.coordinate === coordinate)!
+    }
+
+    selectActive(field: Field) {
+
     }
 
     renderLetters() {
@@ -106,23 +115,40 @@ class Board extends React.Component<any, any> {
         return arrayOfNumbers
     }
 
-    renderAllColumns() {
-        let output: string = ''
+    renderAllFields(letter: string, boardColumn: number) {
+        let output: Array<JSX.Element> = Array.apply(null, Array(8)).map((x, index) => {
+            const boardRow: number = index + 1
+            const currentPiece: Piece = this.getPieceById(`${letter}${boardRow}`)
 
-        for (let i = 1; i < 9; i++) {
-            const letter: string = String.fromCharCode(64 + i)
-
-            output += "<div className=/'field__column/'>"
-            for (let y = 1; y < 9; y++) {
-                output += <Field
-                    rowNumber={y}
-                    id={`${letter}${y}`}
-                    columnNumber={y}
-                    piece={this.getPieceById(`${letter}${y}`)}
+            return (
+                <Field
+                    rowNumber={boardRow}
+                    id={`${letter}${boardRow}`}
+                    columnNumber={boardColumn}
+                    piece={currentPiece}
+                    key={`${letter}${boardRow}`}
+                    color={(boardColumn + boardRow) % 2 ? 'black' : 'white'}
+                    gameService={this.gameService}
                 />
-            }
-            output += "</div>"
-        }
+            )
+        })
+        return output
+    }
+
+    renderAllColumns() {
+        let output: Array<JSX.Element> = Array.apply(null, Array(8)).map((x, index) => {
+            const letter: string = String.fromCharCode(64 + (index + 1))
+            const boardColumn: number = index + 1
+
+            return (
+                <div className='field__column'
+                     key={letter}
+                >
+                    {this.renderAllFields(letter, boardColumn)}
+                </div>
+            )
+
+        })
 
         return output
     }
@@ -138,9 +164,7 @@ class Board extends React.Component<any, any> {
                         {this.renderNumbers('left')}
                     </div>
                     <div className={'arena__chess'}>
-                        <div className='field__column'>
-                            {this.renderAllColumns()}
-                        </div>
+                        {this.renderAllColumns()}
                     </div>
                     <div className={'arena__numbers'}>
                         {this.renderNumbers('right')}

@@ -18,7 +18,9 @@ export const enPassantMakeMove = (color:string, id: string, idBefore: string) =>
 
     const newId: string = findOneGreaterId(id,plusOrMinusOne)
 
-    gameArrangement = gameArrangement.filter(chess => chess.id !== newId)
+    const boardColumn = newId.charAt(0)
+    const rowNumber = newId.charAt(0)
+    gameArrangement = gameArrangement.filter(chess => chess.coordinate.boardColumn !== boardColumn && chess.coordinate.boardRow !== rowNumber)
 
     const deletedPawnByEP = document.getElementById(newId)!
 

@@ -1,10 +1,11 @@
 import {
-    getColorFromLocalStorage,
-    removeChessFromLocalStorage,
+    getColorFromLocalStorage, getItemFromLocalStorage,
     setArrayToLocalStorage, setSpecialMoveToLocalStorage
 } from '../data-base'
 import {removeKingAndAddCastleToHistory} from '../history'
 import {Piece, Rook} from '../chess-possible-move'
+import {Coordinate} from "../chess-possible-move/coordinate";
+import {CoordinateService} from "../suppliers/coordinate-service";
 
 
 export const castleKing = (currentFieldId: string) => {
@@ -65,9 +66,10 @@ export const castleKing = (currentFieldId: string) => {
 }
 
 const removeAndAddRookCastled = (deleteId: string, newId: string, color: string, columnNumber: number, fieldNumber: number) => {
-    let newChessArray: Array<Piece> = removeChessFromLocalStorage(deleteId)
+    // let newChessArray: Array<Piece> = Board.getElementById(deleteId)
+    let newChessArray: Array<Piece> = getItemFromLocalStorage()
 
-    const newRook: Piece = new Rook(color,newId,[columnNumber, fieldNumber],'Rook')
+    const newRook: Piece = new Rook(color,deleteId,'Rook')
 
     newChessArray = newChessArray.concat(newRook)
     setArrayToLocalStorage(newChessArray)

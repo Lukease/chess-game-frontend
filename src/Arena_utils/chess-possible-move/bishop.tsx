@@ -1,4 +1,3 @@
-import {Move} from './move'
 import {Piece} from './piece'
 import {MovingStrategies} from '../suppliers/moving-strategy-service'
 import {Coordinate} from "./coordinate";
@@ -8,8 +7,8 @@ export class Bishop extends Piece {
         super(color, id,name,[MovingStrategies.diagonalMoving])
     }
     getAllPossibleMoves(): Array<Coordinate> {
-        let king: Move = new Move(false, 'A1')
-        return [king]
+        let bishop: Coordinate = new Coordinate(1,1,'A','1')
+        return [bishop]
     }
 
 

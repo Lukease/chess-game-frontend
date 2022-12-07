@@ -1,15 +1,15 @@
-import { getAllPossibleMoves, getCorrectMoves } from '../possible-moves-utils'
-import {Move} from './move'
+import {getCorrectMoves } from '../possible-moves-utils'
 import {Piece} from './piece'
 import {MovingStrategies} from '../suppliers/moving-strategy-service'
+import {Coordinate} from "./coordinate";
 
 export class Knight extends Piece {
     constructor(color: string, id: string,  name: string) {
         super(color, id,  name,[MovingStrategies.knightMoving])
     }
 
-    getAllPossibleMoves(): Move[] {
-        let knight: Move = new Move(false, 'A1')
+    getAllPossibleMoves(): Array<Coordinate> {
+        let knight: Coordinate = new Coordinate(1,1,'A','1')
         return [knight]
     }
 
@@ -34,7 +34,8 @@ export const correctMovesOfKnight = (columnNumber: number, fieldNumber: number, 
         [-2, 1],
         [-2, -1],
     ]
-    const getCorrectFieldsId = getAllPossibleMoves(moves, columnNumber, fieldNumber)
+    // const getCorrectFieldsId = getAllPossibleMoves(moves, columnNumber, fieldNumber)
+    const getCorrectFieldsId = ['A1']
 
     return getCorrectMoves(getCorrectFieldsId, color)
 }

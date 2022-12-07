@@ -12,9 +12,9 @@ export const removeKingAndAddCastleToHistory = (figureName: string, nameBefore: 
     const kingColumn: number = kingId.charAt(0).charCodeAt(0) - 64
     const kingField: number = parseInt(kingId.charAt(1))
 
-    allChessPositionArray = allChessPositionArray.filter(figure => figure.id !== oldKingId)
+    allChessPositionArray = allChessPositionArray.filter(figure => figure.coordinate.boardColumn !== oldKingId)
 
-    const newKing: Piece = new King(figureName.split('-')[0],kingId,[kingColumn,kingField] ,'King')
+    const newKing: Piece = new King(figureName.split('-')[0],kingId ,'King')
 
     allChessPositionArray = allChessPositionArray.concat(newKing)
     setArrayToLocalStorage(allChessPositionArray)

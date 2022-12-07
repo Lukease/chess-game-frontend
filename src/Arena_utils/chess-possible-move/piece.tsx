@@ -1,4 +1,3 @@
-import {Move} from './move'
 import {MovingStrategy} from "./moving-strategy";
 import {Coordinate} from "./coordinate";
 import {CoordinateService} from "../suppliers/coordinate-service";
@@ -21,5 +20,6 @@ export abstract class Piece {
     abstract canJump(): boolean
 
     abstract getImageUrl(): string
+
 
 }

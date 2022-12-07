@@ -26,7 +26,9 @@ export class PromotePawn extends React.Component<any, any> {
         const newId: number = figureId.charAt(0).charCodeAt(0) - 64
         let figureColor: string = 'white'
         const currentFieldImg: HTMLElement = document.getElementById(figureId)!
-        let promotedField: Piece = localStorageChess.find(figure => figure.id === figureId)!
+        const boardColumn = figureId.charAt(0)
+        const boardRow = figureId.charAt(1)
+        let promotedField: Piece = localStorageChess.find(figure => figure.coordinate.boardColumn === figureId && figure.coordinate.boardRow === boardRow)!
         let oldFigureName: string = 'empty'
         let fieldNumber: number = 8
 
@@ -42,9 +44,10 @@ export class PromotePawn extends React.Component<any, any> {
         }
 
         const selectedFigure: string = `${figureColor}-${figure}`.replace(' ', '')
-
-        localStorageChess = localStorageChess.filter(figure => figure.id !== oldId)!
-        localStorageChess = localStorageChess.filter(figure => figure.id !== figureId)!
+        const boardColumnOldFigure = oldId.charAt(0)
+        const boardRowOldFigure = oldId.charAt(1)
+        localStorageChess = localStorageChess.filter(figure => figure.coordinate.boardColumn !== oldId &&figure.coordinate.boardRow !== boardRow)!
+        // localStorageChess = localStorageChess.filter(figure => figure.id !== figureId)!
 
         const addFigure: Piece = addPiece(figure,newId,fieldNumber,figureColor,figureId)!
 

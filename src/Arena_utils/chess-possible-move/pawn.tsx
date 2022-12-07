@@ -1,8 +1,8 @@
-import {getAllPossibleMoves, getCorrectMoves} from '../possible-moves-utils'
+import {getCorrectMoves} from '../possible-moves-utils'
 import {getCorrectIdsOfPawn} from './possible-move-utils'
-import {Move} from './move'
 import {Piece} from './piece'
 import {MovingStrategies} from '../suppliers/moving-strategy-service'
+import {Coordinate} from "./coordinate";
 
 export class Pawn extends Piece {
 
@@ -10,8 +10,8 @@ export class Pawn extends Piece {
         super(color, id, name, [MovingStrategies.pawnMoving])
     }
 
-    getAllPossibleMoves(): Move[] {
-        let pawn: Move = new Move(false, 'A1')
+    getAllPossibleMoves(): Array<Coordinate> {
+        let pawn: Coordinate = new Coordinate(1,1,'A','1')
         return [pawn]
     }
 
@@ -70,8 +70,10 @@ export const correctMovesOfPawn = (columnNumber: number, fieldNumber: number, co
         ])
     }
 
-    const getCorrectFieldsIdForwards = getAllPossibleMoves(moves, columnNumber, fieldNumber)
-    const getCorrectFieldsIdLeftRight = getAllPossibleMoves(isFigureMove, columnNumber, fieldNumber)
+    // const getCorrectFieldsIdForwards = getAllPossibleMoves(moves, columnNumber, fieldNumber)
+    const getCorrectFieldsIdForwards = ['A1']
+    // const getCorrectFieldsIdLeftRight = getAllPossibleMoves(isFigureMove, columnNumber, fieldNumber)
+    const getCorrectFieldsIdLeftRight = ['A1']
     const correctIds = getCorrectIdsOfPawn(getCorrectFieldsIdForwards, color)
     const attackFigure = getCorrectFieldsIdLeftRight.map(id => {
         const field: HTMLElement = document.getElementById(id)!

@@ -6,32 +6,32 @@ export const addPiece = (figureName: string, columnNumber: number, fieldNumber: 
     switch (figureName) {
         case 'Queen': {
 
-            return new Queen(color,id,[columnNumber,fieldNumber],figureName)
+            return new Queen(color, id, figureName)
         }
 
         case 'King': {
 
-            return new King(color,id,[columnNumber,fieldNumber],figureName)
+            return new King(color, id, figureName)
         }
 
         case 'Bishop': {
 
-            return new Bishop(color,id,[columnNumber,fieldNumber],figureName)
+            return new Bishop(color, id, figureName)
         }
 
         case 'Knight': {
 
-            return new Knight(color,id,[columnNumber,fieldNumber],figureName)
+            return new Knight(color, id, figureName)
         }
 
         case 'Pawn': {
 
-            return new Pawn(color,id,[columnNumber,fieldNumber],figureName)
+            return new Pawn(color, id, figureName)
         }
 
         case 'Rook': {
 
-            return new Rook(color,id,[columnNumber,fieldNumber],figureName)
+            return new Rook(color, id, figureName)
         }
         default:
             return null

@@ -1,6 +1,5 @@
 import {
     getItemFromLocalStorage,
-    removeChessFromLocalStorage,
     setArrayToLocalStorage
 } from '../data-base'
 import {Piece} from '../chess-possible-move'
@@ -76,7 +75,7 @@ export const editorAddNewFigure = (event: any) => {
             mouseUpTarget.forEach(element => {
 
                 if (element.id !== '' && element.id !== 'root') {
-                    removeChessFromLocalStorage(previousFigure.id)
+                    // Board.getElementById(previousFigure.id)
                     element.classList.add(secondClass)
                     element.classList.remove('figure__empty')
                     figure = ''

@@ -1,4 +1,4 @@
-import {getAllPossibleMoves, getCorrectMoves} from '../possible-moves-utils'
+import { getCorrectMoves} from '../possible-moves-utils'
 import {
     getColorFromLocalStorage,
     getCorrectMovesOfOpponentFromLocalStorage,
@@ -7,9 +7,9 @@ import {
 } from '../data-base'
 import {Figure, LastMove} from '../../types'
 import {getCheckFromLocalStorage} from '../data-base/check'
-import {Move} from './move'
 import {Piece} from './piece'
 import {MovingStrategies} from "../suppliers/moving-strategy-service";
+import {Coordinate} from "./coordinate";
 
 export class King extends Piece {
     canJump(): boolean {
@@ -18,8 +18,8 @@ export class King extends Piece {
     constructor(color: string, id: string, name: string) {
         super(color, id, name,[MovingStrategies.kingMoving])
     }
-    getAllPossibleMoves(): Move[] {
-        let king: Move = new Move(false, 'A1')
+    getAllPossibleMoves(): Array<Coordinate> {
+        let king: Coordinate = new Coordinate(1,1,'A','1')
         return [king]
     }
 
@@ -50,7 +50,8 @@ export const correctMovesOfKing = (columnNumber: number, fieldNumber: number, co
         bigCastleId = bigCastle(whoseTurn, opponentMovesIds)
     }
 
-    const getCorrectFieldsId = getAllPossibleMoves(moves, columnNumber, fieldNumber)
+    // const getCorrectFieldsId = getAllPossibleMoves(moves, columnNumber, fieldNumber)
+    const getCorrectFieldsId = ['A1','A2']
     const correctIds: Array<string> = getCorrectMoves(getCorrectFieldsId, color)
     const correctIdsAndCastle: Array<string> = [...correctIds, smallCastleId, bigCastleId].filter(id => id !== '')
 

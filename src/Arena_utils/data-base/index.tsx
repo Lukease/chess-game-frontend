@@ -1,6 +1,5 @@
 export {
     setArrayToLocalStorage,
-    removeChessFromLocalStorage,
     getItemFromLocalStorage,
     getColorFromLocalStorage,
     setCurrentColorToLocalStorage
