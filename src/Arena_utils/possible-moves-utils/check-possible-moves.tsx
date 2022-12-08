@@ -2,7 +2,6 @@ import {
     correctMovesOfRook,
     correctMovesOfPawn,
     correctMovesOfKing,
-    correctMovesOfKnight
 } from '../chess-possible-move'
 
 export const checkPossibleMoves = (figureName: string, columnNumber: number, fieldNumber: number, color: string) => {

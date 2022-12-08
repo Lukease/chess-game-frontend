@@ -26,7 +26,7 @@ export class DiagonalMovingStrategy extends MovingStrategy {
         return [...this.getAllMovesDirection(-1, -1, position),
             ...this.getAllMovesDirection(-1, 1, position),
             ...this.getAllMovesDirection(1, 1, position),
-            ...this.getAllMovesDirection(1, -1, position)]
+            ...this.getAllMovesDirection(1, -1, position)].filter(coordinate => coordinate !== undefined)
     }
 
 }
@@ -37,7 +37,7 @@ export class LineMovingStrategy extends MovingStrategy {
         return [...this.getAllMovesDirection(0, -1, position),
             ...this.getAllMovesDirection(0, 1, position),
             ...this.getAllMovesDirection(1, 0, position),
-            ...this.getAllMovesDirection(-1, 0, position)]
+            ...this.getAllMovesDirection(-1, 0, position)].filter(coordinate => coordinate !== undefined)
     }
 }
 

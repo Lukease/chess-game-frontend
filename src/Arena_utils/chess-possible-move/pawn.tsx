@@ -11,12 +11,11 @@ export class Pawn extends Piece {
     }
 
     getAllPossibleMoves(): Array<Coordinate> {
-        let pawn: Coordinate = new Coordinate(1,1,'A','1')
-        return [pawn]
+        return MovingStrategies.pawnMoving.getAllPossibleMoves(this.coordinate)
     }
 
     getImageUrl(): string {
-        return `${this.color}-Pawn`
+        return require(`../../chess_icon/${this.color}-Pawn.svg`)
     }
 
     canJump(): boolean {

@@ -4,19 +4,22 @@ import {Coordinate} from "./coordinate";
 
 
 export class Queen extends Piece {
-  constructor(color: string, id: string,  name: string) {
-    super(color, id,  name,[MovingStrategies.diagonalMoving,MovingStrategies.lineMoving])
-  }
-  getAllPossibleMoves(): Array<Coordinate> {
-    let queen: Coordinate = new Coordinate(1,1,'A','1')
-    return [queen]
-  }
+    constructor(color: string, id: string, name: string) {
+        super(color, id, name, [MovingStrategies.diagonalMoving, MovingStrategies.lineMoving])
+    }
 
-  getImageUrl(): string {
-    return `${this.color}-Queen`
-  }
+    getAllPossibleMoves(): Array<Coordinate> {
+        return [
+            ...MovingStrategies.diagonalMoving.getAllPossibleMoves(this.coordinate),
+            ...MovingStrategies.lineMoving.getAllPossibleMoves(this.coordinate)
+        ]
+    }
 
-  canJump(): boolean {
-    return false;
-  }
+    getImageUrl(): string {
+        return require(`../../chess_icon/${this.color}-Queen.svg`)
+    }
+
+    canJump(): boolean {
+        return false;
+    }
 }

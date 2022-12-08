@@ -8,12 +8,11 @@ export class Rook extends Piece {
         super(color, id,  name,[MovingStrategies.lineMoving])
     }
     getAllPossibleMoves(): Array<Coordinate> {
-        let rook: Coordinate = new Coordinate(1,1,'A','1')
-        return [rook]
+        return MovingStrategies.lineMoving.getAllPossibleMoves(this.coordinate)
     }
 
     getImageUrl(): string {
-        return `${this.color}-Rook`
+        return require(`../../chess_icon/${this.color}-Rook.svg`)
     }
 
     canJump(): boolean {

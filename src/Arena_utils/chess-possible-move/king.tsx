@@ -8,7 +8,7 @@ import {
 import {Figure, LastMove} from '../../types'
 import {getCheckFromLocalStorage} from '../data-base/check'
 import {Piece} from './piece'
-import {MovingStrategies} from "../suppliers/moving-strategy-service";
+import {MovingStrategies} from "../suppliers/moving-strategy-service"
 import {Coordinate} from "./coordinate";
 
 export class King extends Piece {
@@ -19,12 +19,11 @@ export class King extends Piece {
         super(color, id, name,[MovingStrategies.kingMoving])
     }
     getAllPossibleMoves(): Array<Coordinate> {
-        let king: Coordinate = new Coordinate(1,1,'A','1')
-        return [king]
+        return MovingStrategies.kingMoving.getAllPossibleMoves(this.coordinate)
     }
 
     getImageUrl(): string {
-        return `${this.color}-King`
+        return require(`../../chess_icon/${this.color}-King.svg`)
     }
 }
 

@@ -1,13 +1,23 @@
 import React from 'react'
-import {getColorFromLocalStorage, getHistoryFromLocalStorage} from '../data-base'
-import {renderHistoryFromLocalStorage} from '../history/add-to-history'
+import {getHistoryFromLocalStorage} from '../data-base'
+import {renderHistoryFromLocalStorage} from '../history'
 import {LastMove} from '../../types'
+import {GameService} from '../suppliers/game-service'
 
 export class GameNavigation extends React.Component<any, any> {
+    isPositionEditor: boolean
+    gameService: GameService
+
     constructor(props: any) {
         super(props)
 
-        this.state = {isToggleOn: false}
+        this.gameService = props.gameService
+        this.isPositionEditor = true
+        this.state = {
+            isToggleOn: false,
+            color: 'white',
+        }
+        this.gameService.gameNavigation = this
         this.StartGame = this.StartGame.bind(this)
     }
 
@@ -24,13 +34,16 @@ export class GameNavigation extends React.Component<any, any> {
             }
         })
 
-        document.getElementById('color')!.innerHTML = getColorFromLocalStorage()
 
         const historyOfMoves: Array<LastMove> = getHistoryFromLocalStorage()!
 
         if (historyOfMoves) {
             renderHistoryFromLocalStorage(historyOfMoves)
         }
+    }
+
+    changeTurn(color1: string) {
+        this.setState({color: color1})
     }
 
     render() {
@@ -58,8 +71,9 @@ export class GameNavigation extends React.Component<any, any> {
                     id={'color'}
                     className={'game__color'}
                 >
-                    black/white
+                    {this.state.color}
                 </div>
+
             </div>
         )
     }

@@ -39,40 +39,9 @@ class Board extends React.Component<any, any> {
         super(props)
 
         this.pieces = defaultChessArrangement
-        this.gameService = new GameService('white')
+        this.gameService = props.gameService
         this.allFields = []
     }
-
-    getCorrectMoves(piece: Piece): Array<Coordinate> {
-
-        return piece.getAllPossibleMoves().filter(move => {
-            (this.canSee(move, piece.coordinate) || piece.canJump()) &&
-            this.isEmptyOrEnemy(move) && (this.isCheck() && this.canPreventCheck(move, piece.coordinate)) && this.dontCauseCheck()
-        })
-
-    }
-
-    dontCauseCheck(): boolean {
-        return true
-    }
-
-    isCheck(): boolean {
-        return false
-    }
-
-    canPreventCheck(coordinate1: Coordinate, coordinate2: Coordinate): boolean {
-        return false
-    }
-
-    isEmptyOrEnemy(coordinate: Coordinate): boolean {
-        return false
-    }
-
-    canSee(coordinate1: Coordinate, coordinate2: Coordinate): boolean {
-
-        return true
-    }
-
 
     getPieceById(id: string) {
         const coordinate = CoordinateService.getCoordinateById(id)
@@ -192,10 +161,6 @@ export class Arena extends React.Component<any, any> {
         localStorage.clear()
         setArrayToLocalStorage(defaultChessArrangement)
 
-        const color = document.querySelector('.game__color')!.innerHTML = 'white'
-
-        setCurrentColorToLocalStorage(color)
-
         const check: boolean = false
 
         setCheckToLocalStorage(check)
@@ -215,8 +180,12 @@ export class Arena extends React.Component<any, any> {
             >
                 <HistoryOfMoves/>
                 <AddFigure color={'white'}/>
-                <GameNavigation/>
-                <Board/>
+                <GameNavigation
+                    gameService={this.props.gameService}
+                />
+                <Board
+                    gameService={this.props.gameService}
+                />
                 <AddFigure color={'black'}/>
                 <PromotePawn/>
                 <div

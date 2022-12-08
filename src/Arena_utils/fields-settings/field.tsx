@@ -27,7 +27,9 @@ import {
     addPieceToDataBase
 } from './fields-utils'
 import {Piece} from '../chess-possible-move'
-import {GameService} from "../suppliers/game-service";
+import {GameService} from '../suppliers/game-service'
+import {Coordinate} from "../chess-possible-move/coordinate";
+import {CoordinateService} from "../suppliers/coordinate-service";
 
 let nameOfFigure: string
 let colorOfFigure: string
@@ -143,11 +145,12 @@ const moveChess = (event: any) => {
 }
 
 export class Field extends React.Component<any, any> {
-    private rawNumber: number
-    private id: string
+    private rowNumber: number
+    id: string
     private columnNumber: number
     private color: string
-    piece: Piece
+    coordinate: Coordinate
+    piece: Piece | undefined
     gameService: GameService
 
     constructor(props: any) {
@@ -155,21 +158,18 @@ export class Field extends React.Component<any, any> {
 
         this.id = props.id
         this.columnNumber = props.columnNumber
-        this.rawNumber = props.rawNumber
+        this.rowNumber = props.rowNumber
         this.color = props.color
         this.piece = props.piece
+        this.coordinate = CoordinateService.getCoordinateById(this.id)
         this.gameService = props.gameService
-        this.state = {isChosen: false}
-        this.state = {isMoving: false}
-        this.state = {imageLoaded: false}
+        this.state = {
+            isChosen: false,
+            correctMove: false,
+            imageLoaded: false,
+            img: this.props.piece ? this.props.piece.getImageUrl() : ''
+        }
         props.gameService.addField(this)
-
-    }
-
-    setChosen(isChosen: boolean) {
-        this.setState((state: { isChosen: boolean }) => ({
-            isChosen: isChosen
-        }))
     }
 
     game = (id: string, event: any) => {
@@ -193,8 +193,31 @@ export class Field extends React.Component<any, any> {
         }
     }
 
+    getActive() {
+        return this.state.isChosen
+    }
+
+    setActive(active: boolean) {
+        this.setState({isChosen: active})
+    }
+
+    setPossibleMove(correct: boolean) {
+        this.setState({correctMove: correct})
+    }
+
+    setPiece(piece: Piece) {
+        this.piece = piece
+        this.piece.coordinate = this.coordinate
+        this.setState({img:this.piece.getImageUrl()})
+        this.setActive(true)
+    }
+
+    removePiece() {
+        this.piece = undefined
+        this.setState({img: ''})
+    }
+
     render() {
-        const imgUrl = this.props.piece ? require(`../../chess_icon/${this.props.piece.color}-${this.props.piece.name}.svg`) : require(`../../chess_icon/white-King.svg`).default
 
         return (
             <div
@@ -204,12 +227,12 @@ export class Field extends React.Component<any, any> {
                     this.game(this.props.id, event)
                 }}
                 id={this.props.id}
-            > {this.props.piece ?
+            > {this.piece ?
                 <img
-                    className={`figure`}
+                    className={this.state.correctMove ? `figure figure__move-figure` : 'figure'}
                     id={this.props.id}
                     alt={''}
-                    src={imgUrl}
+                    src={this.state.img}
 
                     // onMouseDown={event => moveFigure(event,props.className,props.id)}
                     // onMouseMove={event => mouseMoveFigure(event)}
@@ -217,7 +240,9 @@ export class Field extends React.Component<any, any> {
                 >
 
                 </img>
-                : <div></div>
+                : <div
+                    className={this.state.correctMove ? `figure figure__move-empty` : 'figure figure__empty'}
+                ></div>
             }
             </div>
         )

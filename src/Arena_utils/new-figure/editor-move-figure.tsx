@@ -12,7 +12,7 @@ let previousFigure: any
 
 export const editorGetFigure = (event: any) => {
     const [figureClass,] = event.target.classList
-    const color: string = document.getElementById('color')!.innerHTML
+    const color: string = 'black'
     const trashIconChosen: Element = document.querySelector('.navigation__trash')!
 
     previousFigure = event.target

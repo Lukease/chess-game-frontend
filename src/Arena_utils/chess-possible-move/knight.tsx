@@ -1,7 +1,7 @@
 import {getCorrectMoves } from '../possible-moves-utils'
 import {Piece} from './piece'
 import {MovingStrategies} from '../suppliers/moving-strategy-service'
-import {Coordinate} from "./coordinate";
+import {Coordinate} from './coordinate'
 
 export class Knight extends Piece {
     constructor(color: string, id: string,  name: string) {
@@ -9,34 +9,15 @@ export class Knight extends Piece {
     }
 
     getAllPossibleMoves(): Array<Coordinate> {
-        let knight: Coordinate = new Coordinate(1,1,'A','1')
-        return [knight]
+        return MovingStrategies.knightMoving.getAllPossibleMoves(this.coordinate)
     }
 
     getImageUrl(): string {
-        return `${this.color}-Knight`
+        return require(`../../chess_icon/${this.color}-Knight.svg`)
     }
 
     canJump(): boolean {
         return true
     }
-}
-
-export const correctMovesOfKnight = (columnNumber: number, fieldNumber: number, color: string) => {
-
-    const moves: Array<Array<number>> = [
-        [-1, 2],
-        [-1, -2],
-        [1, -2],
-        [1, 2],
-        [2, 1],
-        [2, -1],
-        [-2, 1],
-        [-2, -1],
-    ]
-    // const getCorrectFieldsId = getAllPossibleMoves(moves, columnNumber, fieldNumber)
-    const getCorrectFieldsId = ['A1']
-
-    return getCorrectMoves(getCorrectFieldsId, color)
 }
 
