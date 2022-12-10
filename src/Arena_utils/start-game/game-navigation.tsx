@@ -5,35 +5,22 @@ import {LastMove} from '../../types'
 import {GameService} from '../suppliers/game-service'
 
 export class GameNavigation extends React.Component<any, any> {
-    isPositionEditor: boolean
     gameService: GameService
 
     constructor(props: any) {
         super(props)
 
         this.gameService = props.gameService
-        this.isPositionEditor = true
         this.state = {
-            isToggleOn: false,
-            color: 'white',
+            isGameStarted: false,
+            isPieceEditorDisplayed: false,
+            color: 'white'
         }
         this.gameService.gameNavigation = this
-        this.StartGame = this.StartGame.bind(this)
     }
 
-    StartGame() {
-        this.setState((prevState: { isToggleOn: boolean }) => ({
-            isToggleOn: !prevState.isToggleOn,
-        }))
-
-        const addFigureColumn: NodeListOf<Element> = document.querySelectorAll('.game__add-figure')
-
-        addFigureColumn.forEach(column => {
-            if (!column.classList.contains('game__add-figure--hidden')) {
-                column.classList.add('game__add-figure--hidden')
-            }
-        })
-
+    startGame = () => {
+        this.setState({isGameStarted: true})
 
         const historyOfMoves: Array<LastMove> = getHistoryFromLocalStorage()!
 
@@ -42,8 +29,15 @@ export class GameNavigation extends React.Component<any, any> {
         }
     }
 
-    changeTurn(color1: string) {
-        this.setState({color: color1})
+    changeTurn(color: string) {
+        this.setState({color: color})
+    }
+
+    changePositionEditorDisplayed = () => {
+        const isDisplayed: boolean = this.state.isPieceEditorDisplayed
+
+        this.setState({isPieceEditorDisplayed: !isDisplayed})
+        this.gameService.setPositionEditorDisplayed(!isDisplayed)
     }
 
     render() {
@@ -51,14 +45,15 @@ export class GameNavigation extends React.Component<any, any> {
             <div className={'game__navigation'}>
                 <button
                     className={'game__navigation--start'}
-                    onClick={this.StartGame}
-                    disabled={!!this.state.isToggleOn}
+                    onClick={this.startGame}
+                    disabled={this.state.isGameStarted}
                 >
                     Start Game
                 </button>
                 <button
                     className={'game__navigation--editor'}
-                    disabled={!!this.state.isToggleOn}
+                    onClick={this.changePositionEditorDisplayed}
+                    disabled={this.state.isGameStarted}
                 >
                     Position Editor
                 </button>

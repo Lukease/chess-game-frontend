@@ -28,8 +28,8 @@ import {
 } from './fields-utils'
 import {Piece} from '../chess-possible-move'
 import {GameService} from '../suppliers/game-service'
-import {Coordinate} from "../chess-possible-move/coordinate";
-import {CoordinateService} from "../suppliers/coordinate-service";
+import {Coordinate} from '../chess-possible-move/coordinate'
+import {CoordinateService} from '../suppliers/coordinate-service'
 
 let nameOfFigure: string
 let colorOfFigure: string

@@ -21,5 +21,4 @@ export abstract class Piece {
 
     abstract getImageUrl(): string
 
-
 }

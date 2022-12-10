@@ -1,6 +1,7 @@
 import {Field} from '../fields-settings'
 import {Coordinate} from '../chess-possible-move/coordinate'
 import {GameNavigation} from '../start-game'
+import {AddPiecePanel} from "../new-figure"
 
 export class GameService {
     whiteTurn: boolean
@@ -9,6 +10,9 @@ export class GameService {
     private previousMove: Array<Field> = []
     allFields: Array<Field> = []
     gameNavigation: GameNavigation | undefined
+    isPositionEditorDisplayed: boolean = false
+    isTrashActive: boolean = false
+    addPiecePanels: Array<AddPiecePanel> = []
 
     constructor() {
         this.whiteTurn = true
@@ -21,6 +25,10 @@ export class GameService {
             if (field.piece!.color === this.getColor()) {
                 if (this.activeField) {
                     this.activeField.setActive(false)
+                }
+
+                if (this.previousMove) {
+                    this.setOrRemoveActiveFields(this.possibleMoves, true)
                 }
 
                 this.activeField = field
@@ -49,11 +57,21 @@ export class GameService {
     }
 
     makeMove(field: Field) {
+        this.setOrRemoveActiveFields(this.possibleMoves, false)
+        this.previousMove = []
+
         field.setPiece(this.activeField!.piece!)
         this.activeField!.removePiece()
         this.possibleMoves.forEach(field => field.setPossibleMove(false))
         this.changeColor()
-        this.previousMove = [field, this.activeField!]
+        const previousMove = this.activeField!
+        this.previousMove = [field, previousMove]
+    }
+
+    setOrRemoveActiveFields(fields: Array<Field>, active: boolean) {
+        fields.forEach(move => {
+            move.setActive(active)
+        })
     }
 
     getColor() {
@@ -100,11 +118,11 @@ export class GameService {
             const vectorX = boardColumn / Math.abs(boardColumn)
             const vectorY = boardRow / Math.abs(boardRow)
 
-            for (let i = 0; i <=  Math.abs(boardRow); i++) {
+            for (let i = 0; i <= Math.abs(boardRow); i++) {
                 console.log(this.getFieldByRowAndColumn(
                     (vectorY * i) + currentField.coordinate.y,
                     (vectorX * i) + currentField.coordinate.x)!
-                    .piece )
+                    .piece)
                 if (this.getFieldByRowAndColumn(
                     (vectorY * i) + currentField.coordinate.y,
                     (vectorX * i) + currentField.coordinate.x)!
@@ -120,5 +138,15 @@ export class GameService {
 
     getFieldByRowAndColumn(boardColumn: number, boardRow: number) {
         return this.allFields.find(field => field.coordinate.x === boardColumn && field.coordinate.y === boardRow)
+    }
+
+    setPositionEditorDisplayed(isDisplayed: boolean) {
+        this.isPositionEditorDisplayed = isDisplayed
+        this.addPiecePanels?.forEach(panel => panel.isPositionEditorDisplayed())
+    }
+
+    setTrashActive(active: boolean) {
+        this.isTrashActive = active
+        this.addPiecePanels?.forEach(panel => panel.isDeleteIconActive(true))
     }
 }

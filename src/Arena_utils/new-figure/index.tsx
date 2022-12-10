@@ -1,3 +1,3 @@
 export { editorAddNewFigure, editorGetFigure, editorMouseMoveFigure } from './editor-move-figure'
-export { AddFigure } from './add-Figure-nav'
+export { AddPiecePanel } from './add-piece-panel'
 export { hideShowFigures } from './hide-show-figures'

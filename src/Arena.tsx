@@ -9,7 +9,6 @@ import {
     editorAddNewFigure,
     editorGetFigure,
     editorMouseMoveFigure,
-    AddFigure,
     hideShowFigures
 } from './Arena_utils/new-figure'
 import {GameNavigation} from './Arena_utils/start-game'
@@ -18,7 +17,6 @@ import {
     setCorrectMovesOfOpponentToLocalStorage
 } from './Arena_utils/data-base'
 import {defaultChessArrangement} from './chess_arrangement/default-chess-arrangement'
-import {setCurrentColorToLocalStorage} from './Arena_utils/data-base'
 import {HistoryOfMoves} from './Arena_utils/history'
 import {
     PromotePawn
@@ -26,9 +24,9 @@ import {
 import {setCheckToLocalStorage} from './Arena_utils/data-base/check'
 import {setSpecialMoveToLocalStorage} from './Arena_utils/data-base'
 import {Piece} from './Arena_utils/chess-possible-move'
-import {CoordinateService} from "./Arena_utils/suppliers/coordinate-service";
-import {Coordinate} from "./Arena_utils/chess-possible-move/coordinate";
-import {GameService} from "./Arena_utils/suppliers/game-service";
+import {CoordinateService} from "./Arena_utils/suppliers/coordinate-service"
+import {GameService} from "./Arena_utils/suppliers/game-service"
+import {AddPiecePanel} from "./Arena_utils/new-figure"
 
 class Board extends React.Component<any, any> {
     pieces: Array<Piece>
@@ -38,7 +36,7 @@ class Board extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
 
-        this.pieces = defaultChessArrangement
+        this.pieces = props.pieces
         this.gameService = props.gameService
         this.allFields = []
     }
@@ -148,18 +146,21 @@ class Board extends React.Component<any, any> {
 }
 
 export class Arena extends React.Component<any, any> {
+    pieces: Array<Piece>
 
     constructor(props: any) {
         super(props)
 
+        this.pieces = defaultChessArrangement
         this.setDefaultChessPosition = this.setDefaultChessPosition.bind(this)
+        this.state = { isTrashOn: false }
     }
 
 
     setDefaultChessPosition() {
         window.location.reload()
         localStorage.clear()
-        setArrayToLocalStorage(defaultChessArrangement)
+        setArrayToLocalStorage(this.pieces)
 
         const check: boolean = false
 
@@ -179,14 +180,23 @@ export class Arena extends React.Component<any, any> {
                  onClick={event => hideShowFigures(event)}
             >
                 <HistoryOfMoves/>
-                <AddFigure color={'white'}/>
+                <AddPiecePanel
+                    color={'white'}
+                    pieces={this.pieces}
+                    gameService={this.props.gameService}
+                />
                 <GameNavigation
                     gameService={this.props.gameService}
                 />
                 <Board
                     gameService={this.props.gameService}
+                    pieces={this.pieces}
                 />
-                <AddFigure color={'black'}/>
+                <AddPiecePanel
+                    color={'black'}
+                    pieces={this.pieces}
+                    gameService={this.props.gameService}
+                />
                 <PromotePawn/>
                 <div
                     className={'game__navigation--default'}
