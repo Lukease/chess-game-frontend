@@ -7,8 +7,6 @@ import {
 } from './Arena_utils/fields-settings'
 import {
     editorAddNewFigure,
-    editorGetFigure,
-    editorMouseMoveFigure,
     hideShowFigures
 } from './Arena_utils/new-figure'
 import {GameNavigation} from './Arena_utils/start-game'
@@ -28,7 +26,7 @@ import {CoordinateService} from "./Arena_utils/suppliers/coordinate-service"
 import {GameService} from "./Arena_utils/suppliers/game-service"
 import {AddPiecePanel} from "./Arena_utils/new-figure"
 
-class Board extends React.Component<any, any> {
+export class Board extends React.Component<any, any> {
     pieces: Array<Piece>
     gameService: GameService
     allFields: Array<Field>
@@ -36,9 +34,15 @@ class Board extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
 
+        this.deletePiece = this.deletePiece.bind(this)
         this.pieces = props.pieces
         this.gameService = props.gameService
         this.allFields = []
+        this.state = {
+            isTrashOn: false,
+        }
+
+        this.gameService.board = this
     }
 
     getPieceById(id: string) {
@@ -47,8 +51,26 @@ class Board extends React.Component<any, any> {
         return this.pieces.find(piece => piece.coordinate === coordinate)!
     }
 
+    removePieceFromArray(piece: Piece) {
+        this.pieces = this.pieces.filter(chess => chess !== piece)
+    }
+
     selectActive(field: Field) {
 
+    }
+
+    deletePiece(field: Field) {
+        if (this.state.isTrashOn) {
+            const pieceId = field.id
+
+            this.removePieceFromArray(this.getPieceById(pieceId))
+        }
+    }
+
+    setTrashOn() {
+        const isOn: boolean = this.state.isTrashOn
+
+        this.setState({isTrashOn: !isOn})
     }
 
     renderLetters() {
@@ -84,7 +106,7 @@ class Board extends React.Component<any, any> {
 
     renderAllFields(letter: string, boardColumn: number) {
         let output: Array<JSX.Element> = Array.apply(null, Array(8)).map((x, index) => {
-            const boardRow: number = index + 1
+            const boardRow: number = -index + 8
             const currentPiece: Piece = this.getPieceById(`${letter}${boardRow}`)
 
             return (
@@ -130,7 +152,9 @@ class Board extends React.Component<any, any> {
                     <div className={'arena__numbers'}>
                         {this.renderNumbers('left')}
                     </div>
-                    <div className={'arena__chess'}>
+                    <div className={'arena__chess'}
+                         onClick={() => this.deletePiece}
+                    >
                         {this.renderAllColumns()}
                     </div>
                     <div className={'arena__numbers'}>
@@ -147,13 +171,22 @@ class Board extends React.Component<any, any> {
 
 export class Arena extends React.Component<any, any> {
     pieces: Array<Piece>
+    gameService: GameService
 
     constructor(props: any) {
         super(props)
 
+        this.gameService = this.props.gameService
         this.pieces = defaultChessArrangement
         this.setDefaultChessPosition = this.setDefaultChessPosition.bind(this)
-        this.state = { isTrashOn: false }
+        this.state = {
+            isMovingPiece: false,
+            selectedPiece: '',
+            coordinateX: 0,
+            coordinateY: 0,
+            changingPieceId: ''
+        }
+        this.gameService.arena = this
     }
 
 
@@ -171,31 +204,90 @@ export class Arena extends React.Component<any, any> {
         setCorrectMovesOfOpponentToLocalStorage(opponentMovesIdsArray)
     }
 
+    setMovingPiece(isMoving: boolean, piece: Piece, x: number, y: number) {
+        this.setState({
+            isMovingPiece: isMoving,
+            selectedPiece: piece,
+            coordinateX: x - 50,
+            coordinateY: y - 50,
+        })
+    }
+
+    editorMouseMoveFigure = (event: any) => {
+        if (this.state.isMovingPiece) {
+            let x: number = event.clientX - 50
+            let y: number = event.clientY - 30
+
+            this.setState({coordinateX: x, coordinateY: y})
+
+        }
+    }
+
+    addNewPieceToField() {
+        if (this.state.isMovingPiece) {
+            this.setState({isMovingPiece: false})
+            document.body.style.cursor = 'auto'
+
+            const mouseUpTarget = document.elementsFromPoint(this.state.coordinateX, this.state.coordinateY)
+
+            mouseUpTarget.forEach(element => {
+                if (element.id !== '' && element.id !== 'root') {
+                    this.setState({changingPieceId: element.id})
+                }
+            })
+        }
+    }
+
     render() {
         return (
-            <div className={'navigation'}
-                 onMouseDown={event => editorGetFigure(event)}
-                 onMouseMove={event => editorMouseMoveFigure(event)}
-                 onMouseUp={event => editorAddNewFigure(event)}
+            <div className={'content'}
+                 onMouseMove={this.editorMouseMoveFigure}
+                 onMouseUp={() => this.addNewPieceToField()}
                  onClick={event => hideShowFigures(event)}
             >
+                {
+                    this.state.isMovingPiece ?
+                        <img
+                            className={'figure__move'}
+                            style={
+                                {
+                                    left: this.state.isMovingPiece ? `${this.state.coordinateX}px` : '',
+                                    top: this.state.isMovingPiece ? `${this.state.coordinateY}px` : '',
+                                    position: 'absolute',
+                                    display: this.state.isMovingPiece ? 'flex' : 'none'
+                                }
+                            }
+                            src={this.state.selectedPiece!.getImageUrl()}
+                            alt={''}
+                            draggable={false}
+                        >
+
+                        </img> : <div
+                            style={
+                            { position: 'absolute' }
+                        }
+                        >
+                        </div>
+                }
                 <HistoryOfMoves/>
                 <AddPiecePanel
                     color={'white'}
                     pieces={this.pieces}
-                    gameService={this.props.gameService}
+                    gameService={this.gameService}
+                    movingPiece={this.props.movingPiece}
                 />
                 <GameNavigation
-                    gameService={this.props.gameService}
+                    gameService={this.gameService}
                 />
                 <Board
-                    gameService={this.props.gameService}
+                    gameService={this.gameService}
                     pieces={this.pieces}
                 />
                 <AddPiecePanel
                     color={'black'}
                     pieces={this.pieces}
-                    gameService={this.props.gameService}
+                    gameService={this.gameService}
+                    movingPiece={this.props.movingPiece}
                 />
                 <PromotePawn/>
                 <div

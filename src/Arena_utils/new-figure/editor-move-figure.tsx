@@ -10,51 +10,12 @@ let isMoving = false
 let figure: any
 let previousFigure: any
 
-export const editorGetFigure = (event: any) => {
-    const [figureClass,] = event.target.classList
-    const color: string = 'black'
-    const trashIconChosen: Element = document.querySelector('.navigation__trash')!
-
-    previousFigure = event.target
-    if (figureClass === 'figure' && color === 'black/white' && !trashIconChosen.classList.contains('navigation__trash--chosen')) {
-        nameOfFigure = event.target.classList.value
-        isMoving = true
-
-        const secondClass: string = nameOfFigure.split(' ')[1]
-
-        figure = document.createElement('div')
-        figure.classList.add('figure__move', secondClass)
-        document.body.style.cursor = 'none'
-        figure.style.display = 'block'
-        figure.style.position = 'absolute'
-
-        if (event.target.parentNode.classList.contains('game__add-figure')) {
-            event.target.appendChild(figure)
-        } else {
-            event.target.parentNode.appendChild(figure)
-            event.target.className = ''
-            event.target.classList.add('figure')
-            event.target.classList.add('figure__empty')
-        }
-    }
-}
-
-export const editorMouseMoveFigure = (event: any) => {
-    if (isMoving) {
-        let x: number = event.clientX - 50
-        let y: number = event.clientY - 30
-
-        figure.style.left = `${x}px`
-        figure.style.top = `${y}px`
-    }
-}
-
 export const editorAddNewFigure = (event: any) => {
     if (isMoving) {
         isMoving = false
 
         const color: string = document.querySelector('.game__color')!.innerHTML
-        const trashIconChosen: Element = document.querySelector('.navigation__trash')!
+        const trashIconChosen: Element = document.querySelector('.content__trash')!
         let x: number = event.clientX
         let y: number = event.clientY
         const mouseUpTarget: Array<Element> = document.elementsFromPoint(x, y)

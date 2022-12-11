@@ -2,14 +2,12 @@ import React from 'react'
 import {Piece} from '../chess-possible-move'
 import {addPieceArrangement} from '../../chess_arrangement/add-Piece-arrangement'
 import {GameService} from '../suppliers/game-service'
-import {addNewFigure} from '../game/move-figure'
 
 export class AddPiecePanel extends React.Component<any, any> {
     color: string
     pieces: Array<Piece>
     addNewPiece: Array<Piece>
     gameService: GameService
-    selectedPiece: Piece | undefined
 
     constructor(props: any) {
         super(props)
@@ -24,6 +22,7 @@ export class AddPiecePanel extends React.Component<any, any> {
             isMoving: false,
             coordinateX: 0,
             coordinateY: 0,
+            selectedPiece: undefined
         }
         this.gameService.addPiecePanels = this.gameService.addPiecePanels.concat(this)
     }
@@ -46,16 +45,25 @@ export class AddPiecePanel extends React.Component<any, any> {
     }
 
     selectPiece = (piece: Piece, event: any) => {
-        this.setState({isMoving: true})
+        this.setMoving(true)
         this.setCoordinate(event)
-        this.selectedPiece = piece
-
-
+        this.setState({selectedPiece: piece})
     }
 
-    setCoordinate= (event :any) => {
-        this.setState({coordinateX: event.clientX - 50, coordinateY: event.clientY - 30})
-        console.log(this.state.coordinateX, this.state.coordinateY)
+    setCoordinate = (event: any) => {
+        if (this.state.isMoving) {
+            this.setState({coordinateX: event.screenX - 50, coordinateY: event.screenY - 30})
+
+            console.log(this.state.coordinateX, this.state.coordinateY)
+        }
+    }
+
+    setMoving(isMoving: boolean) {
+        this.setState({isMoving: isMoving})
+    }
+
+    removePiece() {
+        this.setMoving(false)
     }
 
     renderPieces() {
@@ -68,9 +76,9 @@ export class AddPiecePanel extends React.Component<any, any> {
                     key={index}
                     alt={''}
 
-                    // onMouseDown={this.selectPiece.bind(piece)}
-                    onMouseMove={this.setCoordinate.bind}
-                    onMouseUp={event => addNewFigure(event, piece.name)}
+                    onMouseDown={event => this.selectPiece(piece, event)}
+                    onMouseMove={() => this.setCoordinate}
+                    onMouseUp={() => this.removePiece}
                 >
                 </img>
             )
@@ -90,25 +98,8 @@ export class AddPiecePanel extends React.Component<any, any> {
                 {
                     this.renderPieces()
                 }
-            {/*    {*/}
-            {/*    this.state.isMoving ?*/}
-            {/*        <img*/}
-            {/*            className={'figure'}*/}
-            {/*            style={*/}
-            {/*                {*/}
-            {/*                    left: this.state.isMoving ? `${this.state.coordinateX}px` : '',*/}
-            {/*                    top: this.state.isMoving ? `${this.state.coordinateY}px` : '',*/}
-            {/*                    display: this.state.isMoving ? 'flex' : 'none'*/}
-            {/*                }*/}
-            {/*            }*/}
-            {/*            src={this.state.piece.getImageUrl()}*/}
-            {/*            alt={''}*/}
-            {/*        >*/}
-
-            {/*        </img> : <div></div>*/}
-            {/*}*/}
                 <button
-                    className={'navigation__trash'}
+                    className={'content__trash'}
                     style={{backgroundColor: this.state.isTrashActive ? `firebrick` : ``}}
                     onClick={() => this.isDeleteIconActive(false)}
                     id={'trashIcon'}

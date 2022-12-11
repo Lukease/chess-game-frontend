@@ -1,7 +1,9 @@
 import {Field} from '../fields-settings'
 import {Coordinate} from '../chess-possible-move/coordinate'
 import {GameNavigation} from '../start-game'
-import {AddPiecePanel} from "../new-figure"
+import {AddPiecePanel} from '../new-figure'
+import {Arena, Board} from '../../Arena'
+import {Piece} from "../chess-possible-move";
 
 export class GameService {
     whiteTurn: boolean
@@ -13,6 +15,10 @@ export class GameService {
     isPositionEditorDisplayed: boolean = false
     isTrashActive: boolean = false
     addPiecePanels: Array<AddPiecePanel> = []
+    board: Board | undefined
+    isGameStarted: boolean = false
+    arena: Arena | undefined
+    isMovingPiece: boolean = false
 
     constructor() {
         this.whiteTurn = true
@@ -21,25 +27,48 @@ export class GameService {
 
     fieldClick(field: Field) {
         if (field.piece) {
+            if (this.isTrashActive) {
+                this.removePieceFromField(field)
+            }
 
-            if (field.piece!.color === this.getColor()) {
-                if (this.activeField) {
-                    this.activeField.setActive(false)
+            if (this.isGameStarted) {
+                if (field.piece!.color === this.getColor()) {
+                    if (this.activeField) {
+                        this.activeField.setActive(false)
+                    }
+
+                    if (this.previousMove) {
+                        this.setOrRemoveActiveFields(this.possibleMoves, true)
+                    }
+
+                    this.activeField = field
+                    this.activeField.setActive(true)
+                    this.replacePossibleMoves()
+                    this.getCorrectMoves(field)
                 }
-
-                if (this.previousMove) {
-                    this.setOrRemoveActiveFields(this.possibleMoves, true)
-                }
-
-                this.activeField = field
-                this.activeField.setActive(true)
-                this.replacePossibleMoves()
-                this.getCorrectMoves(field)
             }
         }
+
         if (field.state.correctMove) {
             this.makeMove(field)
         }
+    }
+
+    movePiece(piece: Piece, coordinateX: number, coordinateY: number) {
+        const isMoving = true
+
+        this.isMovingPiece = isMoving
+        this.arena?.setMovingPiece(isMoving, piece, coordinateX,coordinateY)
+    }
+
+    setGameStarted(isGameStarted: boolean) {
+        this.isGameStarted = isGameStarted
+        this.setPositionEditorDisplayed(false)
+        this.isTrashActive = false
+    }
+
+    removePieceFromField(field: Field) {
+        field.removePiece()
     }
 
     addField(field: Field) {
@@ -119,10 +148,10 @@ export class GameService {
             const vectorY = boardRow / Math.abs(boardRow)
 
             for (let i = 0; i <= Math.abs(boardRow); i++) {
-                console.log(this.getFieldByRowAndColumn(
-                    (vectorY * i) + currentField.coordinate.y,
-                    (vectorX * i) + currentField.coordinate.x)!
-                    .piece)
+                // console.log(this.getFieldByRowAndColumn(
+                //     (vectorY * i) + currentField.coordinate.y,
+                //     (vectorX * i) + currentField.coordinate.x)!
+                //     .piece)
                 if (this.getFieldByRowAndColumn(
                     (vectorY * i) + currentField.coordinate.y,
                     (vectorX * i) + currentField.coordinate.x)!
@@ -148,5 +177,6 @@ export class GameService {
     setTrashActive(active: boolean) {
         this.isTrashActive = active
         this.addPiecePanels?.forEach(panel => panel.isDeleteIconActive(true))
+        this.board?.setTrashOn()
     }
 }

@@ -174,7 +174,7 @@ export class Field extends React.Component<any, any> {
 
     game = (id: string, event: any) => {
         const color: string = getColorFromLocalStorage()
-        const trashIconChosen: Element = document.querySelector('.navigation__trash')!
+        const trashIconChosen: Element = document.querySelector('.content__trash')!
         const target = event.target
 
         if (!trashIconChosen.classList.contains('navigation__trash--chosen')) {
@@ -184,12 +184,6 @@ export class Field extends React.Component<any, any> {
             } else {
                 moveChess(event)
             }
-        } else if (trashIconChosen.classList.contains('navigation__trash--chosen') && target.className.includes('figure') && !target.classList.value.includes('King')) {
-            target.className = ''
-            target.classList.add('figure')
-            target.classList.add('figure__empty')
-
-            // removeChessFromLocalStorage(this.props.id)
         }
     }
 
@@ -208,13 +202,20 @@ export class Field extends React.Component<any, any> {
     setPiece(piece: Piece) {
         this.piece = piece
         this.piece.coordinate = this.coordinate
-        this.setState({img:this.piece.getImageUrl()})
+        this.setState({img: this.piece.getImageUrl()})
         this.setActive(true)
     }
 
     removePiece() {
         this.piece = undefined
         this.setState({img: ''})
+    }
+
+    setPiecePosition(piece: Piece, event: any) {
+        const coordinateX = event.clientX
+        const coordinateY = event.clientY
+        // document.body.style.cursor = 'none'
+        this.gameService.movePiece(piece, coordinateX, coordinateY)
     }
 
     render() {
@@ -226,6 +227,7 @@ export class Field extends React.Component<any, any> {
                     this.gameService.fieldClick(this)
                     this.game(this.props.id, event)
                 }}
+                onMouseDown={event =>this.setPiecePosition(this.piece!,event)}
                 id={this.props.id}
             > {this.piece ?
                 <img
@@ -233,6 +235,7 @@ export class Field extends React.Component<any, any> {
                     id={this.props.id}
                     alt={''}
                     src={this.state.img}
+                    draggable={false}
 
                     // onMouseDown={event => moveFigure(event,props.className,props.id)}
                     // onMouseMove={event => mouseMoveFigure(event)}

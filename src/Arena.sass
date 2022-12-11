@@ -7,7 +7,7 @@
   -moz-user-select: none
   -webkit-user-select: none
 
-.navigation
+.content
   display: flex
   width: 100%
   height: 100%
@@ -18,7 +18,6 @@
 
   &__trash
     background-image: url('icons/garbage-trash-svgrepo-com.svg')
-    display: flex
     width: 100%
     height: 100%
     background-size: 70% 70%
@@ -113,11 +112,9 @@
     position: absolute
     width: 10%
     height: auto
-    justify-content: center
     align-items: center
     top: 10px
     right: 1%
-    gap: 10px
     flex-direction: column
     background-color: gray
     border-style: solid
@@ -139,32 +136,16 @@
       right: 1%
       bottom: 10px
 
-    &--editor
-      display: flex
-      width: auto
-      height: auto
-
-    &--start
-      display: flex
-      width: auto
-      height: auto
-
   &__add-figure
-    display: flex
     width: 7%
     height: 60%
     align-items: center
-    justify-content: center
     flex-direction: column
     border-style: solid
     border-color: grey
     background-color: saddlebrown
 
   &__whose-turn
-    display: flex
-    width: auto
-    height: auto
-    text-align: center
     color: aliceblue
 
   &__color
@@ -174,11 +155,7 @@
 
 
 .figure
-  display: flex
   height: 100%
-  background-size: contain
-  background-position: center
-  background-repeat: no-repeat
 
   &__add
     height: 16%
@@ -207,8 +184,8 @@
     background-repeat: no-repeat
 
   &__move
-    width: 10%
-    height: 10%
+    width: 4%
+    height: 8%
     display: flex
     background-size: contain
     background-position: center
@@ -325,3 +302,6 @@
 
 .history:hover .history__number
   width: 20%
+
+button
+  margin: 5%

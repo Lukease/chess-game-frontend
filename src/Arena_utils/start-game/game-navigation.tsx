@@ -1,7 +1,4 @@
 import React from 'react'
-import {getHistoryFromLocalStorage} from '../data-base'
-import {renderHistoryFromLocalStorage} from '../history'
-import {LastMove} from '../../types'
 import {GameService} from '../suppliers/game-service'
 
 export class GameNavigation extends React.Component<any, any> {
@@ -21,12 +18,7 @@ export class GameNavigation extends React.Component<any, any> {
 
     startGame = () => {
         this.setState({isGameStarted: true})
-
-        const historyOfMoves: Array<LastMove> = getHistoryFromLocalStorage()!
-
-        if (historyOfMoves) {
-            renderHistoryFromLocalStorage(historyOfMoves)
-        }
+        this.gameService.setGameStarted(true)
     }
 
     changeTurn(color: string) {
@@ -44,31 +36,17 @@ export class GameNavigation extends React.Component<any, any> {
         return (
             <div className={'game__navigation'}>
                 <button
-                    className={'game__navigation--start'}
                     onClick={this.startGame}
                     disabled={this.state.isGameStarted}
                 >
                     Start Game
                 </button>
                 <button
-                    className={'game__navigation--editor'}
                     onClick={this.changePositionEditorDisplayed}
                     disabled={this.state.isGameStarted}
                 >
                     Position Editor
                 </button>
-                <div
-                    className={'game__whose-turn'}
-                >
-                    Whose turn:
-                </div>
-                <div
-                    id={'color'}
-                    className={'game__color'}
-                >
-                    {this.state.color}
-                </div>
-
             </div>
         )
     }
