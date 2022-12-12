@@ -248,7 +248,23 @@
   border-style: solid
   border-color: aliceblue
   border-radius: 6px
-  opacity: 0.7
+  opacity: 0.8
+  display: flex
+  align-items: center
+  justify-content: center
+
+  &__player
+    position: absolute
+    display: flex
+    right: 1%
+    top: 45%
+    width: 5%
+    background-color: gray
+    border-radius: 20px
+    border-style: solid
+    border-color: aliceblue
+    flex-direction: column
+
 
   &__new-figure
     min-width: 10%
@@ -305,3 +321,6 @@
 
 button
   margin: 5%
+
+.game__add-figure > .figure:hover
+  background-color: aqua

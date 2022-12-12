@@ -5,10 +5,6 @@ import {
     FieldNumber,
     Letter
 } from './Arena_utils/fields-settings'
-import {
-    editorAddNewFigure,
-    hideShowFigures
-} from './Arena_utils/new-figure'
 import {GameNavigation} from './Arena_utils/start-game'
 import {
     setArrayToLocalStorage,
@@ -22,14 +18,17 @@ import {
 import {setCheckToLocalStorage} from './Arena_utils/data-base/check'
 import {setSpecialMoveToLocalStorage} from './Arena_utils/data-base'
 import {Piece} from './Arena_utils/chess-possible-move'
-import {CoordinateService} from "./Arena_utils/suppliers/coordinate-service"
-import {GameService} from "./Arena_utils/suppliers/game-service"
-import {AddPiecePanel} from "./Arena_utils/new-figure"
+import {CoordinateService} from './Arena_utils/suppliers/coordinate-service'
+import {GameService} from './Arena_utils/suppliers/game-service'
+import {AddPiecePanel} from './Arena_utils/new-figure'
+import {SelectPlayer} from './Arena_utils/start-game/select-player'
+import {MovingService} from './Arena_utils/suppliers/moving-service'
 
 export class Board extends React.Component<any, any> {
     pieces: Array<Piece>
     gameService: GameService
     allFields: Array<Field>
+    movingService: MovingService
 
     constructor(props: any) {
         super(props)
@@ -37,11 +36,13 @@ export class Board extends React.Component<any, any> {
         this.deletePiece = this.deletePiece.bind(this)
         this.pieces = props.pieces
         this.gameService = props.gameService
+        this.movingService = props.movingService
         this.allFields = []
         this.state = {
             isTrashOn: false,
         }
 
+        this.movingService.board = this
         this.gameService.board = this
     }
 
@@ -67,10 +68,8 @@ export class Board extends React.Component<any, any> {
         }
     }
 
-    setTrashOn() {
-        const isOn: boolean = this.state.isTrashOn
-
-        this.setState({isTrashOn: !isOn})
+    setTrashToggle(active: boolean) {
+        this.setState({isTrashOn: !active})
     }
 
     renderLetters() {
@@ -94,7 +93,7 @@ export class Board extends React.Component<any, any> {
 
             return (
                 <FieldNumber
-                    value={index}
+                    value={-index + 8}
                     key={index}
                     site={site}
                 />
@@ -116,8 +115,9 @@ export class Board extends React.Component<any, any> {
                     columnNumber={boardColumn}
                     piece={currentPiece}
                     key={`${letter}${boardRow}`}
-                    color={(boardColumn + boardRow) % 2 ? 'black' : 'white'}
+                    color={(boardColumn + boardRow) % 2 ? 'white' : 'black'}
                     gameService={this.gameService}
+                    movingService={this.movingService}
                 />
             )
         })
@@ -172,21 +172,27 @@ export class Board extends React.Component<any, any> {
 export class Arena extends React.Component<any, any> {
     pieces: Array<Piece>
     gameService: GameService
+    kings: Array<Piece>
+    movingService: MovingService
 
     constructor(props: any) {
         super(props)
 
         this.gameService = this.props.gameService
+        this.movingService = this.props.movingService
         this.pieces = defaultChessArrangement
+        this.kings = this.pieces.filter(piece => piece.name === 'King')
         this.setDefaultChessPosition = this.setDefaultChessPosition.bind(this)
         this.state = {
             isMovingPiece: false,
             selectedPiece: '',
             coordinateX: 0,
             coordinateY: 0,
-            changingPieceId: ''
+            movingId: '',
+            newPieceId: ''
         }
         this.gameService.arena = this
+        this.movingService.arena = this
     }
 
 
@@ -204,22 +210,25 @@ export class Arena extends React.Component<any, any> {
         setCorrectMovesOfOpponentToLocalStorage(opponentMovesIdsArray)
     }
 
-    setMovingPiece(isMoving: boolean, piece: Piece, x: number, y: number) {
+    setMovingPiece(isMoving: boolean, piece: Piece, x: number, y: number, id: string) {
         this.setState({
             isMovingPiece: isMoving,
             selectedPiece: piece,
-            coordinateX: x - 50,
-            coordinateY: y - 50,
+            movingId: id? id : '',
+            coordinateX: x - 30,
+            coordinateY: y - 30,
         })
     }
 
     editorMouseMoveFigure = (event: any) => {
         if (this.state.isMovingPiece) {
-            let x: number = event.clientX - 50
+            let x: number = event.clientX - 30
             let y: number = event.clientY - 30
 
-            this.setState({coordinateX: x, coordinateY: y})
-
+            this.setState({
+                coordinateX: x,
+                coordinateY: y
+            })
         }
     }
 
@@ -227,14 +236,17 @@ export class Arena extends React.Component<any, any> {
         if (this.state.isMovingPiece) {
             this.setState({isMovingPiece: false})
             document.body.style.cursor = 'auto'
+            let newPieceId: string
 
             const mouseUpTarget = document.elementsFromPoint(this.state.coordinateX, this.state.coordinateY)
 
             mouseUpTarget.forEach(element => {
                 if (element.id !== '' && element.id !== 'root') {
-                    this.setState({changingPieceId: element.id})
+                    this.setState({newPieceId: element.id})
+                    newPieceId = element.id
                 }
             })
+            this.movingService.setCurrentPiecePosition(newPieceId!,this.state.selectedPiece,this.state.movingId)
         }
     }
 
@@ -243,7 +255,6 @@ export class Arena extends React.Component<any, any> {
             <div className={'content'}
                  onMouseMove={this.editorMouseMoveFigure}
                  onMouseUp={() => this.addNewPieceToField()}
-                 onClick={event => hideShowFigures(event)}
             >
                 {
                     this.state.isMovingPiece ?
@@ -262,10 +273,9 @@ export class Arena extends React.Component<any, any> {
                             draggable={false}
                         >
 
-                        </img> : <div
-                            style={
-                            { position: 'absolute' }
-                        }
+                        </img> :
+                        <div
+                            style={{ position: 'absolute' }}
                         >
                         </div>
                 }
@@ -274,20 +284,25 @@ export class Arena extends React.Component<any, any> {
                     color={'white'}
                     pieces={this.pieces}
                     gameService={this.gameService}
-                    movingPiece={this.props.movingPiece}
+                    movingService={this.props.movingService}
                 />
                 <GameNavigation
                     gameService={this.gameService}
+                    movingService={this.movingService}
                 />
                 <Board
                     gameService={this.gameService}
+                    movingService={this.props.movingService}
                     pieces={this.pieces}
                 />
                 <AddPiecePanel
                     color={'black'}
                     pieces={this.pieces}
                     gameService={this.gameService}
-                    movingPiece={this.props.movingPiece}
+                    movingService={this.movingService}
+                />
+                <SelectPlayer
+                kings={this.kings}
                 />
                 <PromotePawn/>
                 <div

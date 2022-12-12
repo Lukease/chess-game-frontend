@@ -2,17 +2,20 @@ import React from 'react'
 import {Piece} from '../chess-possible-move'
 import {addPieceArrangement} from '../../chess_arrangement/add-Piece-arrangement'
 import {GameService} from '../suppliers/game-service'
+import {MovingService} from "../suppliers/moving-service";
 
 export class AddPiecePanel extends React.Component<any, any> {
     color: string
     pieces: Array<Piece>
     addNewPiece: Array<Piece>
     gameService: GameService
+    movingService: MovingService
 
     constructor(props: any) {
         super(props)
 
         this.gameService = props.gameService
+        this.movingService = props.movingService
         this.pieces = props.pieces
         this.color = this.props.color
         this.addNewPiece = addPieceArrangement(this.color)
@@ -22,7 +25,6 @@ export class AddPiecePanel extends React.Component<any, any> {
             isMoving: false,
             coordinateX: 0,
             coordinateY: 0,
-            selectedPiece: undefined
         }
         this.gameService.addPiecePanels = this.gameService.addPiecePanels.concat(this)
     }
@@ -45,17 +47,17 @@ export class AddPiecePanel extends React.Component<any, any> {
     }
 
     selectPiece = (piece: Piece, event: any) => {
+        const coordinateX = event.clientX
+        const coordinateY = event.clientY
         this.setMoving(true)
         this.setCoordinate(event)
-        this.setState({selectedPiece: piece})
+
+        document.body.style.cursor = 'none'
+        this.movingService.movePiece(piece, coordinateX, coordinateY,'', false)
     }
 
     setCoordinate = (event: any) => {
-        if (this.state.isMoving) {
             this.setState({coordinateX: event.screenX - 50, coordinateY: event.screenY - 30})
-
-            console.log(this.state.coordinateX, this.state.coordinateY)
-        }
     }
 
     setMoving(isMoving: boolean) {
@@ -76,9 +78,7 @@ export class AddPiecePanel extends React.Component<any, any> {
                     key={index}
                     alt={''}
 
-                    onMouseDown={event => this.selectPiece(piece, event)}
-                    onMouseMove={() => this.setCoordinate}
-                    onMouseUp={() => this.removePiece}
+                    onMouseDown={event => this.state.isTrashActive? '' : this.selectPiece(piece, event)}
                 >
                 </img>
             )

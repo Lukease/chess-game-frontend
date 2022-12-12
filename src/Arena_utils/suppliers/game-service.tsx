@@ -3,7 +3,6 @@ import {Coordinate} from '../chess-possible-move/coordinate'
 import {GameNavigation} from '../start-game'
 import {AddPiecePanel} from '../new-figure'
 import {Arena, Board} from '../../Arena'
-import {Piece} from "../chess-possible-move";
 
 export class GameService {
     whiteTurn: boolean
@@ -18,7 +17,6 @@ export class GameService {
     board: Board | undefined
     isGameStarted: boolean = false
     arena: Arena | undefined
-    isMovingPiece: boolean = false
 
     constructor() {
         this.whiteTurn = true
@@ -38,7 +36,7 @@ export class GameService {
                     }
 
                     if (this.previousMove) {
-                        this.setOrRemoveActiveFields(this.possibleMoves, true)
+                        this.setOrRemoveActiveFields(this.previousMove, true)
                     }
 
                     this.activeField = field
@@ -54,24 +52,22 @@ export class GameService {
         }
     }
 
-    movePiece(piece: Piece, coordinateX: number, coordinateY: number) {
-        const isMoving = true
-
-        this.isMovingPiece = isMoving
-        this.arena?.setMovingPiece(isMoving, piece, coordinateX,coordinateY)
-    }
-
     setGameStarted(isGameStarted: boolean) {
         this.isGameStarted = isGameStarted
         this.setPositionEditorDisplayed(false)
         this.isTrashActive = false
+        this.allFields.forEach(field => {
+            field.setGameStarted(true)
+            field.setActiveTrash(false)
+        })
+        this.board?.setTrashToggle(false)
     }
 
     removePieceFromField(field: Field) {
         field.removePiece()
     }
 
-    addField(field: Field) {
+    addFieldToGameService(field: Field) {
         this.allFields = this.allFields.concat(field)
     }
 
@@ -89,7 +85,7 @@ export class GameService {
         this.setOrRemoveActiveFields(this.possibleMoves, false)
         this.previousMove = []
 
-        field.setPiece(this.activeField!.piece!)
+        field.setPiece(this.activeField!.piece!, true)
         this.activeField!.removePiece()
         this.possibleMoves.forEach(field => field.setPossibleMove(false))
         this.changeColor()
@@ -177,6 +173,7 @@ export class GameService {
     setTrashActive(active: boolean) {
         this.isTrashActive = active
         this.addPiecePanels?.forEach(panel => panel.isDeleteIconActive(true))
-        this.board?.setTrashOn()
+        this.board?.setTrashToggle(active)
+        this.allFields.forEach(field => field.setActiveTrash(active))
     }
 }

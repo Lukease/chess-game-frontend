@@ -30,6 +30,8 @@ import {Piece} from '../chess-possible-move'
 import {GameService} from '../suppliers/game-service'
 import {Coordinate} from '../chess-possible-move/coordinate'
 import {CoordinateService} from '../suppliers/coordinate-service'
+import {flushSync} from "react-dom";
+import {MovingService} from "../suppliers/moving-service";
 
 let nameOfFigure: string
 let colorOfFigure: string
@@ -152,6 +154,7 @@ export class Field extends React.Component<any, any> {
     coordinate: Coordinate
     piece: Piece | undefined
     gameService: GameService
+    movingService: MovingService
 
     constructor(props: any) {
         super(props)
@@ -163,13 +166,19 @@ export class Field extends React.Component<any, any> {
         this.piece = props.piece
         this.coordinate = CoordinateService.getCoordinateById(this.id)
         this.gameService = props.gameService
+        this.movingService = props.movingService
         this.state = {
             isChosen: false,
             correctMove: false,
             imageLoaded: false,
-            img: this.props.piece ? this.props.piece.getImageUrl() : ''
+            isMoving: false,
+            isGameStarted: false,
+            img: this.props.piece ? this.props.piece.getImageUrl() : '',
+            isTrashActive: false
         }
-        props.gameService.addField(this)
+        props.gameService.addFieldToGameService(this)
+        props.movingService.addFieldToMovingService(this)
+
     }
 
     game = (id: string, event: any) => {
@@ -191,6 +200,10 @@ export class Field extends React.Component<any, any> {
         return this.state.isChosen
     }
 
+    setActiveTrash(active: boolean) {
+        this.setState({isTrashActive: active})
+    }
+
     setActive(active: boolean) {
         this.setState({isChosen: active})
     }
@@ -199,23 +212,42 @@ export class Field extends React.Component<any, any> {
         this.setState({correctMove: correct})
     }
 
-    setPiece(piece: Piece) {
+    restorePiece() {
+        this.setMoving(false)
+    }
+
+    setPiece(piece: Piece, active: boolean) {
         this.piece = piece
         this.piece.coordinate = this.coordinate
         this.setState({img: this.piece.getImageUrl()})
-        this.setActive(true)
+
+        if (active) {
+            this.setActive(true)
+        }
+        this.setMoving(false)
     }
 
     removePiece() {
         this.piece = undefined
         this.setState({img: ''})
+        this.setMoving(false)
     }
 
-    setPiecePosition(piece: Piece, event: any) {
+    setMoving(move: boolean) {
+        this.setState({isMoving: move})
+    }
+
+    setPiecePosition(field: Field, event: any) {
         const coordinateX = event.clientX
         const coordinateY = event.clientY
-        // document.body.style.cursor = 'none'
-        this.gameService.movePiece(piece, coordinateX, coordinateY)
+
+        this.setMoving(true)
+        document.body.style.cursor = 'none'
+        this.movingService.movePiece(field.piece!, coordinateX, coordinateY,field.id, true)
+    }
+
+    setGameStarted(isGameStarted: boolean) {
+        this.setState({isGameStarted: isGameStarted})
     }
 
     render() {
@@ -227,7 +259,7 @@ export class Field extends React.Component<any, any> {
                     this.gameService.fieldClick(this)
                     this.game(this.props.id, event)
                 }}
-                onMouseDown={event =>this.setPiecePosition(this.piece!,event)}
+                onMouseDown={event => this.state.isGameStarted || this.state.isTrashActive ? '' : this.setPiecePosition(this!, event)}
                 id={this.props.id}
             > {this.piece ?
                 <img
@@ -236,6 +268,7 @@ export class Field extends React.Component<any, any> {
                     alt={''}
                     src={this.state.img}
                     draggable={false}
+                    style={{display: this.state.isMoving ? 'none' : 'block'}}
 
                     // onMouseDown={event => moveFigure(event,props.className,props.id)}
                     // onMouseMove={event => mouseMoveFigure(event)}
