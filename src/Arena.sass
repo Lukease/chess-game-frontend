@@ -1,8 +1,6 @@
 #root
   width: 100vw
   height: 100vh
-  display: flex
-  justify-content: center
   background-color: black
   -moz-user-select: none
   -webkit-user-select: none
@@ -11,42 +9,24 @@
   display: flex
   width: 100%
   height: 100%
-  flex-direction: row
   align-items: center
   justify-content: center
   gap: 10px
+  flex-direction: column
+  background-image: linear-gradient(#413f3f, black)
 
   &__trash
     background-image: url('icons/garbage-trash-svgrepo-com.svg')
-    width: 100%
-    height: 100%
+    width: 90px
+    height: 60px
     background-size: 70% 70%
     background-position: center
     background-repeat: no-repeat
-    border-style: none
-    background-color: #72380a
-
-.arena
-  width: 100%
-  height: 80%
-  display: flex
-
-  &__chess
-    display: flex
-    width: 86%
-    height: 100%
-
-  &__numbers
-    display: flex
-    width: 10%
-    height: 100%
-    flex-direction: column
 
 .field
   display: flex
-  width: 100%
-  height: 12.5%
-  border-style: solid
+  width: 90px
+  height: 90px
   justify-content: center
   align-items: center
 
@@ -68,44 +48,23 @@
 
   &__column
     display: flex
-    width: 12.5%
-    height: 100%
+    height: 600px
     flex-direction: column
-
-  &__number
-    display: flex
-    width: 100%
-    height: 12.5%
-    justify-content: center
-    align-items: center
-    font-size: 140%
-    flex-direction: row
-
-  &__letter
-    display: flex
-    width: 12.5%
-    height: 100%
-    justify-content: center
-    align-items: center
-    font-size: 140%
 
 .game
   display: flex
-  flex-direction: column
-  width: 58%
-  height: 93%
+  width: 720px
+  height: 600px
   border-style: solid
-  background-color: saddlebrown
 
-  &__letters
-    display: flex
-    width: 100%
-    height: 10%
-    flex-direction: row
-
-  &__numbers
+  &__arena
+    width: 800px
+    height: 800px
     display: flex
     flex-direction: column
+    align-items: center
+    justify-content: center
+    gap: 10px
 
   &__navigation
     display: flex
@@ -121,30 +80,6 @@
     border-color: aliceblue
     border-radius: 20px
 
-    &--default
-      position: fixed
-      width: 7%
-      height: 7%
-      border-color: aliceblue
-      border-style: solid
-      border-radius: 40px
-      background-image: url('icons/refresh1.webp')
-      background-size: contain
-      background-color: gray
-      background-position: center
-      background-repeat: no-repeat
-      right: 1%
-      bottom: 10px
-
-  &__add-figure
-    width: 7%
-    height: 60%
-    align-items: center
-    flex-direction: column
-    border-style: solid
-    border-color: grey
-    background-color: saddlebrown
-
   &__whose-turn
     color: aliceblue
 
@@ -153,9 +88,22 @@
     text-align: center
     color: aliceblue
 
+.panel
+  display: flex
+  width: 715px
+  height: 60px
+
+  &__add
+    display: flex
+    width: 75%
+    align-items: center
+    justify-content: space-between
+    background-color: #6E6D70
 
 .figure
-  height: 100%
+  display: flex
+  height: 70px
+  width: 70px
 
   &__add
     height: 16%
@@ -239,6 +187,21 @@
     width: 40%
     text-align: center
 
+.refresher
+  position: fixed
+  width: 50px
+  height: 50px
+  border-color: aliceblue
+  border-style: solid
+  border-radius: 40px
+  background-image: url('icons/refresh1.webp')
+  background-size: contain
+  background-color: gray
+  background-position: center
+  background-repeat: no-repeat
+  right: 20px
+  bottom: 10px
+
 .select
   width: 100vw
   height: 100vh
@@ -256,14 +219,16 @@
   &__player
     position: absolute
     display: flex
-    right: 1%
+    right: 20px
     top: 45%
-    width: 5%
+    width: 50px
     background-color: gray
     border-radius: 20px
     border-style: solid
     border-color: aliceblue
     flex-direction: column
+    align-items: center
+    padding: 5px
 
 
   &__new-figure
@@ -319,8 +284,38 @@
 .history:hover .history__number
   width: 20%
 
-button
-  margin: 5%
-
 .game__add-figure > .figure:hover
   background-color: aqua
+
+button
+  margin: 5px
+
+.select__player > img:hover
+  background-color: aqua
+
+@media only screen and (max-width: 877px)
+  .game
+    width: 100%
+
+  .game__arena
+      width: 400px
+      height: 540px
+
+  .game__add-figure
+      width: 100%
+
+  .field
+    width: 50px
+    height: 50px
+
+  .figure
+    height: 50px
+    width: 50px
+
+  .field__column
+    height: 400px
+
+  .panel
+    width: 100%
+
+

@@ -1,8 +1,0 @@
-export { blackWhiteChangeTurn } from './black-white-change-turn'
-export { removePossibleMoves } from './remove-possible-moves'
-export { showPossibleMoves } from './show-possible-moves'
-export { removeChosenField } from './remove-chosen-field'
-export { showNewFigureForPlayer } from './promotion-of-pawn'
-export { PromotePawn } from './promotion-of-pawn'
-export { endGame } from './end-game'
-export { castleKing } from './castle-king'

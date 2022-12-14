@@ -1,4 +1,5 @@
-import {Bishop, Knight, Pawn, Piece, Queen, Rook} from '../Arena_utils/chess-possible-move'
+import {Bishop, Knight, Pawn, Piece, Queen, Rook} from '../game/pieces'
+
 
 export const addPieceArrangement = (color: string) => {
     const pieceArrangement: Array<Piece> = [
