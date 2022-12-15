@@ -5,7 +5,7 @@ import {defaultChessArrangement} from '../chess_arrangement'
 import {GameService, MovingService} from '../game/suppliers'
 import {AddPiecePanel} from './new-figure'
 import {SelectPlayer} from './start-game'
-import {PromotePawn} from '../game/chess-possible-move'
+import {PromotePawnPanel} from '../game/chess-possible-move'
 import {HistoryOfMoves} from './history'
 import {Board} from './board'
 import {King, Piece} from '../game/pieces'
@@ -30,13 +30,11 @@ export class Arena extends React.Component<any, any> {
             coordinateX: 0,
             coordinateY: 0,
             movingId: '',
-            newPieceId: '',
-            isPawnPromote: false
+            newPieceId: ''
         }
         this.gameService.arena = this
         this.movingService.arena = this
     }
-
 
     setDefaultChessPosition() {
         window.location.reload()
@@ -111,6 +109,10 @@ export class Arena extends React.Component<any, any> {
                         >
                         </div>
                 }
+                <GameNavigation
+                    gameService={this.gameService}
+                    movingService={this.movingService}
+                />
                 <HistoryOfMoves/>
                 <div className={'game__arena'}>
                     <AddPiecePanel
@@ -118,10 +120,6 @@ export class Arena extends React.Component<any, any> {
                         pieces={this.pieces}
                         gameService={this.gameService}
                         movingService={this.props.movingService}
-                    />
-                    <GameNavigation
-                        gameService={this.gameService}
-                        movingService={this.movingService}
                     />
                     <Board
                         gameService={this.gameService}
@@ -134,13 +132,14 @@ export class Arena extends React.Component<any, any> {
                         gameService={this.gameService}
                         movingService={this.movingService}
                     />
+                    <PromotePawnPanel
+                        gameService={this.gameService}
+                        arena={this}
+                    />
                 </div>
                 <SelectPlayer
                     kings={this.kings}
-                />{this.state.isPawnPromote ?
-                <PromotePawn/> :
-                <div style={{position: 'absolute'}}></div>}
-
+                />
                 <div
                     className={'refresher'}
                     onClick={this.setDefaultChessPosition}

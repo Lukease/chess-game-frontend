@@ -55,16 +55,17 @@
   display: flex
   width: 720px
   height: 600px
-  border-style: solid
 
   &__arena
-    width: 800px
+    position: relative
+    width: 720px
     height: 800px
     display: flex
     flex-direction: column
     align-items: center
     justify-content: center
     gap: 10px
+    z-index: 1
 
   &__navigation
     display: flex
@@ -75,18 +76,8 @@
     top: 10px
     right: 1%
     flex-direction: column
-    background-color: gray
-    border-style: solid
-    border-color: aliceblue
+    background-color: #343232
     border-radius: 20px
-
-  &__whose-turn
-    color: aliceblue
-
-  &__color
-    display: flex
-    text-align: center
-    color: aliceblue
 
 .panel
   display: flex
@@ -98,12 +89,14 @@
     width: 75%
     align-items: center
     justify-content: space-between
-    background-color: #6E6D70
+    background-color: #5d5656
+    border-radius: 20px
 
 .figure
   display: flex
   height: 70px
   width: 70px
+  z-index: 2
 
   &__add
     height: 16%
@@ -112,16 +105,13 @@
     width: 40%
     height: 40%
     border-radius: 50%
-    background-size: contain
-    background: #66d97f no-repeat center
+    background: #66d97f center
 
   &__move-figure
     height: 90%
     border-radius: 50%
-    background-size: contain
     border-style: solid
-    border-color: #75d98b
-    background: no-repeat center
+    border-color: #66d97f
 
   &__add
     width: 100%
@@ -147,15 +137,12 @@
   left: 1%
   min-width: 5%
   min-height: 8%
-  background-color: gray
-  border-style: solid
-  border-color: aliceblue
+  background-color: #343232
   border-radius: 20px
   text-align: center
 
   &__nav
     display: flex
-    border-top: aliceblue solid
     padding: 8px
     flex-direction: column
     overflow-y: auto
@@ -171,7 +158,6 @@
     padding: 6px 14px
     border-radius: 6px
     border: none
-    background: #6E6D70
     box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.5), 0 0 0 0.5px rgba(0, 0, 0, 0.12)
     color: #DFDEDF
 
@@ -191,12 +177,10 @@
   position: fixed
   width: 50px
   height: 50px
-  border-color: aliceblue
-  border-style: solid
   border-radius: 40px
   background-image: url('icons/refresh1.webp')
   background-size: contain
-  background-color: gray
+  background-color: #343232
   background-position: center
   background-repeat: no-repeat
   right: 20px
@@ -205,16 +189,21 @@
 .select
   width: 100vw
   height: 100vh
-  position: fixed
-  flex-direction: column
-  background-color: black
-  border-style: solid
-  border-color: aliceblue
+  position: absolute
+  background-color: rgba(0,0,0,0.2)
   border-radius: 6px
-  opacity: 0.8
+  opacity: 0.4
   display: flex
   align-items: center
   justify-content: center
+
+  &__promotion
+    position: absolute
+    display: flex
+    flex-direction: row
+    top: 10px
+    right: 0
+    width: 360px
 
   &__player
     position: absolute
@@ -222,14 +211,12 @@
     right: 20px
     top: 45%
     width: 50px
-    background-color: gray
+    background-color: #343232
     border-radius: 20px
-    border-style: solid
-    border-color: aliceblue
     flex-direction: column
     align-items: center
+    justify-content: center
     padding: 5px
-
 
   &__new-figure
     min-width: 10%
@@ -239,38 +226,21 @@
     border-radius: 10%
     border-style: solid
     font-size: 220%
-    background: #6E6D70 no-repeat center
+    background: #343232 no-repeat center
     opacity: 4
     color: rgba(255, 255, 255, 1)
 
-  &__nav
-    width: 10%
-    height: 20%
-    position: absolute
-    margin-left: 45vw
-    margin-top: 35vh
 
 .select__new-figure:hover
   background-color: aqua
 
-.figure__move-empty:hover
-  width: 100%
-  height: 100%
-  background-color: #75d98b
-  border-radius: 0
-  opacity: 0.5
-  background-size: contain
-  background-position: center
-  background-repeat: no-repeat
+.field:has(.figure__move-empty):hover
+  background-color:  #66d97f
+  opacity: 0.9
 
-.figure__move-figure:hover
-  height: 100%
-  background-color: #75d98b
-  border-radius: 0
-  opacity: 0.5
-  background-size: contain
-  background-position: center
-  background-repeat: no-repeat
+.field:has(.figure__move-figure):hover
+  background-color:  #66d97f
+  opacity: 0.9
 
 .history__button:hover
   background-color: aqua
@@ -284,25 +254,32 @@
 .history:hover .history__number
   width: 20%
 
-.game__add-figure > .figure:hover
+.panel > .figure:hover
   background-color: aqua
 
 button
   margin: 5px
 
+div
+  color: #7a746b
+
 .select__player > img:hover
   background-color: aqua
+
+.select__promotion > div:hover
+  background-image: linear-gradient(#c7783f, red)
+  border-radius: 40px
 
 @media only screen and (max-width: 877px)
   .game
     width: 100%
 
   .game__arena
-      width: 400px
-      height: 540px
+    width: 400px
+    height: 540px
 
   .game__add-figure
-      width: 100%
+    width: 100%
 
   .field
     width: 50px

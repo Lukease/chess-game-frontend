@@ -1,6 +1,6 @@
 import {Piece} from './piece'
-import {MovingStrategies} from '../suppliers/moving-strategy-service'
-import {Vector2d} from '../chess-possible-move/2d-vestors'
+import {MovingStrategies} from '../suppliers'
+import {Vector2d} from '../chess-possible-move'
 
 export class Bishop extends Piece {
     constructor(color: string, id: string, name: string) {

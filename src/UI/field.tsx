@@ -71,7 +71,7 @@ export class Field extends React.Component<any, any> {
         if (active) {
             this.setActive(true)
         }
-        this.setMoving(false)
+            this.setMoving(false)
     }
 
     removePiece() {

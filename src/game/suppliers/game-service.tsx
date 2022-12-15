@@ -4,7 +4,7 @@ import {Arena} from '../../UI/Arena'
 import {Field} from '../../UI'
 import {Board} from '../../UI/board'
 import {Pawn, Piece} from '../pieces'
-import {Coordinate, Vector2d} from '../chess-possible-move'
+import {Coordinate, PromotePawnPanel, Vector2d} from '../chess-possible-move'
 
 export class GameService {
     whiteTurn: boolean
@@ -19,6 +19,8 @@ export class GameService {
     board: Board | undefined
     isGameStarted: boolean = false
     arena: Arena | undefined
+    promotePawnPanel: PromotePawnPanel | undefined
+    promotedField: Field | undefined
 
     constructor() {
         this.whiteTurn = true
@@ -52,7 +54,20 @@ export class GameService {
 
         if (field.state.correctMove) {
             this.makeMove(field)
+            this.renderPawnPromotion(field)
         }
+    }
+
+    renderPawnPromotion(field: Field) {
+        if (field.piece instanceof Pawn && (field.coordinate.y === 1 || field.coordinate.y === 8)) {
+            this.promotePawnPanel?.setColorOfPieces(field.piece.color, field.coordinate.x)
+            this.promotePawnPanel?.pawnPromotion(true)
+            this.promotedField = field
+        }
+    }
+
+    setPromotedFigureToField(piece: Piece) {
+        this.promotedField?.setPiece(piece, false)
     }
 
     setGameStarted(isGameStarted: boolean) {
