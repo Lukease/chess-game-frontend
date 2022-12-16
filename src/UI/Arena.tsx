@@ -113,7 +113,9 @@ export class Arena extends React.Component<any, any> {
                     gameService={this.gameService}
                     movingService={this.movingService}
                 />
-                <HistoryOfMoves/>
+                <HistoryOfMoves
+                    gameService={this.gameService}
+                />
                 <div className={'game__arena'}>
                     <AddPiecePanel
                         color={'black'}
@@ -139,6 +141,7 @@ export class Arena extends React.Component<any, any> {
                 </div>
                 <SelectPlayer
                     kings={this.kings}
+                    gameService={this.gameService}
                 />
                 <div
                     className={'refresher'}

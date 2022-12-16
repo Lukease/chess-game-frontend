@@ -1,7 +1,7 @@
 import React from 'react'
 import {addPieceArrangement} from '../../chess_arrangement'
-import {Pawn, Piece} from '../pieces'
-import {GameService} from '../suppliers'
+import {Pawn, Piece} from '../../game/pieces'
+import {GameService} from '../../game/suppliers'
 
 export class PromotePawnPanel extends React.Component<any, any> {
     gameService: GameService
@@ -18,7 +18,7 @@ export class PromotePawnPanel extends React.Component<any, any> {
         this.gameService.promotePawnPanel = this
     }
 
-    pawnPromotion(display: boolean) {
+    renderPawnPromotion(display: boolean) {
         this.setState({
             isPawnPromotionDisplayed: display
         })
@@ -26,7 +26,8 @@ export class PromotePawnPanel extends React.Component<any, any> {
 
     SelectFigure(piece: Piece) {
         this.gameService.setPromotedFigureToField(piece)
-        this.pawnPromotion(false)
+        this.renderPawnPromotion(false)
+        this.gameService.setPawnPromotionDisplayed(false)
     }
 
     setColorOfPieces(pieceColor: string, columnNumber: number) {

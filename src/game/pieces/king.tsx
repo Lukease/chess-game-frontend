@@ -1,6 +1,6 @@
 import {Piece} from './piece'
-import {MovingStrategies} from "../suppliers/moving-strategy-service"
-import {Vector2d} from '../chess-possible-move/2d-vestors'
+import {MovingStrategies} from "../suppliers"
+import {Vector2d} from '../chess-possible-move'
 
 export class King extends Piece {
     constructor(color: string, id: string, name: string) {
@@ -22,6 +22,14 @@ export class King extends Piece {
     }
 
     canMoveMultipleSquares(): boolean {
+        return false
+    }
+
+    getPieceIcon(): string {
+        return '♔'
+    }
+
+    canGoToTheSameField(): boolean {
         return false
     }
 }

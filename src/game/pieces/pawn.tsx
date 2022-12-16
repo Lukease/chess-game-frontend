@@ -1,5 +1,5 @@
 import {Piece} from './piece'
-import {MovingStrategies} from '../suppliers/moving-strategy-service'
+import {MovingStrategies} from '../suppliers'
 import {Vector2d} from '../chess-possible-move'
 
 export class Pawn extends Piece {
@@ -21,6 +21,14 @@ export class Pawn extends Piece {
     }
 
     canMoveMultipleSquares(): boolean {
+        return false
+    }
+
+    getPieceIcon(): string {
+        return ''
+    }
+
+    canGoToTheSameField(): boolean {
         return false
     }
 }

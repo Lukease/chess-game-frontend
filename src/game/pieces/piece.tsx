@@ -46,5 +46,10 @@ export abstract class Piece {
     }
 
     abstract canMoveMultipleSquares(): boolean
+
+    abstract getPieceIcon(): string
+
+    abstract canGoToTheSameField(): boolean
 }
+
 

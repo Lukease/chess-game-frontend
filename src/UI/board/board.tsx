@@ -19,10 +19,24 @@ export class Board extends React.Component<any, any> {
         this.allFields = []
         this.state = {
             isTrashOn: false,
+            vector: -1,
+            isPawnPromotion: false
         }
 
         this.movingService.board = this
         this.gameService.board = this
+    }
+
+    setPawnPromotionMode(isDisplay: boolean) {
+        this.setState({
+            isPawnPromotion: isDisplay
+        })
+    }
+
+    setVectorDirection(direction: number) {
+        this.setState({
+            vector: direction
+        })
     }
 
     getPieceById(id: string) {
@@ -53,7 +67,7 @@ export class Board extends React.Component<any, any> {
 
     renderAllFields(letter: string, boardColumn: number) {
         let output: Array<JSX.Element> = Array.apply(null, Array(8)).map((x, index) => {
-            const boardRow: number = -index + 8
+            const boardRow: number = this.state.vector === -1 ? -index + 8 : index + 1
             const currentPiece: Piece = this.getPieceById(`${letter}${boardRow}`)
 
             return (
@@ -82,6 +96,7 @@ export class Board extends React.Component<any, any> {
                      key={letter}
                 >
                     {this.renderAllFields(letter, boardColumn)}
+                    {this.state.isPawnPromotion? <div className={'select'}></div> : <div style={{position:'absolute'}}></div>}
                 </div>
             )
 

@@ -1,10 +1,12 @@
-import {GameNavigation} from '../../UI/start-game'
+import {GameNavigation, SelectPlayer} from '../../UI/start-game'
 import {AddPiecePanel} from '../../UI/new-figure'
 import {Arena} from '../../UI/Arena'
 import {Field} from '../../UI'
 import {Board} from '../../UI/board'
 import {Pawn, Piece} from '../pieces'
 import {Coordinate, PromotePawnPanel, Vector2d} from '../chess-possible-move'
+import {Move} from '../../UI/history/move'
+import {HistoryOfMoves} from "../../UI/history";
 
 export class GameService {
     whiteTurn: boolean
@@ -21,6 +23,12 @@ export class GameService {
     arena: Arena | undefined
     promotePawnPanel: PromotePawnPanel | undefined
     promotedField: Field | undefined
+    selectPlayer: SelectPlayer | undefined
+    playerColor: number = -1
+    historyOfMoves: HistoryOfMoves | undefined
+    moveHistory: Array<string> = []
+    arrayOfMoves: Array<Move> = []
+    whiteMove: Move | undefined
 
     constructor() {
         this.whiteTurn = true
@@ -58,12 +66,29 @@ export class GameService {
         }
     }
 
+    setPlayerColor(vector: number) {
+        this.playerColor = vector
+        this.board?.setVectorDirection(vector)
+    }
+
+    toggleSide() {
+        const vector = this.playerColor === 1 ? -1 : 1
+
+        this.playerColor = vector
+        this.board?.setVectorDirection(vector)
+    }
+
     renderPawnPromotion(field: Field) {
         if (field.piece instanceof Pawn && (field.coordinate.y === 1 || field.coordinate.y === 8)) {
             this.promotePawnPanel?.setColorOfPieces(field.piece.color, field.coordinate.x)
-            this.promotePawnPanel?.pawnPromotion(true)
+            this.promotePawnPanel?.renderPawnPromotion(true)
             this.promotedField = field
+            this.setPawnPromotionDisplayed(true)
         }
+    }
+
+    setPawnPromotionDisplayed(displayed: boolean) {
+        this.board?.setPawnPromotionMode(displayed)
     }
 
     setPromotedFigureToField(piece: Piece) {
@@ -111,9 +136,31 @@ export class GameService {
         this.possibleMoves.forEach(field => field?.setPossibleMove(isPossible))
     }
 
+    fieldFrom(destinationField: Field) {
+        const selectedField = this.activeField!
+        const selectedFieldCoordinate = selectedField.coordinate
+
+        if (selectedField.piece?.canGoToTheSameField()) {
+            const secondPiece = this.allFields.filter(field => field.piece?.name === selectedField.piece?.name
+                && field.piece?.color === selectedField.piece?.color)
+                .find(field => field.piece !== selectedField.piece)
+
+            if (secondPiece) {
+                const canGoTheSameField = this.getCorrectMoves(secondPiece).find(field => field.id === destinationField.id)
+                if (canGoTheSameField) {
+                    return secondPiece.coordinate.boardRow === selectedFieldCoordinate.boardRow ?
+                        selectedFieldCoordinate.boardColumn.toLowerCase() : selectedFieldCoordinate.boardRow
+                }
+            }
+        }
+        return ''
+    }
+
     makeMove(field: Field) {
+        const fieldFrom = this.fieldFrom(field)
+        const move = new Move('', this.activeField!, field, fieldFrom, undefined)
+        this.addMoveToHistory(fieldFrom, move)
         this.setActiveFields(this.previousMove, false)
-        this.previousMove = []
 
         field.setPiece(this.activeField!.piece!, true)
         this.activeField!.removePiece()
@@ -121,6 +168,17 @@ export class GameService {
         this.changeColor()
         const previousMove = this.activeField!
         this.previousMove = [field, previousMove]
+        this.toggleSide()
+    }
+
+    addMoveToHistory(history: string, move: Move) {
+        this.arrayOfMoves = this.arrayOfMoves.concat(move)
+        this.moveHistory = this.moveHistory.concat(history)
+
+    }
+
+    passArrayOfAllFields(): Array<Field> {
+        return this.allFields
     }
 
     setActiveFields(fields: Array<Field>, active: boolean) {
@@ -179,7 +237,6 @@ export class GameService {
         }
     }
 
-
     getCorrectMoves(currentField: Field): Array<Field> {
 
         const correct = currentField.piece!.getAllPossibleDirectionsWithColor()
@@ -205,39 +262,6 @@ export class GameService {
         return false
     }
 
-    isEmptyOrEnemy(field: Field): boolean {
-        return false
-    }
-
-    canSee(field: Field, currentField: Field): boolean {
-        const boardColumn = field.coordinate.x - currentField.coordinate.x
-        const boardRow = field.coordinate.y - currentField.coordinate.y
-
-        if (Math.abs(boardRow) === Math.abs(boardColumn)) {
-            const vectorX = boardColumn / Math.abs(boardColumn)
-            const vectorY = boardRow / Math.abs(boardRow)
-            let pieceArray: Array<Piece> = []
-            for (let i = 1; i <= Math.abs(boardRow); i++) {
-                const piece: Piece = this.getFieldByRowAndColumn(
-                    (vectorX * i) + currentField.coordinate.x,
-                    (vectorY * i) + currentField.coordinate.y)!
-                    .piece!
-                pieceArray = pieceArray.concat(piece)
-                console.log(pieceArray.concat(piece))
-                console.log(pieceArray.concat(piece).filter(piece => piece !== undefined))
-                if (piece && pieceArray.length < 2) {
-                    // console.log(this.getFieldByRowAndColumn(
-                    //     (vectorX * i) + currentField.coordinate.x,
-                    //     (vectorY * i) + currentField.coordinate.y)!)
-                    console.log(pieceArray.concat(piece).filter(piece => piece !== undefined).length)
-                    console.log(piece)
-                    return false
-                }
-            }
-        }
-        console.log(true)
-        return true
-    }
 
     getFieldByRowAndColumn(boardColumn: number, boardRow: number) {
         return this.allFields.find(field => field.coordinate.x === boardColumn && field.coordinate.y === boardRow)

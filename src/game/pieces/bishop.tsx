@@ -19,4 +19,12 @@ export class Bishop extends Piece {
         return true;
     }
 
+    getPieceIcon(): string {
+        return '♗'
+    }
+
+    canGoToTheSameField(): boolean {
+        return true
+    }
+
 }
