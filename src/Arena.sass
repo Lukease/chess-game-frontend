@@ -57,6 +57,20 @@
     height: 600px
     flex-direction: column
 
+    &--letter
+      position: absolute
+      width: 20px
+      height: 20px
+      bottom: 0
+      padding: 3px
+
+  &__numbers
+    position: absolute
+    height: 100%
+    width: 8px
+    padding: 3px
+    right: 0
+
 .game
   display: flex
   width: 720px
@@ -267,7 +281,8 @@ button
   margin: 5px
 
 div
-  color: #7a746b
+  color: #eae8e2
+  font-weight: bold
 
 .select__player > img:hover
   @include hovered()

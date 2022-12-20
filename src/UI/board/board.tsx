@@ -65,6 +65,21 @@ export class Board extends React.Component<any, any> {
         this.setState({isTrashOn: !active})
     }
 
+    renderFieldNumbers() {
+        let output: Array<JSX.Element> = Array.apply(null, Array(8)).map((x, index) => {
+            const boardRow: number = this.state.vector === -1 ? -index + 8 : index + 1
+
+            return (
+
+                <div
+                    style={{height: '12.5%'}}
+                    key={index}
+                >{boardRow}</div>
+            )
+        })
+        return output
+    }
+
     renderAllFields(letter: string, boardColumn: number) {
         let output: Array<JSX.Element> = Array.apply(null, Array(8)).map((x, index) => {
             const boardRow: number = this.state.vector === -1 ? -index + 8 : index + 1
@@ -95,8 +110,10 @@ export class Board extends React.Component<any, any> {
                 <div className='field__column'
                      key={letter}
                 >
+                    {<div className={'field__column--letter'}>{letter.toLowerCase()}</div>}
                     {this.renderAllFields(letter, boardColumn)}
-                    {this.state.isPawnPromotion? <div className={'select'}></div> : <div style={{position:'absolute'}}></div>}
+                    {this.state.isPawnPromotion ? <div className={'select'}></div> :
+                        <div style={{position: 'absolute'}}></div>}
                 </div>
             )
 
@@ -111,6 +128,9 @@ export class Board extends React.Component<any, any> {
                  onClick={() => this.deletePiece}
             >
                 {this.renderAllColumns()}
+                <div className={'field__numbers'}>
+                    {this.renderFieldNumbers()}
+                </div>
             </div>
         )
     }

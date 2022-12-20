@@ -1,6 +1,5 @@
 import React from 'react'
-import {GameService} from '../../game/suppliers/game-service'
-import {MovingService} from "../../game/suppliers/moving-service";
+import {GameService, MovingService} from '../../game/suppliers'
 
 export class GameNavigation extends React.Component<any, any> {
     gameService: GameService

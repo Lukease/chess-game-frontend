@@ -1,6 +1,6 @@
 import {Field} from '../field'
 import {MoveType, MoveTypes} from '../../game/suppliers/move-type'
-import {Piece} from "../../game/pieces";
+import {Piece} from '../../game/pieces'
 
 export class Move {
     specialMove: MoveType | undefined
@@ -31,4 +31,5 @@ export class Move {
             this.nameOfMove += piece?.getPieceIcon()
         }
     }
+
 }
