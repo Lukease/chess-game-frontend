@@ -24,13 +24,13 @@ export class PromotePawnPanel extends React.Component<any, any> {
         })
     }
 
-    SelectFigure(piece: Piece) {
+    selectFigure(piece: Piece) {
         this.gameService.setPromotedFigureToField(piece)
         this.renderPawnPromotion(false)
         this.gameService.setPawnPromotionDisplayed(false)
     }
 
-    setColorOfPieces(pieceColor: string, columnNumber: number) {
+    setColorOfPieces(pieceColor: string, columnNumber: number,) {
         this.setState({
             color: pieceColor,
             pieceColumn: columnNumber
@@ -52,7 +52,7 @@ export class PromotePawnPanel extends React.Component<any, any> {
                             key={index}
                             alt={''}
 
-                            onClick={() => this.SelectFigure(piece)}
+                            onClick={() => this.selectFigure(piece)}
                         >
                         </img>
                     </div>

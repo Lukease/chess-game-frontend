@@ -1,11 +1,13 @@
 import {Piece} from './piece'
-import {MovingStrategies} from "../suppliers"
+import {MovingStrategies} from '../suppliers'
 import {Vector2d} from '../chess-possible-move'
+import {MoveType, MoveTypes} from "../suppliers/move-type";
 
 export class King extends Piece {
     constructor(color: string, id: string, name: string) {
-        super(color, id, name,[MovingStrategies.lineMoving,MovingStrategies.diagonalMoving])
+        super(color, id, name, [MovingStrategies.lineMoving, MovingStrategies.diagonalMoving])
     }
+
     getAllPossibleDirections(): Array<Vector2d> {
         return [
             ...MovingStrategies.diagonalMoving.getAllPossibleDirections(),
@@ -31,5 +33,9 @@ export class King extends Piece {
 
     canGoToTheSameField(): boolean {
         return false
+    }
+
+    getSpecialMoves(): Array<MoveType> {
+        return [MoveTypes.SMALL_CASTLE, MoveTypes.BIG_CASTLE]
     }
 }

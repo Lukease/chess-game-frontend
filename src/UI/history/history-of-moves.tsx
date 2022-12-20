@@ -1,10 +1,8 @@
 import React from 'react'
 import {GameService} from '../../game/suppliers'
-import {Move} from './move'
 
 export class HistoryOfMoves extends React.Component<any, any> {
     gameService: GameService
-    historyOfArray: Array<Array<Move>> = []
 
     constructor(props: any) {
         super(props)
@@ -12,75 +10,44 @@ export class HistoryOfMoves extends React.Component<any, any> {
         this.gameService = props.gameService
         this.gameService.historyOfMoves = this
         this.state = {
-            isMoveAdded: false
+            history: []
         }
-
     }
 
-    setHistoryOfMoves(movesArray: Array<Array<Move>>) {
-        this.historyOfArray = movesArray
-
+    setHistoryOfMoves(movesArray: string) {
         this.setState({
-            isMoveAdded: true
+            history: movesArray.split(';')
+                .filter((history: string) => history !== '')
         })
     }
 
-    // renderMove(move: Move, index: number) {
-    //
-    //     return (
-    //         <div
-    //             className={'history__container'}
-    //             key={index}
-    //         >
-    //             <div
-    //                 className={'history__number'}
-    //             >
-    //                 {index}
-    //             </div>
-    //             <div>
-    //                 {move.setNameOfMove()}
-    //             </div>
-    //             <div>
-    //                 {''}
-    //             </div>
-    //         </div>
-    //     )
-    // }
-
-    // renderMoves(move: Array<Move>, index: number) {
-    //     const [whiteTurn, blackTurn] = move
-    //     return (
-    //         <div
-    //             className={'history__container'}
-    //             key={index}
-    //         >
-    //             <div
-    //                 className={'history__number'}
-    //             >
-    //                 {index}
-    //             </div>
-    //             <div className={'history__move'}>
-    //                 {whiteTurn.setNameOfMove()}
-    //             </div>
-    //             <div className={'history__move'}>
-    //                 {blackTurn.setNameOfMove()}
-    //             </div>
-    //         </div>
-    //     )
-    // }
-
     renderHistory() {
-
-        return this.historyOfArray.map((move: Array<Move>, index) => {
-            const whiteMove = move.find(move => move !== undefined)!
-            const length = move.length
+        return this.state.history
+            .map((move: string, index: number) => {
+            const [whiteTurn, blackTurn] = move.split(',')
             const number = index + 1
+
             return (
                 <div
                     className={'history__container'}
                     key={index}
                 >
-                    {/*{length ? this.renderMoves(move, number) : this.renderMove(whiteMove, number)}*/}
+                    <div
+                        className={'history__container'}
+                        key={index}
+                    >
+                        <div
+                            className={'history__number'}
+                        >
+                            {number}
+                        </div>
+                        <div className={'history__move'}>
+                            {whiteTurn}
+                        </div>
+                        <div className={'history__move'}>
+                            {blackTurn? blackTurn : ''}
+                        </div>
+                    </div>
                 </div>
             )
         })
@@ -98,6 +65,8 @@ export class HistoryOfMoves extends React.Component<any, any> {
                     className={'history__container'}
                     style={{backgroundColor: 'rgba(41,36,36,0.8)'}}
                 >
+
+                    {/*<img src={require('/src/menu-icons/history-back.png').default}></img>*/}
 
                 </div>
                 <div className={'history__navigation'}>

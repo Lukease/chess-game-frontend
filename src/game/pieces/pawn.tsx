@@ -1,6 +1,7 @@
 import {Piece} from './piece'
 import {MovingStrategies} from '../suppliers'
 import {Vector2d} from '../chess-possible-move'
+import {MoveType, MoveTypes} from "../suppliers/move-type";
 
 export class Pawn extends Piece {
 
@@ -17,7 +18,7 @@ export class Pawn extends Piece {
     }
 
     canJump(): boolean {
-        return false;
+        return false
     }
 
     canMoveMultipleSquares(): boolean {
@@ -30,5 +31,13 @@ export class Pawn extends Piece {
 
     canGoToTheSameField(): boolean {
         return false
+    }
+
+    getSpecialMoves(): Array<MoveType> {
+        return [MoveTypes.EN_PASSANT,MoveTypes.MOVE_TWO,MoveTypes.PAWN_CAPTURE, MoveTypes.PROM]
+    }
+
+    isPawn(): boolean {
+        return true
     }
 }

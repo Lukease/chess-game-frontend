@@ -26,5 +26,4 @@ export class Bishop extends Piece {
     canGoToTheSameField(): boolean {
         return true
     }
-
 }

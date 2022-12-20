@@ -1,9 +1,6 @@
-import {MovingStrategy} from '../chess-possible-move/moving-strategy'
-import {Coordinate} from '../chess-possible-move/coordinate'
-import {CoordinateService} from '../suppliers/coordinate-service'
-import {Move} from '../chess-possible-move/move'
-import {Vector2d} from '../chess-possible-move/2d-vestors'
-import {Pawn} from "./pawn";
+import {MovingStrategy, Vector2d, Coordinate} from '../chess-possible-move'
+import {CoordinateService} from '../suppliers'
+import {MoveType} from "../suppliers/move-type"
 
 export abstract class Piece {
     color: string
@@ -11,6 +8,7 @@ export abstract class Piece {
     startingCoordinate: Coordinate
     name: string
     movingStrategies: Array<MovingStrategy>
+    hasMoved: boolean = false
 
     protected constructor(color: string, id: string, name: string, movingStrategies: Array<MovingStrategy>) {
         this.color = color
@@ -41,8 +39,12 @@ export abstract class Piece {
         return this.startingCoordinate === this.currentCoordinate
     }
 
-    getSpecialMoves(): Array<Move> {
+    getSpecialMoves(): Array<MoveType> {
         return []
+    }
+
+    setHasMoved(): boolean {
+        return this.hasMoved = true
     }
 
     abstract canMoveMultipleSquares(): boolean
@@ -50,6 +52,10 @@ export abstract class Piece {
     abstract getPieceIcon(): string
 
     abstract canGoToTheSameField(): boolean
+
+    isPawn(): boolean {
+        return false
+    }
 }
 
 

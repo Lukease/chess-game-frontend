@@ -39,6 +39,10 @@ export class Field extends React.Component<any, any> {
 
     }
 
+    setHasMoved() {
+        this.piece?.setHasMoved()
+    }
+
     getActive() {
         return this.state.isChosen
     }
