@@ -8,13 +8,15 @@ export class Move {
     fieldTo: Field
     additionalField: Field | undefined
     nameOfMove: string = ''
+    secondMove: Move | undefined
 
-    constructor(selectedField: Field, fieldTo: Field, fieldFromName: string, capturedField: Field | undefined, specialMove: MoveType | undefined, promotedPiece: Piece | undefined) {
+    constructor(selectedField: Field, fieldTo: Field, fieldFromName: string, capturedField: Field | undefined, specialMove: MoveType | undefined, promotedPiece: Piece | undefined, secondMove: Move | undefined) {
         this.specialMove = specialMove
         this.fieldFrom = selectedField
         this.fieldTo = fieldTo
         this.additionalField = capturedField
         this.setNameOfMove(fieldFromName!, promotedPiece)
+        this.secondMove = secondMove
     }
 
     setNameOfMove(fieldFrom: string, piece: Piece | undefined) {

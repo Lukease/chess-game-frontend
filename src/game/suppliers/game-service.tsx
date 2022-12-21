@@ -67,36 +67,77 @@ export class GameService {
             if (this.activeField?.piece?.isPawn() && (field.coordinate.y === 1 || field.coordinate.y === 8)) {
                 this.renderPawnPromotion(this.activeField, field)
             } else {
-                this.makeMove(field, false)
-
-                this.checkMoveType(this.lastSpecialMove!, this.lastMove!)
+                this.makeMove(field, false, false)
             }
 
+            console.log(this.arrayOfMoves)
         }
     }
 
-    checkMoveType(moveName: MoveTypes, move: Move) {
+    renderHistory(nameOfMove: string) {
+        this.renderAllMoves()
+        const history = this.moveHistory.split(';')
+            .filter((history: string) => history !== '')
+        console.log(history)
+        history.forEach(move => {
+            const mek = move.split(',')
+            console.log(mek.find(m => m === nameOfMove))
+
+        })
+        console.log(this.arrayOfMoves)
+
+    }
+
+    renderAllMoves() {
+        this.arrayOfMoves.reverse().forEach(move => {
+            this.activeField = move.fieldTo
+            this.makeMove(move.fieldFrom, false, true)
+        })
+    }
+
+    checkMoveType(moveName: MoveTypes, fieldTo: Field) {
         switch (moveName) {
             case MoveTypes.SMALL_CASTLE:
-                return this.renderCastle(move, true)
+                return this.getCastleRookMove(fieldTo, true)
 
             case MoveTypes.BIG_CASTLE:
-                return this.renderCastle(move, false)
+                return this.getCastleRookMove(fieldTo, false)
+
+            case MoveTypes.PROM:
+                return this.getPawnPromotionMove(fieldTo)
+            default:
+                return undefined
         }
     }
 
-    renderCastle(move: Move, isSmallCastle: boolean) {
+    getPawnPromotionMove(field: Field) {
+        const piece = field.piece
+        const fieldFrom: Field = field
+
+        fieldFrom.removePiece()
+
+        const fieldTo = field
+
+        fieldTo.setPiece(piece!, false)
+
+        return new Move(fieldFrom, fieldTo, '', undefined, MoveTypes.PROM, undefined, undefined)
+    }
+
+    getCastleRookMove(king: Field, isSmallCastle: boolean) {
         const fieldsNumberOld = isSmallCastle ? 1 : -2
         const fieldsNumberNew = isSmallCastle ? -1 : 1
-        const kingCoordinate = move.fieldTo.coordinate
+        const kingCoordinate = king.coordinate
+        const moveType = isSmallCastle ? MoveTypes.SMALL_CASTLE : MoveTypes.BIG_CASTLE
         const oldRookField: Field = this.getFieldByXY(kingCoordinate.x + fieldsNumberOld, kingCoordinate.y)!
         const newRookField: Field = this.getFieldByXY(kingCoordinate.x + fieldsNumberNew, kingCoordinate.y)!
 
         this.activeField = oldRookField
         this.setActiveFields(this.previousMove, false)
         this.previousMove = [oldRookField, newRookField]
-        this.makeMove(newRookField, true)
+        this.makeMove(newRookField, true, false)
         oldRookField.setActive(true)
+
+        return new Move(oldRookField, newRookField, '', undefined, moveType, undefined, undefined)
     }
 
     setPlayerColor(vector: number) {
@@ -189,30 +230,30 @@ export class GameService {
                 const smallCastle = this.getFieldForCastle(field, true)
 
                 return smallCastle ?
-                    [new Move(field, smallCastle!, '', undefined, MoveTypes.SMALL_CASTLE, undefined)]
+                    [new Move(field, smallCastle!, '', undefined, MoveTypes.SMALL_CASTLE, undefined, undefined)]
                     : []
 
             case MoveTypes.BIG_CASTLE:
                 const bigCastle = this.getFieldForCastle(field, false)
 
                 return bigCastle ?
-                    [new Move(field, bigCastle, '', undefined, MoveTypes.BIG_CASTLE, undefined)]
+                    [new Move(field, bigCastle, '', undefined, MoveTypes.BIG_CASTLE, undefined, undefined)]
                     : []
             case MoveTypes.EN_PASSANT:
                 const enPassant = this.isEnPassantPossible(field)
 
-                return enPassant ? [new Move(field, enPassant!, '', undefined, MoveTypes.EN_PASSANT, undefined)]
+                return enPassant ? [new Move(field, enPassant!, '', undefined, MoveTypes.EN_PASSANT, undefined, undefined)]
                     : []
 
             case MoveTypes.MOVE_TWO:
                 const moveTwo = this.isMoveTwoPossible(field)
 
-                return moveTwo ? [new Move(field, moveTwo!, '', undefined, MoveTypes.MOVE_TWO, undefined)]
+                return moveTwo ? [new Move(field, moveTwo!, '', undefined, MoveTypes.MOVE_TWO, undefined, undefined)]
                     : []
             case MoveTypes.PAWN_CAPTURE:
                 const pawnCapture = this.isPawnCapturePossible(field)
 
-                return pawnCapture.map(move => [new Move(field, move, '', undefined, MoveTypes.PAWN_CAPTURE, undefined)])
+                return pawnCapture.map(move => [new Move(field, move, '', undefined, MoveTypes.PAWN_CAPTURE, undefined, undefined)])
                     .flat(1)
                     .filter(Boolean)
             default:
@@ -260,14 +301,10 @@ export class GameService {
     }
 
     isEnPassantPossible(field: Field) {
-        const arrayLength: number = this.arrayOfMoves.length
-
-        if (arrayLength !== 0) {
+        if (this.lastMove) {
             const figureColor = field.piece?.color
-            const arrayLength: number = this.arrayOfMoves.length
-            const lastMove: Move = this.arrayOfMoves[arrayLength - 1]
-            const pawnTwoFieldsMove: boolean = lastMove.specialMove === MoveTypes.MOVE_TWO
-            const lastMoveCoordinate = lastMove.fieldTo.coordinate
+            const pawnTwoFieldsMove: boolean = this.lastMove.specialMove === MoveTypes.MOVE_TWO
+            const lastMoveCoordinate = this.lastMove.fieldTo.coordinate
             const isWhiteFigure = figureColor === 'white'
             const direction = isWhiteFigure ? 1 : -1
             const isInTheSameLane = field.coordinate.y === lastMoveCoordinate.y
@@ -327,9 +364,12 @@ export class GameService {
         return ''
     }
 
-    makeMove(field: Field, isAdditionalMove: boolean) {
-        this.addMoveToHistory(field, undefined, isAdditionalMove)
-        this.setPiecesMoved(field, this.activeField!)
+    makeMove(field: Field, isAdditionalMove: boolean, isRenderHistory: boolean) {
+        if (!isRenderHistory) {
+            this.addMoveToHistory(field, undefined, isAdditionalMove)
+            this.setPiecesMoved(field, this.activeField!)
+        }
+
         this.setActiveFields(this.previousMove, false)
         field.setPiece(this.activeField!.piece!, true)
         this.activeField!.removePiece()
@@ -347,8 +387,10 @@ export class GameService {
     addMoveToHistory(field: Field, piece: Piece | undefined, isAdditionalMove: boolean) {
         const specialMoveName = piece ? MoveTypes.PROM : this.arrayOfPossibleMoves.find(moves => moves.fieldTo === field)?.specialMove
         const fieldFrom = this.fieldFrom(field)
-        const capturedField = specialMoveName === MoveTypes.EN_PASSANT ? this.getFieldByXY(field.coordinate.x, this.activeField!.coordinate.y) : undefined
-        const move = new Move(this.activeField!, field, fieldFrom, capturedField, specialMoveName ? specialMoveName : MoveTypes.NORMAL, piece)
+        const capturedField = specialMoveName === MoveTypes.EN_PASSANT ?
+            this.getFieldByXY(field.coordinate.x, this.activeField!.coordinate.y)
+            : undefined
+        const move = new Move(this.activeField!, field, fieldFrom, capturedField, specialMoveName ? specialMoveName : MoveTypes.NORMAL, piece, this.checkMoveType(specialMoveName!, field))
 
         this.lastMove = move
         this.lastSpecialMove = specialMoveName
@@ -421,7 +463,7 @@ export class GameService {
         return currentField.piece!.getAllPossibleDirectionsWithColor()
             .map(direction => this.getAllPossibleMovesFromDirection(currentField, direction))
             .flat(1)
-            .map(move => new Move(currentField, move, '', undefined, MoveTypes.NORMAL, undefined))
+            .map(move => new Move(currentField, move, '', undefined, MoveTypes.NORMAL, undefined, undefined))
         // .filter(filterField => {
         //     (this.canSee(filterField, currentField) || currentField.piece!.canJump())
         //     // &&

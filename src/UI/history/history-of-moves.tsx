@@ -14,6 +14,10 @@ export class HistoryOfMoves extends React.Component<any, any> {
         }
     }
 
+    renderMoves(nameOfMove: string) {
+        this.gameService.renderHistory(nameOfMove)
+    }
+
     setHistoryOfMoves(movesArray: string) {
         this.setState({
             history: movesArray.split(';')
@@ -24,33 +28,39 @@ export class HistoryOfMoves extends React.Component<any, any> {
     renderHistory() {
         return this.state.history
             .map((move: string, index: number) => {
-            const [whiteTurn, blackTurn] = move.split(',')
-            const number = index + 1
+                const [whiteTurn, blackTurn] = move.split(',')
+                const number = index + 1
 
-            return (
-                <div
-                    className={'history__container'}
-                    key={index}
-                >
+                return (
                     <div
                         className={'history__container'}
                         key={index}
                     >
                         <div
-                            className={'history__number'}
+                            className={'history__container'}
+                            key={index}
                         >
-                            {number}
-                        </div>
-                        <div className={'history__move'}>
-                            {whiteTurn}
-                        </div>
-                        <div className={'history__move'}>
-                            {blackTurn? blackTurn : ''}
+                            <div
+                                className={'history__number'}
+                            >
+                                {number}
+                            </div>
+                            <div
+                                className={'history__move'}
+                                onClick={() => this.renderMoves(whiteTurn)}
+                            >
+                                {whiteTurn}
+                            </div>
+                            <div
+                                className={'history__move'}
+                                onClick={() => this.renderMoves(blackTurn)}
+                            >
+                                {blackTurn ? blackTurn : ''}
+                            </div>
                         </div>
                     </div>
-                </div>
-            )
-        })
+                )
+            })
     }
 
     render() {
@@ -69,7 +79,8 @@ export class HistoryOfMoves extends React.Component<any, any> {
                     {/*<img src={require('/src/menu-icons/history-back.png').default}></img>*/}
 
                 </div>
-                <div className={'history__navigation'}>
+                <div className={'history__navigation'}
+                >
                     {this.renderHistory()}
                 </div>
             </div>
