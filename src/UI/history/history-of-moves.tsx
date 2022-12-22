@@ -1,5 +1,6 @@
 import React from 'react'
 import {GameService} from '../../game/suppliers'
+import {Move} from "./move";
 
 export class HistoryOfMoves extends React.Component<any, any> {
     gameService: GameService
@@ -18,10 +19,10 @@ export class HistoryOfMoves extends React.Component<any, any> {
         this.gameService.renderHistory(nameOfMove)
     }
 
-    setHistoryOfMoves(movesArray: string) {
+    setHistoryOfMoves(arrayOfMoves: Array<Move>) {
+
         this.setState({
-            history: movesArray.split(';')
-                .filter((history: string) => history !== '')
+            history: arrayOfMoves.map(move => )
         })
     }
 

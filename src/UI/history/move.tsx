@@ -10,11 +10,11 @@ export class Move {
     nameOfMove: string = ''
     secondMove: Move | undefined
 
-    constructor(selectedField: Field, fieldTo: Field, fieldFromName: string, capturedField: Field | undefined, specialMove: MoveType | undefined, promotedPiece: Piece | undefined, secondMove: Move | undefined) {
+    constructor(selectedField: Field, fieldTo: Field, fieldFromName: string, additionalField: Field | undefined, specialMove: MoveType | undefined, promotedPiece: Piece | undefined, secondMove: Move | undefined) {
         this.specialMove = specialMove
         this.fieldFrom = selectedField
         this.fieldTo = fieldTo
-        this.additionalField = capturedField
+        this.additionalField = additionalField
         this.setNameOfMove(fieldFromName!, promotedPiece)
         this.secondMove = secondMove
     }

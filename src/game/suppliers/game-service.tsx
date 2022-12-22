@@ -13,7 +13,7 @@ export class GameService {
     whiteTurn: boolean
     private activeField: Field | undefined
     private possibleMoves: Array<Field> = []
-    private previousMove: Array<Field> = []
+    private previousMoveFields: Array<Field> = []
     arrayOfPossibleMoves: Array<Move> = []
     allFields: Array<Field> = []
     gameNavigation: GameNavigation | undefined
@@ -39,38 +39,52 @@ export class GameService {
     }
 
     fieldClick(field: Field) {
-        const isPiece: Piece = field.piece!
+        this.ifTrashActiveDeletePiece(field)
 
-        if (isPiece) {
-            if (this.isTrashActive && isPiece.canDelete()) {
-                this.removePieceFromField(field)
-            }
-
-            if (this.isGameStarted) {
-                if (isPiece.color === this.getColor()) {
-                    if (this.activeField) {
-                        this.activeField.setActive(false)
-                    }
-
-                    if (this.previousMove) {
-                        this.setActiveFields(this.previousMove, true)
-                    }
-
-                    this.activeField = field
-                    this.activeField.setActive(true)
-                    this.setNewPossibleMoves(field)
-                }
-            }
+        if (this.fieldHasPieceAndGameStarted(field) && this.isPlayerPiece(field.piece!)) {
+            this.clearActiveField()
+            this.setActiveFieldAndShowPossibleMoves(field)
         }
 
         if (field.state.correctMove) {
-            if (this.activeField?.piece?.isPawn() && (field.coordinate.y === 1 || field.coordinate.y === 8)) {
-                this.renderPawnPromotion(this.activeField, field)
-            } else {
-                this.makeMove(field, false, false)
-            }
+            this.makeMoveOrPromotePawn(field)
+        }
+    }
 
-            console.log(this.arrayOfMoves)
+    setActiveFieldAndShowPossibleMoves(field: Field) {
+        this.activeField = field
+        this.activeField.setActive(true)
+        this.setNewPossibleMoves(field)
+    }
+
+    clearActiveField() {
+        if (this.activeField) {
+            this.activeField.setActive(false)
+        }
+    }
+
+    isPlayerPiece(piece: Piece) {
+        return piece.color === this.getColor()
+    }
+
+    fieldHasPieceAndGameStarted(field: Field) {
+        return field.piece! && this.isGameStarted
+    }
+
+    ifTrashActiveDeletePiece(field: Field) {
+        return this.isTrashActive && field.piece!.canDelete() ?
+            this.removePieceFromField(field) : ''
+    }
+
+    isPawnPromoted(field: Field) {
+        return this.activeField?.piece?.isPawn() && (field.coordinate.y === 1 || field.coordinate.y === 8)
+    }
+
+    makeMoveOrPromotePawn(field: Field) {
+        if (this.isPawnPromoted(field)) {
+            this.displayPawnPromotion(this.activeField!, field)
+        } else {
+            this.createAndMakeMove(field)
         }
     }
 
@@ -84,14 +98,12 @@ export class GameService {
             console.log(mek.find(m => m === nameOfMove))
 
         })
-        console.log(this.arrayOfMoves)
-
     }
 
     renderAllMoves() {
         this.arrayOfMoves.reverse().forEach(move => {
             this.activeField = move.fieldTo
-            this.makeMove(move.fieldFrom, false, true)
+            this.createAndMakeMove(move.fieldFrom, false)
         })
     }
 
@@ -103,24 +115,9 @@ export class GameService {
             case MoveTypes.BIG_CASTLE:
                 return this.getCastleRookMove(fieldTo, false)
 
-            case MoveTypes.PROM:
-                return this.getPawnPromotionMove(fieldTo)
             default:
                 return undefined
         }
-    }
-
-    getPawnPromotionMove(field: Field) {
-        const piece = field.piece
-        const fieldFrom: Field = field
-
-        fieldFrom.removePiece()
-
-        const fieldTo = field
-
-        fieldTo.setPiece(piece!, false)
-
-        return new Move(fieldFrom, fieldTo, '', undefined, MoveTypes.PROM, undefined, undefined)
     }
 
     getCastleRookMove(king: Field, isSmallCastle: boolean) {
@@ -130,12 +127,6 @@ export class GameService {
         const moveType = isSmallCastle ? MoveTypes.SMALL_CASTLE : MoveTypes.BIG_CASTLE
         const oldRookField: Field = this.getFieldByXY(kingCoordinate.x + fieldsNumberOld, kingCoordinate.y)!
         const newRookField: Field = this.getFieldByXY(kingCoordinate.x + fieldsNumberNew, kingCoordinate.y)!
-
-        this.activeField = oldRookField
-        this.setActiveFields(this.previousMove, false)
-        this.previousMove = [oldRookField, newRookField]
-        this.makeMove(newRookField, true, false)
-        oldRookField.setActive(true)
 
         return new Move(oldRookField, newRookField, '', undefined, moveType, undefined, undefined)
     }
@@ -153,30 +144,30 @@ export class GameService {
         this.changeColor()
     }
 
-    renderPawnPromotion(field: Field, pawnPromotionField: Field) {
+    displayPawnPromotion(field: Field, pawnPromotionField: Field) {
         this.promotePawnPanel?.setColorOfPieces(field.piece!.color, field.coordinate.x)
-        this.promotePawnPanel?.renderPawnPromotion(true)
         this.promotedField = pawnPromotionField
         this.setPawnPromotionDisplayed(true)
     }
 
     setPawnPromotionDisplayed(displayed: boolean) {
-        this.board?.setPawnPromotionMode(displayed)
+        this.board?.setPawnPromotionDisplayed(displayed)
     }
 
     setPromotedFigureToField(piece: Piece) {
-        this.addMoveToHistory(this.promotedField!, piece, false)
+        this.createMove(this.promotedField!, piece)
         this.promotedField?.setPiece(piece, false)
-        this.setPiecesMoved(this.promotedField!, this.activeField!)
-        this.setActiveFields(this.previousMove, false)
+        this.setPieceMoved(this.promotedField!)
+        this.setPieceMoved(this.activeField!)
+        this.highlightLasMoveFields(this.previousMoveFields, false)
         this.changeTurn(this.promotedField!)
-        this.setActiveFields(this.previousMove, true)
+        this.highlightLasMoveFields(this.previousMoveFields, true)
         this.activeField?.removePiece()
     }
 
     changeTurn(field: Field) {
         this.possibleMoves.forEach(field => field.setPossibleMove(false))
-        this.previousMove = [field, this.activeField!]
+        this.previousMoveFields = [field, this.activeField!]
         this.toggleSide()
     }
 
@@ -364,48 +355,70 @@ export class GameService {
         return ''
     }
 
-    makeMove(field: Field, isAdditionalMove: boolean, isRenderHistory: boolean) {
-        if (!isRenderHistory) {
-            this.addMoveToHistory(field, undefined, isAdditionalMove)
-            this.setPiecesMoved(field, this.activeField!)
-        }
+    makeMove(move: Move) {
+        this.disableHighlightLasMoveFields()
+        move.fieldTo.setPiece(move.fieldFrom.piece!, true)
+        move.fieldFrom.removePiece()
+        this.previousMoveFields = [move.fieldFrom,move.fieldTo]
+        this.highlightLasMoveFields()
+    }
 
-        this.setActiveFields(this.previousMove, false)
-        field.setPiece(this.activeField!.piece!, true)
-        this.activeField!.removePiece()
+    addMoveToHistory(move: Move) {
+        this.arrayOfMoves = this.arrayOfMoves.concat(move)
+        this.historyOfMoves?.setHistoryOfMoves(this.arrayOfMoves)
+    }
 
+    createAndMakeMove(field: Field, isAdditionalMove: boolean = false) {
+        const move = this.createMove(field, undefined)
+
+        this.makeMove(move)
+
+        this.lastMove = move
+        this.lastSpecialMove = move.specialMove
+        move.additionalField?.removePiece()
         if (!isAdditionalMove) {
+            if (!isAdditionalMove) {
+                // this.moveHistory = this.whiteTurn ? `${this.moveHistory}${move.nameOfMove}` : `${this.moveHistory},${move.nameOfMove};`
+                this.historyOfMoves?.setHistoryOfMoves(this.arrayOfMoves)
+            }
+            this.setPieceMoved(field)
+            this.setPieceMoved(this.activeField!)
             this.changeTurn(field)
         }
+
+        if (this.lastMove?.secondMove && !isAdditionalMove) {
+            const move = this.lastMove?.secondMove
+            this.activeField = move?.fieldFrom!
+            this.disableHighlightLasMoveFields()
+            this.previousMoveFields = [move?.fieldFrom, move?.fieldTo]
+            this.createAndMakeMove(move?.fieldTo, true)
+            move?.fieldFrom.setActive(true)
+        }
     }
 
-    setPiecesMoved(field: Field, activeField: Field) {
+    setPieceMoved(field: Field) {
         field.setHasMoved()
-        activeField.setHasMoved()
     }
 
-    addMoveToHistory(field: Field, piece: Piece | undefined, isAdditionalMove: boolean) {
+    createMove(field: Field, piece: Piece | undefined) {
         const specialMoveName = piece ? MoveTypes.PROM : this.arrayOfPossibleMoves.find(moves => moves.fieldTo === field)?.specialMove
         const fieldFrom = this.fieldFrom(field)
         const capturedField = specialMoveName === MoveTypes.EN_PASSANT ?
             this.getFieldByXY(field.coordinate.x, this.activeField!.coordinate.y)
             : undefined
-        const move = new Move(this.activeField!, field, fieldFrom, capturedField, specialMoveName ? specialMoveName : MoveTypes.NORMAL, piece, this.checkMoveType(specialMoveName!, field))
-
-        this.lastMove = move
-        this.lastSpecialMove = specialMoveName
-        capturedField?.removePiece()
-        this.arrayOfMoves = this.arrayOfMoves.concat(move)
-
-        if (!isAdditionalMove) {
-            this.moveHistory = this.whiteTurn ? `${this.moveHistory}${move.nameOfMove}` : `${this.moveHistory},${move.nameOfMove};`
-            this.historyOfMoves?.setHistoryOfMoves(this.moveHistory)
-        }
+        return new Move(this.activeField!, field, fieldFrom, capturedField, specialMoveName ? specialMoveName : MoveTypes.NORMAL,
+            piece, this.checkMoveType(specialMoveName!, field))
     }
 
-    setActiveFields(fields: Array<Field>, active: boolean) {
-        fields.forEach(move => {
-            move.setActive(active)
+    highlightLasMoveFields() {
+        this.previousMoveFields.forEach(field => {
+            field.setActive(true)
+        })
+    }
+
+    disableHighlightLasMoveFields() {
+        this.previousMoveFields.forEach(field => {
+            field.setActive(false)
         })
     }
 

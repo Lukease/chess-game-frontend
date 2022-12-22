@@ -27,9 +27,9 @@ export class Board extends React.Component<any, any> {
         this.gameService.board = this
     }
 
-    setPawnPromotionMode(isDisplay: boolean) {
+    setPawnPromotionDisplayed(isDisplayed: boolean) {
         this.setState({
-            isPawnPromotion: isDisplay
+            isPawnPromotion: isDisplayed
         })
     }
 

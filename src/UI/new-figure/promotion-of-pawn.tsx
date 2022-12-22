@@ -33,7 +33,8 @@ export class PromotePawnPanel extends React.Component<any, any> {
     setColorOfPieces(pieceColor: string, columnNumber: number,) {
         this.setState({
             color: pieceColor,
-            pieceColumn: columnNumber
+            pieceColumn: columnNumber,
+            isPawnPromotionDisplayed: true
         })
     }
 

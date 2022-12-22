@@ -14,7 +14,7 @@ export class SelectPlayer extends React.Component<any, any> {
         this.gameService.selectPlayer = this
     }
 
-    selectPlayer(color: string) {
+    selectPieceColor(color: string) {
         const vector: number = color === 'white' ? -1 : 1
 
         this.gameService.setPlayerColor(vector)
@@ -29,7 +29,7 @@ export class SelectPlayer extends React.Component<any, any> {
                     draggable={false}
                     key={index}
 
-                    onClick={() => this.selectPlayer(kings.color)}
+                    onClick={() => this.selectPieceColor(kings.color)}
                 ></img>
             )
         })
