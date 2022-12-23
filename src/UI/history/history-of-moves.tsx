@@ -1,6 +1,6 @@
 import React from 'react'
 import {GameService} from '../../game/suppliers'
-import {Move} from "./move";
+import {Move} from './move'
 
 export class HistoryOfMoves extends React.Component<any, any> {
     gameService: GameService
@@ -15,22 +15,47 @@ export class HistoryOfMoves extends React.Component<any, any> {
         }
     }
 
-    renderMoves(nameOfMove: string) {
-        this.gameService.renderHistory(nameOfMove)
+    renderMoves(index: number) {
+        this.gameService.renderHistory(index)
     }
 
     setHistoryOfMoves(arrayOfMoves: Array<Move>) {
-
         this.setState({
-            history: arrayOfMoves.map(move => )
+            history: arrayOfMoves.map(move => move.nameOfMove)
+                .reduce((acc, item, currentIndex) => {
+                    if (acc === '') {
+                        return item
+                    }
+
+                    if (currentIndex % 2 === 0) {
+                        return acc + item
+                    } else {
+
+                        return `${acc}, ${item};`
+                    }
+                }, '')
+                .split(';')
+                .filter(move => move !== '')
         })
+    }
+
+    renderNameOfMove(whoseTurn: string, index: number) {
+        return (
+            <div
+                className={'history__move'}
+                id={String(index)}
+                onClick={() => this.renderMoves(index)}
+            >
+                {whoseTurn ? whoseTurn : ''}
+            </div>
+        )
     }
 
     renderHistory() {
         return this.state.history
             .map((move: string, index: number) => {
                 const [whiteTurn, blackTurn] = move.split(',')
-                const number = index + 1
+                const moveNumber = index + 1
 
                 return (
                     <div
@@ -44,20 +69,10 @@ export class HistoryOfMoves extends React.Component<any, any> {
                             <div
                                 className={'history__number'}
                             >
-                                {number}
+                                {moveNumber}
                             </div>
-                            <div
-                                className={'history__move'}
-                                onClick={() => this.renderMoves(whiteTurn)}
-                            >
-                                {whiteTurn}
-                            </div>
-                            <div
-                                className={'history__move'}
-                                onClick={() => this.renderMoves(blackTurn)}
-                            >
-                                {blackTurn ? blackTurn : ''}
-                            </div>
+                            {this.renderNameOfMove(whiteTurn, (index * 2))}
+                            {this.renderNameOfMove(blackTurn, (index * 2) + 1)}
                         </div>
                     </div>
                 )

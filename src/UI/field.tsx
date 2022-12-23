@@ -71,6 +71,7 @@ export class Field extends React.Component<any, any> {
         this.piece = piece
         this.piece.currentCoordinate = this.coordinate
         this.setState({img: this.piece.getImageUrl()})
+        this.setHasMoved()
 
         if (active) {
             this.setActive(true)

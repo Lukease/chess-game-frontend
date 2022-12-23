@@ -3,6 +3,7 @@ import {MoveType, MoveTypes} from '../../game/suppliers/move-type'
 import {Piece} from '../../game/pieces'
 
 export class Move {
+    id: number | undefined
     specialMove: MoveType | undefined
     fieldFrom: Field
     fieldTo: Field
@@ -10,7 +11,8 @@ export class Move {
     nameOfMove: string = ''
     secondMove: Move | undefined
 
-    constructor(selectedField: Field, fieldTo: Field, fieldFromName: string, additionalField: Field | undefined, specialMove: MoveType | undefined, promotedPiece: Piece | undefined, secondMove: Move | undefined) {
+    constructor(id: number| undefined, selectedField: Field, fieldTo: Field, fieldFromName: string, specialMove: MoveType, additionalField: Field | undefined = undefined, promotedPiece: Piece | undefined = undefined, secondMove: Move | undefined = undefined) {
+        this.id = id
         this.specialMove = specialMove
         this.fieldFrom = selectedField
         this.fieldTo = fieldTo
