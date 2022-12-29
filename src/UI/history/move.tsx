@@ -6,17 +6,27 @@ export class Move {
     id: number | undefined
     specialMove: MoveType | undefined
     fieldFrom: Field
+    pieceFrom: Piece | undefined
     fieldTo: Field
+    pieceTo: Piece | undefined
     additionalField: Field | undefined
     nameOfMove: string = ''
     secondMove: Move | undefined
+    promotedPiece: Piece | undefined
+    isCheck: boolean
 
-    constructor(id: number| undefined, selectedField: Field, fieldTo: Field, fieldFromName: string, specialMove: MoveType, additionalField: Field | undefined = undefined, promotedPiece: Piece | undefined = undefined, secondMove: Move | undefined = undefined) {
+    constructor(id: number | undefined, selectedField: Field, pieceFrom: Piece | undefined, fieldTo: Field, pieceTo: Piece | undefined,
+                fieldFromName: string, specialMove: MoveType, isCheck: boolean, additionalField: Field | undefined = undefined,
+                promotedPiece: Piece | undefined = undefined, secondMove: Move | undefined = undefined) {
         this.id = id
         this.specialMove = specialMove
         this.fieldFrom = selectedField
+        this.pieceFrom = pieceFrom
         this.fieldTo = fieldTo
+        this.pieceTo = pieceTo
         this.additionalField = additionalField
+        this.promotedPiece = promotedPiece
+        this.isCheck = isCheck
         this.setNameOfMove(fieldFromName!, promotedPiece)
         this.secondMove = secondMove
     }
@@ -34,6 +44,9 @@ export class Move {
         if (this.specialMove === MoveTypes.PROM && Piece) {
             this.nameOfMove += piece?.getPieceIcon()
         }
-    }
 
+        if (this.isCheck) {
+            this.nameOfMove += '+'
+        }
+    }
 }

@@ -27,7 +27,6 @@ export class PromotePawnPanel extends React.Component<any, any> {
     selectFigure(piece: Piece) {
         this.gameService.setPromotedFigureToField(piece)
         this.renderPawnPromotion(false)
-        this.gameService.setPawnPromotionDisplayed(false)
     }
 
     setColorOfPieces(pieceColor: string, columnNumber: number,) {

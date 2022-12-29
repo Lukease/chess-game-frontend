@@ -40,13 +40,13 @@ export class GameNavigation extends React.Component<any, any> {
         return (
             <div className={'game__navigation'}>
                 <button
-                    onClick={this.startGame}
+                    onClick={this.state.isGameStarted? undefined:this.startGame}
                     disabled={this.state.isGameStarted}
                 >
                     Start Game
                 </button>
                 <button
-                    onClick={this.changePositionEditorDisplayed}
+                    onClick={this.state.isGameStarted ? undefined : this.changePositionEditorDisplayed}
                     disabled={this.state.isGameStarted}
                 >
                     Position Editor

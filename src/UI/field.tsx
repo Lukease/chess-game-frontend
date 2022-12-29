@@ -26,6 +26,7 @@ export class Field extends React.Component<any, any> {
         this.gameService = props.gameService
         this.movingService = props.movingService
         this.state = {
+            isCheck: false,
             isChosen: false,
             correctMove: false,
             imageLoaded: false,
@@ -37,6 +38,10 @@ export class Field extends React.Component<any, any> {
         props.gameService.addFieldToGameService(this)
         props.movingService.addFieldToMovingService(this)
 
+    }
+
+    setKingCheck(isCheck: boolean) {
+        this.setState({isCheck: isCheck})
     }
 
     setHasMoved() {
@@ -114,6 +119,7 @@ export class Field extends React.Component<any, any> {
                 }}
                 onMouseDown={event => this.state.isGameStarted || this.state.isTrashActive ? '' : this.setPiecePosition(this!, event)}
                 id={this.props.id}
+                    style={{backgroundColor:this.state.isCheck? 'red': ''}}
             > {this.piece ?
 
                 <img

@@ -19,18 +19,11 @@ export class Board extends React.Component<any, any> {
         this.allFields = []
         this.state = {
             isTrashOn: false,
-            vector: -1,
-            isPawnPromotion: false
+            vector: -1
         }
 
         this.movingService.board = this
         this.gameService.board = this
-    }
-
-    setPawnPromotionDisplayed(isDisplayed: boolean) {
-        this.setState({
-            isPawnPromotion: isDisplayed
-        })
     }
 
     setVectorDirection(direction: number) {
@@ -112,8 +105,6 @@ export class Board extends React.Component<any, any> {
                 >
                     {<div className={'field__column--letter'}>{letter.toLowerCase()}</div>}
                     {this.renderAllFields(letter, boardColumn)}
-                    {this.state.isPawnPromotion ? <div className={'select'}></div> :
-                        <div style={{position: 'absolute'}}></div>}
                 </div>
             )
 

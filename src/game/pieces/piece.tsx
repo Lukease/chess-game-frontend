@@ -26,7 +26,6 @@ export abstract class Piece {
         } else {
             return this.getAllPossibleDirections()
         }
-
     }
 
     abstract getImageUrl(): string
