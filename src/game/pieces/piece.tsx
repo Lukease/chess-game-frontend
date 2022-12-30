@@ -55,6 +55,10 @@ export abstract class Piece {
     isPawn(): boolean {
         return false
     }
+
+    canBeChecked(): boolean {
+        return false
+    }
 }
 
 

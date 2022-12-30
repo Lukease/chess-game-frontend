@@ -247,6 +247,7 @@ export class GameService {
         this.possibleMoves = this.getCorrectMoves(field)
             .concat(specialMove)
             .map(field => field.fieldTo)
+        this.dontCauseCheck(field)
         this.setPossibleMovesActive(true)
     }
 
@@ -300,12 +301,28 @@ export class GameService {
         for (let i = 1; i <= size; i++) {
             const searchedField = this.getFieldByXY(kingCoordinate.x + (i * direction), kingCoordinate.y)!
 
-            if (searchedField.piece) {
+            if (searchedField && searchedField.piece ) {
                 return false
             }
         }
         return true
     }
+//todo make one function from  checkCastleCheckedFields And checkCastleEmptyFields
+    checkCastleCheckedFields(field: Field, smallCastle: boolean) {
+        const size = smallCastle ? 2 : 3
+        const direction = smallCastle ? 1 : -1
+        const kingCoordinate = field.coordinate
+
+        for (let i = 1; i <= size; i++) {
+            const searchedField = this.getFieldByXY(kingCoordinate.x + (i * direction), kingCoordinate.y)!
+
+            if (this.checkFieldIsChecked(searchedField) ) {
+                return false
+            }
+        }
+        return true
+    }
+
 
     getRookToCastle(field: Field, smallCastle: boolean): boolean {
         const rookX = smallCastle ? 8 : 1
@@ -324,7 +341,8 @@ export class GameService {
     }
 
     getFieldForCastle(field: Field, smallCastle: boolean) {
-        if (!this.getRookToCastle(field, smallCastle) && this.checkCastleEmptyFields(field, smallCastle) && !this.getKingToCastle(field)) {
+        if (!this.getRookToCastle(field, smallCastle) && this.checkCastleEmptyFields(field, smallCastle)
+            && !this.getKingToCastle(field) && this.checkCastleCheckedFields(field, smallCastle)) {
 
             return this.getReturnedFieldForCastle(field, smallCastle)
         }
@@ -463,7 +481,7 @@ export class GameService {
             this.getFieldByXY(field.coordinate.x, this.activeField!.coordinate.y)
             : undefined
         const id = this.arrayOfMoves.length
-        return new Move(id, this.activeField!, this.activeField?.piece, field, field.piece, fieldFrom, specialMoveName ? specialMoveName : MoveTypes.NORMAL, false, capturedField,
+        return new Move(id, this.activeField!, this.activeField?.piece, field, field.piece, fieldFrom, specialMoveName ? specialMoveName : MoveTypes.NORMAL, this.isCheck(), capturedField,
             piece, this.checkMoveType(specialMoveName!, field))
     }
 
@@ -544,9 +562,16 @@ export class GameService {
         return correctMoves
     }
 
-    dontCauseCheck() {
-        const enemyMoves = this.getAllPossibleMovesOfEnemy()
+    dontCauseCheck(selectedField: Field) {
+        if (selectedField.piece!.canBeChecked()) {
+            this.possibleMoves = this.possibleMoves.map(field => {
+                return this.getAllPossibleMovesOfEnemy().includes(field) ? [] : field
+            }).flat(1)
+        }
+    }
 
+    checkFieldIsChecked(field: Field): boolean {
+        return this.getAllPossibleMovesOfEnemy().includes(field)
     }
 
     isCheck() {
@@ -574,8 +599,13 @@ export class GameService {
         return (
             this.allFields!.map(field => {
                 if (field.piece! && field.piece!.color !== this.getColor()) {
-                    return field.piece!.getAllPossibleDirectionsWithColor()
+
+                    let correctFields = field.piece!.getAllPossibleDirectionsWithColor()
                         .map(direction => this.getAllPossibleMovesFromDirection(field, direction))
+                    if (field.piece instanceof Pawn) {
+                        return correctFields.concat(this.isPawnCapturePossible(field))
+                    }
+                    return correctFields
                 }
                 return []
             }).filter(field => field !== undefined).flat(2)

@@ -38,4 +38,8 @@ export class King extends Piece {
     getSpecialMoves(): Array<MoveType> {
         return [MoveTypes.SMALL_CASTLE, MoveTypes.BIG_CASTLE]
     }
+
+    canBeChecked(): boolean {
+        return true
+    }
 }
