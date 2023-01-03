@@ -44,9 +44,5 @@ export class Move {
         if (this.specialMove === MoveTypes.PROM && Piece) {
             this.nameOfMove += piece?.getPieceIcon()
         }
-
-        if (this.isCheck) {
-            this.nameOfMove += '+'
-        }
     }
 }

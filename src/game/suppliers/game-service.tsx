@@ -48,11 +48,6 @@ export class GameService {
 
         if (field.state.correctMove) {
             this.makeMoveOrPromotePawn(field)
-
-            const check = this.isCheck()
-            if (check) {
-                this.lastMove!.isCheck = true
-            }
         }
     }
 
@@ -301,12 +296,13 @@ export class GameService {
         for (let i = 1; i <= size; i++) {
             const searchedField = this.getFieldByXY(kingCoordinate.x + (i * direction), kingCoordinate.y)!
 
-            if (searchedField && searchedField.piece ) {
+            if (searchedField && searchedField.piece) {
                 return false
             }
         }
         return true
     }
+
 //todo make one function from  checkCastleCheckedFields And checkCastleEmptyFields
     checkCastleCheckedFields(field: Field, smallCastle: boolean) {
         const size = smallCastle ? 2 : 3
@@ -316,7 +312,7 @@ export class GameService {
         for (let i = 1; i <= size; i++) {
             const searchedField = this.getFieldByXY(kingCoordinate.x + (i * direction), kingCoordinate.y)!
 
-            if (this.checkFieldIsChecked(searchedField) ) {
+            if (this.checkFieldIsCheckedByEnemy(searchedField)) {
                 return false
             }
         }
@@ -457,15 +453,16 @@ export class GameService {
     }
 
     createAndMakeMove(field: Field, isAdditionalMove: boolean = false) {
-        const move = this.createMove(field)
+        let move = this.createMove(field)
 
         this.makeMove(move)
 
         if (!isAdditionalMove) {
+            this.changeTurn(field)
+            this.addKingIsCheckedAndChangeNameOfMove(move)
             this.addMoveToHistory(move)
             this.setLastMoveAndRemoveAdditionalField(move)
             this.addNamesOfMoveToHistoryComponent()
-            this.changeTurn(field)
 
             if (this.lastMove?.secondMove) {
                 this.makeAdditionalMove(this.lastMove?.secondMove)
@@ -481,7 +478,7 @@ export class GameService {
             this.getFieldByXY(field.coordinate.x, this.activeField!.coordinate.y)
             : undefined
         const id = this.arrayOfMoves.length
-        return new Move(id, this.activeField!, this.activeField?.piece, field, field.piece, fieldFrom, specialMoveName ? specialMoveName : MoveTypes.NORMAL, this.isCheck(), capturedField,
+        return new Move(id, this.activeField!, this.activeField?.piece, field, field.piece, fieldFrom, specialMoveName ? specialMoveName : MoveTypes.NORMAL, false, capturedField,
             piece, this.checkMoveType(specialMoveName!, field))
     }
 
@@ -548,10 +545,6 @@ export class GameService {
     }
 
     getCorrectMoves(currentField: Field): Array<Move> {
-        const correctMoves = currentField.piece!.getAllPossibleDirectionsWithColor()
-            .map(direction => this.getAllPossibleMovesFromDirection(currentField, direction))
-            .flat(1)
-            .map(move => new Move(undefined, currentField, undefined, move, undefined, '', MoveTypes.NORMAL, false))
         // .filter(filterField => {
         //     (this.canSee(filterField, currentField) || currentField.piece!.canJump())
         //     // &&
@@ -559,7 +552,11 @@ export class GameService {
         // })
 
 
-        return correctMoves
+        return currentField.piece!.getAllPossibleDirectionsWithColor()
+            .map(direction => this.getAllPossibleMovesFromDirection(currentField, direction))
+            .flat(1)
+            .map(move => new Move(undefined, currentField, undefined, move, undefined, '',
+                MoveTypes.NORMAL, false))
     }
 
     dontCauseCheck(selectedField: Field) {
@@ -570,7 +567,7 @@ export class GameService {
         }
     }
 
-    checkFieldIsChecked(field: Field): boolean {
+    checkFieldIsCheckedByEnemy(field: Field): boolean {
         return this.getAllPossibleMovesOfEnemy().includes(field)
     }
 
@@ -583,6 +580,15 @@ export class GameService {
         const allPossibleMovesOfEnemy = this.getAllPossibleMovesOfEnemy()
 
         return this.checkKingPositionIsChecked(allPossibleMovesOfEnemy, kingPosition)
+    }
+
+    addKingIsCheckedAndChangeNameOfMove(move: Move) {
+        if (this.isCheck()) {
+            move.isCheck = true
+            move.nameOfMove += '+'
+
+            return move
+        }
     }
 
     checkKingPositionIsChecked(allPossibleMovesOfEnemy: Array<Field>, kingPosition: Field) {
@@ -602,6 +608,7 @@ export class GameService {
 
                     let correctFields = field.piece!.getAllPossibleDirectionsWithColor()
                         .map(direction => this.getAllPossibleMovesFromDirection(field, direction))
+
                     if (field.piece instanceof Pawn) {
                         return correctFields.concat(this.isPawnCapturePossible(field))
                     }
@@ -610,10 +617,6 @@ export class GameService {
                 return []
             }).filter(field => field !== undefined).flat(2)
         )
-    }
-
-    getAllMovesOfPlayer() {
-        return
     }
 
     canPreventCheck(field1: Field, field2: Field): boolean {
