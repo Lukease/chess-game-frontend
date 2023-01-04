@@ -1,10 +1,17 @@
 import React, {useState} from 'react'
 import {GameService, MovingService} from '../../game/suppliers'
-import {SelectPlayer} from "./select-player";
 
 export class GameNavigation extends React.Component<any, any> {
     gameService: GameService
     movingService: MovingService
+    colorButton = [
+        {color: '⚫', text: 'Dark style'},
+        {color: '⚪', text: 'White style'}
+    ]
+    kings = [
+        {icon: '♔', color: 'white'},
+        {icon: '♚', color: 'black'}
+    ]
 
     constructor(props: any) {
         super(props)
@@ -37,6 +44,26 @@ export class GameNavigation extends React.Component<any, any> {
         this.gameService.setPositionEditorDisplayed(!isDisplayed)
     }
 
+    renderColorEditor() {
+        return (
+            this.colorButton.map((button, index) => {
+                return (
+                    <DropdownItem leftIcon={button.color} key={index}>{button.text}</DropdownItem>
+                )
+            })
+        )
+    }
+
+    renderChoosePlayer() {
+        return (
+            this.kings.map((king, index) => {
+                return (
+                    <DropdownItem leftIcon={king.icon} key={index}>{king.color}</DropdownItem>
+                )
+            })
+        )
+    }
+
     render() {
         return (
             <div className={'navbar'}>
@@ -58,6 +85,11 @@ export class GameNavigation extends React.Component<any, any> {
                         🖊️
                     </a>
                 </li>
+                <NavSettings icon={'🥷'}>
+                    <div className={'dropdown'}>
+                        {this.renderChoosePlayer()}
+                    </div>
+                </NavSettings>
                 <li className={'navbar__nav--item'}>
                     <a
                         className={'navbar__nav--button'}
@@ -70,16 +102,7 @@ export class GameNavigation extends React.Component<any, any> {
                 </NavSettings>
                 <NavSettings icon={'🖌️'}>
                     <div className={'dropdown'}>
-                        <a className={'dropdown__item'}>
-                            <span className={'dropdown__item--icon'}>{'⚫'}</span>
-
-                            {'Dark style'}
-                        </a>
-                        <a className={'dropdown__item'}>
-                            <span className={'dropdown__item--icon'}>{'⚪'}</span>
-
-                            {'White style'}
-                        </a>
+                        {this.renderColorEditor()}
                     </div>
                 </NavSettings>
                 <NavSettings icon={'⚙'}>
@@ -102,27 +125,25 @@ function NavSettings(props: any) {
             >
                 {props.icon}
             </a>
-
             {open ? props.children : null}
         </li>
     )
 }
 
+function DropdownItem(props: any) {
+    return (
+        <a className={'dropdown__item'}>
+            <span className={'dropdown__item--icon'}>{props.leftIcon}</span>
+
+            {props.children}
+        </a>
+    )
+}
+
 function DropdownMenu(props: any) {
-    function DropdownItem(props: any) {
-        return (
-            <a className={'dropdown__item'}>
-                <span className={'dropdown__item--icon'}>{props.leftIcon}</span>
-
-                {props.children}
-            </a>
-        )
-    }
-
     return (
         <div className={'dropdown'}>
             <DropdownItem leftIcon={props.leftIcon}>{props.text}</DropdownItem>
         </div>
-
     )
 }
