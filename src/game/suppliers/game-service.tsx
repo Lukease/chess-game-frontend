@@ -43,7 +43,8 @@ export class GameService {
         if (this.fieldHasPieceAndGameStarted(field) && this.isPlayerPiece(field.piece!)) {
             this.clearActiveField()
             this.setActiveFieldAndShowPossibleMoves(field)
-            this.isCheck()
+            this.isCheck(false)
+
         }
 
         if (field.state.correctMove) {
@@ -458,11 +459,11 @@ export class GameService {
         this.makeMove(move)
 
         if (!isAdditionalMove) {
-            this.changeTurn(field)
             this.addKingIsCheckedAndChangeNameOfMove(move)
             this.addMoveToHistory(move)
             this.setLastMoveAndRemoveAdditionalField(move)
             this.addNamesOfMoveToHistoryComponent()
+            this.changeTurn(field)
 
             if (this.lastMove?.secondMove) {
                 this.makeAdditionalMove(this.lastMove?.secondMove)
@@ -562,28 +563,29 @@ export class GameService {
     dontCauseCheck(selectedField: Field) {
         if (selectedField.piece!.canBeChecked()) {
             this.possibleMoves = this.possibleMoves.map(field => {
-                return this.getAllPossibleMovesOfEnemy().includes(field) ? [] : field
+                return this.getAllPossibleMovesOfPlayer(false).includes(field) ? [] : field
             }).flat(1)
         }
+        //todo add dont cause check for all pieces of player
     }
 
     checkFieldIsCheckedByEnemy(field: Field): boolean {
-        return this.getAllPossibleMovesOfEnemy().includes(field)
+        return this.getAllPossibleMovesOfPlayer(false).includes(field)
     }
 
-    isCheck() {
+    isCheck(checkEnemyKingIsChecked: boolean) {
         if (this.kingCheck) {
             this.kingCheck.setKingCheck(false)
         }
 
-        const kingPosition = this.allFields.find(field => field.piece! instanceof King && field.piece?.color === this.getColor())!
-        const allPossibleMovesOfEnemy = this.getAllPossibleMovesOfEnemy()
+        const kingPosition = this.allFields.find(field => field.piece! instanceof King && (field.piece?.color === this.getColor()) !== checkEnemyKingIsChecked)!
+        const allPossibleMovesOfEnemy = this.getAllPossibleMovesOfPlayer(checkEnemyKingIsChecked)
 
         return this.checkKingPositionIsChecked(allPossibleMovesOfEnemy, kingPosition)
     }
 
     addKingIsCheckedAndChangeNameOfMove(move: Move) {
-        if (this.isCheck()) {
+        if (this.isCheck(true)) {
             move.isCheck = true
             move.nameOfMove += '+'
 
@@ -601,11 +603,9 @@ export class GameService {
         return false
     }
 
-    getAllPossibleMovesOfEnemy() {
+    getAllPossibleMoves(fieldsArray: Array<Field>) {
         return (
-            this.allFields!.map(field => {
-                if (field.piece! && field.piece!.color !== this.getColor()) {
-
+           fieldsArray!.map(field => {
                     let correctFields = field.piece!.getAllPossibleDirectionsWithColor()
                         .map(direction => this.getAllPossibleMovesFromDirection(field, direction))
 
@@ -613,9 +613,20 @@ export class GameService {
                         return correctFields.concat(this.isPawnCapturePossible(field))
                     }
                     return correctFields
-                }
-                return []
             }).filter(field => field !== undefined).flat(2)
+        )
+    }
+
+    getAllPossibleMovesOfPlayer(isPlayerField: boolean) {
+        const allPlayerFields = this.allFields!.map(field => {
+            if (field.piece! && (field.piece!.color! === this.getColor()) === isPlayerField) {
+                return field
+            }
+            return []
+        }).filter(field => field !== undefined).flat(2)
+
+        return (
+            this.getAllPossibleMoves(allPlayerFields)
         )
     }
 

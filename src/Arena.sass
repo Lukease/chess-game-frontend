@@ -1,14 +1,17 @@
 @mixin hovered()
   background-color: #47627e
+  filter: brightness(1.2)
 
 @mixin correctMoveColor()
   background: #66d97f
+  transition: filter 300ms
 
 #root
   width: 100vw
   height: 100vh
   background-color: black
   -webkit-user-select: none
+  --nav-size: 60px
 
 .content
   display: flex
@@ -34,6 +37,7 @@
   height: 90px
   justify-content: center
   align-items: center
+  transition: filter 300ms
 
   &__black
     background-color: chocolate
@@ -87,17 +91,64 @@
     gap: 10px
     z-index: 1
 
-  &__navigation
+.dropdown
+  position: absolute
+  top: 58px
+  width: 300px
+  transform: translateX(-45%)
+  background-color: #00000033
+  border-radius: 20px
+  padding: 1rem
+  overflow: hidden
+
+  &__item
+    height: 50px
     display: flex
-    position: absolute
-    width: 10%
-    height: auto
     align-items: center
-    top: 10px
-    right: 1%
-    flex-direction: column
-    background-color: #343232
+    transition: background var(--speed)
+    padding: 0.5rem
     border-radius: 20px
+
+    &--icon
+      padding: 10px
+
+.dropdown__item:hover
+  background-color: #6c6767
+
+.navbar
+  height: var(--nav-size)
+  background-color: #343232
+  border-bottom: var(--border)
+  width: 100%
+  position: absolute
+  display: flex
+  top: 0
+  justify-content: flex-end
+
+  &__nav
+    max-width: 10%
+    height: 100%
+    display: flex
+    justify-content: flex-end
+
+    &--item
+      width: calc(var(--nav-size) * 0.8)
+      display: flex
+      justify-content: center
+      align-items: center
+      padding: 5px
+
+    &--button
+      --button-size: calc(var(--nav-size) * 0.8)
+      width: var(--button-size)
+      height: var(--button-size)
+      background-color: #444141
+      border-radius: 50%
+      margin: 2px
+      display: flex
+      align-items: center
+      justify-content: center
+      transition: filter 300ms
 
 .panel
   display: flex
@@ -118,6 +169,7 @@
   height: 70px
   width: 70px
   z-index: 2
+  transition: filter 300ms
 
   &__add
     height: 16%
@@ -172,7 +224,7 @@
     text-align: center
     width: 20%
     height: 30px
-    background-color: rgba(41,36,36,0.8)
+    background-color: rgba(41, 36, 36, 0.8)
     color: #7a746b
 
   &__container
@@ -184,6 +236,7 @@
     height: auto
     width: 40%
     text-align: left
+    transition: filter 300ms
 
 .refresher
   position: fixed
@@ -202,7 +255,7 @@
   width: 100%
   height: 100%
   position: absolute
-  background-color: rgba(0,0,0,0.2)
+  background-color: rgba(0, 0, 0, 0.2)
   left: 0
   top: 0
   opacity: 0.4
@@ -228,6 +281,7 @@
     align-items: center
     justify-content: center
     padding: 5px
+    transition: filter 300ms
 
   &__new-figure
     min-width: 10%
@@ -276,6 +330,9 @@
 .panel > .figure:hover
   @include hovered()
 
+.navbar__nav--button:hover
+  filter: brightness(1.2)
+
 button
   margin: 5px
 
@@ -319,3 +376,10 @@ div
     width: 100%
 
 
+ul
+  list-style: none
+  margin: 0
+  padding: 0
+
+a
+  text-decoration: none
