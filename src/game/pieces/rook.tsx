@@ -1,6 +1,6 @@
 import {Piece} from './piece'
 import {MovingStrategies} from '../suppliers'
-import {Vector2d} from "../chess-possible-move";
+import {Vector2d} from '../chess-possible-move'
 
 export class Rook extends Piece {
     constructor(color: string, id: string,  name: string) {

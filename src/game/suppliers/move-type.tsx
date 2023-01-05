@@ -6,9 +6,7 @@ export class MoveType {
         this.name = name
         this.specialName = specialName
     }
-}
 
-export class MoveTypes {
     static EN_PASSANT = new MoveType('e.P.',false)
     static SMALL_CASTLE = new MoveType('O-O',true)
     static BIG_CASTLE = new MoveType('O-O-O',true)

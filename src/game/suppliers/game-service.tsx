@@ -7,7 +7,7 @@ import {King, Pawn, Piece} from '../pieces'
 import {Coordinate, PromotePawnPanel, Vector2d} from '../chess-possible-move'
 import {Move} from '../../UI/history/move'
 import {HistoryOfMoves} from '../../UI/history'
-import {MoveType, MoveTypes} from './move-type'
+import {MoveType} from './move-type'
 
 export class GameService {
     gameNavigation: GameNavigation | undefined
@@ -98,6 +98,8 @@ export class GameService {
     backToActualPositionIfHistoryElementClicked() {
         if (this.historyOfMovesBackTo) {
             this.historyOfMovesBackTo.reverse().forEach(move => {
+                this.removeOldKingCheckAndAddNew(move)
+
                 if (move.secondMove) {
                     this.makeMove(move.secondMove)
                 }
@@ -117,6 +119,8 @@ export class GameService {
 
     undoneMoveToClickedElement() {
         this.historyOfMovesBackTo.forEach(move => {
+            this.removeOldKingCheckAndAddNew(move)
+
             if (move.secondMove) {
                 this.undoMove(move.secondMove)
             }
@@ -131,6 +135,16 @@ export class GameService {
 
             this.undoMove(move)
         })
+    }
+
+    removeOldKingCheckAndAddNew(move: Move) {
+        if (this.kingCheck) {
+            this.kingCheck.setKingCheck(false)
+        }
+
+        if (move.isCheck) {
+            this.setIsCheck(move)
+        }
     }
 
     createPawnForAdditionalField(move: Move) {
@@ -151,12 +165,12 @@ export class GameService {
             .reverse()
     }
 
-    checkMoveType(moveName: MoveTypes, fieldTo: Field) {
+    checkMoveType(moveName: MoveType, fieldTo: Field) {
         switch (moveName) {
-            case MoveTypes.SMALL_CASTLE:
+            case MoveType.SMALL_CASTLE:
                 return this.getCastleRookMove(fieldTo, true)
 
-            case MoveTypes.BIG_CASTLE:
+            case MoveType.BIG_CASTLE:
                 return this.getCastleRookMove(fieldTo, false)
 
             default:
@@ -168,7 +182,7 @@ export class GameService {
         const fieldsNumberOld = isSmallCastle ? 1 : -2
         const fieldsNumberNew = isSmallCastle ? -1 : 1
         const kingCoordinate = king.coordinate
-        const moveType = isSmallCastle ? MoveTypes.SMALL_CASTLE : MoveTypes.BIG_CASTLE
+        const moveType = isSmallCastle ? MoveType.SMALL_CASTLE : MoveType.BIG_CASTLE
         const oldRookField: Field = this.getFieldByXY(kingCoordinate.x + fieldsNumberOld, kingCoordinate.y)!
         const newRookField: Field = this.getFieldByXY(kingCoordinate.x + fieldsNumberNew, kingCoordinate.y)!
 
@@ -254,34 +268,34 @@ export class GameService {
 
     specialMovePossible(move: MoveType, field: Field): Array<Move> {
         switch (move) {
-            case MoveTypes.SMALL_CASTLE:
+            case MoveType.SMALL_CASTLE:
                 const smallCastle = this.getFieldForCastle(field, true)
 
                 return smallCastle ?
-                    [new Move(undefined, field, undefined, smallCastle!, undefined, '', MoveTypes.SMALL_CASTLE, false)]
+                    [new Move(undefined, field, undefined, smallCastle!, undefined, '', MoveType.SMALL_CASTLE, false)]
                     : []
 
-            case MoveTypes.BIG_CASTLE:
+            case MoveType.BIG_CASTLE:
                 const bigCastle = this.getFieldForCastle(field, false)
 
                 return bigCastle ?
-                    [new Move(undefined, field, undefined, bigCastle, undefined, '', MoveTypes.BIG_CASTLE, false)]
+                    [new Move(undefined, field, undefined, bigCastle, undefined, '', MoveType.BIG_CASTLE, false)]
                     : []
-            case MoveTypes.EN_PASSANT:
+            case MoveType.EN_PASSANT:
                 const enPassant = this.isEnPassantPossible(field)
 
-                return enPassant ? [new Move(undefined, field, undefined, enPassant!, undefined, '', MoveTypes.EN_PASSANT, false)]
+                return enPassant ? [new Move(undefined, field, undefined, enPassant!, undefined, '', MoveType.EN_PASSANT, false)]
                     : []
 
-            case MoveTypes.MOVE_TWO:
+            case MoveType.MOVE_TWO:
                 const moveTwo = this.isMoveTwoPossible(field)
 
-                return moveTwo ? [new Move(undefined, field, undefined, moveTwo!, undefined, '', MoveTypes.MOVE_TWO, false)]
+                return moveTwo ? [new Move(undefined, field, undefined, moveTwo!, undefined, '', MoveType.MOVE_TWO, false)]
                     : []
-            case MoveTypes.PAWN_CAPTURE:
+            case MoveType.PAWN_CAPTURE:
                 const pawnCapture = this.isPawnCapturePossible(field)
 
-                return pawnCapture.map(move => [new Move(undefined, field, undefined, move, undefined, '', MoveTypes.PAWN_CAPTURE, false)])
+                return pawnCapture.map(move => [new Move(undefined, field, undefined, move, undefined, '', MoveType.PAWN_CAPTURE, false)])
                     .flat(1)
                     .filter(Boolean)
             default:
@@ -349,7 +363,7 @@ export class GameService {
     isEnPassantPossible(field: Field) {
         if (this.lastMove) {
             const figureColor = field.piece?.color
-            const pawnTwoFieldsMove: boolean = this.lastMove.specialMove === MoveTypes.MOVE_TWO
+            const pawnTwoFieldsMove: boolean = this.lastMove.specialMove === MoveType.MOVE_TWO
             const lastMoveCoordinate = this.lastMove.fieldTo.coordinate
             const isWhiteFigure = figureColor === 'white'
             const direction = isWhiteFigure ? 1 : -1
@@ -472,14 +486,14 @@ export class GameService {
     }
 
     createMove(field: Field, piece: Piece | undefined = undefined) {
-        const specialMoveName = piece ? MoveTypes.PROM
+        const specialMoveName = piece ? MoveType.PROM
             : this.arrayOfPossibleMoves.find(moves => moves.fieldTo === field)?.specialMove
         const fieldFrom = this.fieldFrom(field)
-        const capturedField = specialMoveName === MoveTypes.EN_PASSANT ?
+        const capturedField = specialMoveName === MoveType.EN_PASSANT ?
             this.getFieldByXY(field.coordinate.x, this.activeField!.coordinate.y)
             : undefined
         const id = this.arrayOfMoves.length
-        return new Move(id, this.activeField!, this.activeField?.piece, field, field.piece, fieldFrom, specialMoveName ? specialMoveName : MoveTypes.NORMAL, false, capturedField,
+        return new Move(id, this.activeField!, this.activeField?.piece, field, field.piece, fieldFrom, specialMoveName ? specialMoveName : MoveType.NORMAL, false, capturedField,
             piece, this.checkMoveType(specialMoveName!, field))
     }
 
@@ -557,7 +571,7 @@ export class GameService {
             .map(direction => this.getAllPossibleMovesFromDirection(currentField, direction))
             .flat(1)
             .map(move => new Move(undefined, currentField, undefined, move, undefined, '',
-                MoveTypes.NORMAL, false))
+                MoveType.NORMAL, false))
     }
 
     dontCauseCheck(selectedField: Field) {
@@ -584,6 +598,13 @@ export class GameService {
         return this.checkKingPositionIsChecked(allPossibleMovesOfEnemy, kingPosition)
     }
 
+    setIsCheck(move: Move) {
+        const kingPosition = this.allFields.find(field => field.piece! instanceof King && field.piece?.color !== move.pieceFrom?.color)!
+
+        kingPosition.setKingCheck(true)
+        this.kingCheck = kingPosition
+    }
+
     addKingIsCheckedAndChangeNameOfMove(move: Move) {
         if (this.isCheck(true)) {
             move.isCheck = true
@@ -605,14 +626,14 @@ export class GameService {
 
     getAllPossibleMoves(fieldsArray: Array<Field>) {
         return (
-           fieldsArray!.map(field => {
-                    let correctFields = field.piece!.getAllPossibleDirectionsWithColor()
-                        .map(direction => this.getAllPossibleMovesFromDirection(field, direction))
+            fieldsArray!.map(field => {
+                let correctFields = field.piece!.getAllPossibleDirectionsWithColor()
+                    .map(direction => this.getAllPossibleMovesFromDirection(field, direction))
 
-                    if (field.piece instanceof Pawn) {
-                        return correctFields.concat(this.isPawnCapturePossible(field))
-                    }
-                    return correctFields
+                if (field.piece instanceof Pawn) {
+                    return correctFields.concat(this.isPawnCapturePossible(field))
+                }
+                return correctFields
             }).filter(field => field !== undefined).flat(2)
         )
     }

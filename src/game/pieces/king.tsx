@@ -1,7 +1,6 @@
 import {Piece} from './piece'
-import {MovingStrategies} from '../suppliers'
+import {MovingStrategies, MoveType} from '../suppliers'
 import {Vector2d} from '../chess-possible-move'
-import {MoveType, MoveTypes} from "../suppliers/move-type";
 
 export class King extends Piece {
     constructor(color: string, id: string, name: string) {
@@ -36,7 +35,7 @@ export class King extends Piece {
     }
 
     getSpecialMoves(): Array<MoveType> {
-        return [MoveTypes.SMALL_CASTLE, MoveTypes.BIG_CASTLE]
+        return [MoveType.SMALL_CASTLE, MoveType.BIG_CASTLE]
     }
 
     canBeChecked(): boolean {

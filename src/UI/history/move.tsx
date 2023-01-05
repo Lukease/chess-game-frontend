@@ -1,5 +1,5 @@
 import {Field} from '../field'
-import {MoveType, MoveTypes} from '../../game/suppliers/move-type'
+import {MoveType} from '../../game/suppliers'
 import {Piece} from '../../game/pieces'
 
 export class Move {
@@ -41,7 +41,7 @@ export class Move {
             this.nameOfMove = icon + fieldFrom + capture + this.fieldTo.id.toLowerCase() + this.specialMove!.name
         }
 
-        if (this.specialMove === MoveTypes.PROM && Piece) {
+        if (this.specialMove === MoveType.PROM && Piece) {
             this.nameOfMove += piece?.getPieceIcon()
         }
     }

@@ -1,6 +1,5 @@
 import {MovingStrategy, Vector2d, Coordinate} from '../chess-possible-move'
-import {CoordinateService} from '../suppliers'
-import {MoveType} from "../suppliers/move-type"
+import {CoordinateService, MoveType} from '../suppliers'
 
 export abstract class Piece {
     color: string

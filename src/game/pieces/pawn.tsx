@@ -1,7 +1,6 @@
 import {Piece} from './piece'
-import {MovingStrategies} from '../suppliers'
+import {MovingStrategies, MoveType} from '../suppliers'
 import {Vector2d} from '../chess-possible-move'
-import {MoveType, MoveTypes} from "../suppliers/move-type";
 
 export class Pawn extends Piece {
 
@@ -34,7 +33,7 @@ export class Pawn extends Piece {
     }
 
     getSpecialMoves(): Array<MoveType> {
-        return [MoveTypes.EN_PASSANT,MoveTypes.MOVE_TWO,MoveTypes.PAWN_CAPTURE, MoveTypes.PROM]
+        return [MoveType.EN_PASSANT,MoveType.MOVE_TWO,MoveType.PAWN_CAPTURE, MoveType.PROM]
     }
 
     isPawn(): boolean {
