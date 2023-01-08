@@ -2,9 +2,8 @@ import React from 'react'
 import '../Arena.css'
 import {GameNavigation} from './start-game'
 import {defaultChessArrangement} from '../chess_arrangement'
-import {GameService, MovingService} from '../game/suppliers'
+import {GameService, MovingService, NavigationService} from '../game/suppliers'
 import {AddPiecePanel} from './new-figure'
-import {SelectPlayer} from './start-game'
 import {PromotePawnPanel} from './new-figure'
 import {HistoryOfMoves} from './history'
 import {Board} from './board'
@@ -15,29 +14,33 @@ export class Arena extends React.Component<any, any> {
     gameService: GameService
     kings: Array<Piece>
     movingService: MovingService
+    navigationService: NavigationService
 
     constructor(props: any) {
         super(props)
 
         this.gameService = this.props.gameService
         this.movingService = this.props.movingService
+        this.navigationService = this.props.navigationService
+        this.navigationService.arena = this
         this.pieces = defaultChessArrangement
         this.kings = this.pieces.filter(piece => piece instanceof King)
-        this.setDefaultChessPosition = this.setDefaultChessPosition.bind(this)
         this.state = {
             isMovingPiece: false,
             selectedPiece: '',
             coordinateX: 0,
             coordinateY: 0,
             movingId: '',
-            newPieceId: ''
+            newPieceId: '',
+            backgroundColor: 'black'
         }
         this.gameService.arena = this
         this.movingService.arena = this
     }
 
-    setDefaultChessPosition() {
-        window.location.reload()
+
+    setBackgroundColor(color: string) {
+        this.setState({backgroundColor: color})
     }
 
     setMovingPiece(isMoving: boolean, piece: Piece, x: number, y: number, id: string) {
@@ -85,6 +88,7 @@ export class Arena extends React.Component<any, any> {
             <div className={'content'}
                  onMouseMove={this.editorMouseMoveFigure}
                  onMouseUp={() => this.addNewPieceToField()}
+                 style={{backgroundImage: `linear-gradient(#413f3f, ${this.state.backgroundColor})`}}
             >
                 {
                     this.state.isMovingPiece ?
@@ -112,6 +116,8 @@ export class Arena extends React.Component<any, any> {
                 <GameNavigation
                     gameService={this.gameService}
                     movingService={this.movingService}
+                    navigationService={this.navigationService}
+                    kings={this.kings}
                 />
                 <HistoryOfMoves
                     gameService={this.gameService}
@@ -126,6 +132,7 @@ export class Arena extends React.Component<any, any> {
                     <Board
                         gameService={this.gameService}
                         movingService={this.props.movingService}
+                        navigationService={this.navigationService}
                         pieces={this.pieces}
                     />
                     <AddPiecePanel
@@ -138,15 +145,6 @@ export class Arena extends React.Component<any, any> {
                         gameService={this.gameService}
                         arena={this}
                     />
-                </div>
-                <SelectPlayer
-                    kings={this.kings}
-                    gameService={this.gameService}
-                />
-                <div
-                    className={'refresher'}
-                    onClick={this.setDefaultChessPosition}
-                >
                 </div>
             </div>
         )

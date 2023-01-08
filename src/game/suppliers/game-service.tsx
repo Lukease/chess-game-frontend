@@ -1,4 +1,4 @@
-import {GameNavigation, SelectPlayer} from '../../UI/start-game'
+import {GameNavigation} from '../../UI/start-game'
 import {AddPiecePanel} from '../../UI/new-figure'
 import {Arena} from '../../UI/Arena'
 import {Field} from '../../UI'
@@ -15,7 +15,6 @@ export class GameService {
     board: Board | undefined
     arena: Arena | undefined
     promotePawnPanel: PromotePawnPanel | undefined
-    selectPlayer: SelectPlayer | undefined
     historyOfMoves: HistoryOfMoves | undefined
     promotedField: Field | undefined
     private activeField: Field | undefined
@@ -44,7 +43,7 @@ export class GameService {
             this.clearActiveField()
             this.setActiveFieldAndShowPossibleMoves(field)
             this.isCheck(false)
-
+            this.getCheckedFields()
         }
 
         if (field.state.correctMove) {
@@ -191,7 +190,6 @@ export class GameService {
 
     setPlayerColor(vector: number) {
         this.playerColor = vector
-        this.board?.setVectorDirection(vector)
     }
 
     toggleSide() {
@@ -209,6 +207,7 @@ export class GameService {
 
     setPromotedFigureToField(piece: Piece) {
         const move = this.createMove(this.promotedField!, piece)
+        this.addKingIsCheckedAndChangeNameOfMove(move)
         this.addMoveToHistory(move)
         this.setLastMoveAndRemoveAdditionalField(move)
         this.addNamesOfMoveToHistoryComponent()
@@ -521,7 +520,7 @@ export class GameService {
     getAllPossibleMovesFromDirection(currentField: Field, direction: Vector2d): Array<Field> {
         if (!currentField.piece?.canMoveMultipleSquares()) {
             const field = this.getFieldByXY(currentField.coordinate.x + direction.x, currentField.coordinate.y + direction.y)
-            const isPawn = currentField.piece instanceof Pawn
+            const isPawn = currentField.piece?.isPawn()
 
             if (!isPawn) {
                 if (field?.piece && field?.piece.color === currentField.piece?.color) {
@@ -580,7 +579,14 @@ export class GameService {
                 return this.getAllPossibleMovesOfPlayer(false).includes(field) ? [] : field
             }).flat(1)
         }
-        //todo add dont cause check for all pieces of player
+
+        const checkedFields = this.getCheckedFields()
+
+        if (!selectedField.piece!.canBeChecked() && checkedFields!.length) {
+            this.possibleMoves = this.possibleMoves.map(field => {
+                return checkedFields.includes(field) ? field : []
+            }).flat(1)
+        }
     }
 
     checkFieldIsCheckedByEnemy(field: Field): boolean {
@@ -649,6 +655,35 @@ export class GameService {
         return (
             this.getAllPossibleMoves(allPlayerFields)
         )
+    }
+
+    getCheckedFields() {
+        if (this.kingCheck) {
+            return (this.allFields.map(field => {
+                    if (field.piece) {
+                        let correctFields: Array<Field> = field.piece!.getAllPossibleDirectionsWithColor()
+                            .map(direction => {
+                                const attackDirectionFields = this.getAllPossibleMovesFromDirection(field, direction)
+                                if (attackDirectionFields.includes(this.kingCheck!)) {
+                                    return attackDirectionFields
+                                }
+                                return []
+                            })
+                            .flat(1)
+
+                        if (field.piece.isPawn()) {
+                            correctFields.concat(this.isPawnCapturePossible(field))
+                        }
+                        if (correctFields.includes(this.kingCheck!)) {
+                            return correctFields.concat(field)
+                        }
+                    }
+                    return []
+                }).filter(field => field !== undefined)
+                    .flat(1)
+            )
+        }
+        return []
     }
 
     canPreventCheck(field1: Field, field2: Field): boolean {

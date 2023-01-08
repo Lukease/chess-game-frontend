@@ -1,27 +1,29 @@
 import React, {useState} from 'react'
-import {GameService, MovingService} from '../../game/suppliers'
+import {GameService, MovingService, NavigationService} from '../../game/suppliers'
+import {Piece} from '../../game/pieces'
 
 export class GameNavigation extends React.Component<any, any> {
     gameService: GameService
     movingService: MovingService
     colorButton = [
-        {color: '⚫', text: 'Dark style'},
-        {color: '⚪', text: 'White style'}
+        {icon: '⚫', text: 'Dark style', colorMenu: 'black'},
+        {icon: '⚪', text: 'White style', colorMenu: 'white'}
     ]
-    kings = [
-        {icon: '♔', color: 'white'},
-        {icon: '♚', color: 'black'}
-    ]
+    kings: Array<Piece>
+    navigationService: NavigationService
 
     constructor(props: any) {
         super(props)
 
         this.movingService = props.movingService
         this.gameService = props.gameService
+        this.navigationService = props.navigationService
+        this.kings = props.kings
         this.state = {
             isGameStarted: false,
             isPieceEditorDisplayed: false,
-            color: 'white'
+            color: 'white',
+            menuColor: 'black'
         }
         this.gameService.gameNavigation = this
         this.movingService.gameNavigation = this
@@ -44,66 +46,86 @@ export class GameNavigation extends React.Component<any, any> {
         this.gameService.setPositionEditorDisplayed(!isDisplayed)
     }
 
+    setMenuColor(color: string) {
+        this.navigationService.setBackgroundColor(color)
+    }
+
     renderColorEditor() {
         return (
-            this.colorButton.map((button, index) => {
-                return (
-                    <DropdownItem leftIcon={button.color} key={index}>{button.text}</DropdownItem>
-                )
-            })
+            <div className={'dropdown'}>{
+                this.colorButton.map((button, index) => {
+                    return (
+                        <DropdownItem
+                            leftIcon={button.icon}
+                            key={index}
+                            onClick={() => this.setMenuColor(button.colorMenu)}
+                        >{button.text}</DropdownItem>
+                    )
+                })
+            }
+            </div>
         )
     }
 
     renderChoosePlayer() {
         return (
-            this.kings.map((king, index) => {
-                return (
-                    <DropdownItem leftIcon={king.icon} key={index}>{king.color}</DropdownItem>
-                )
-            })
+            <div className={'dropdown'}>{
+                this.kings.map((king, index) => {
+                    return (
+                        <DropdownItem
+                            leftIcon={king.getPieceIcon()}
+                            key={index}
+                            piece={king}
+                            color={king.color}
+                            onClick={() => this.selectPieceColor(king)}
+                        >
+                            {king.color}
+                        </DropdownItem>
+                    )
+                })
+            }
+            </div>
         )
+    }
+
+    setDefaultChessPosition() {
+        window.location.reload()
+    }
+
+    selectPieceColor(piece: Piece) {
+        const vector: number = piece.color === 'white' ? -1 : 1
+
+        this.navigationService.toggleSide(vector)
+        this.gameService.setPlayerColor(vector)
+
+        return piece
     }
 
     render() {
         return (
             <div className={'navbar'}>
-                <li className={'navbar__nav--item'}>
-                    <a
-                        className={'navbar__nav--button'}
-                        onClick={this.state.isGameStarted ? undefined : this.startGame}
-                        style={{backgroundColor: this.state.isGameStarted ? 'green' : ''}}
-                    >
-                        ▶
-                    </a>
-                </li>
-                <li className={'navbar__nav--item'}>
-                    <a
-                        className={'navbar__nav--button'}
-                        onClick={this.state.isGameStarted ? undefined : this.changePositionEditorDisplayed}
-                        style={{backgroundColor: this.state.isGameStarted ? 'grey' : ''}}
-                    >
-                        🖊️
-                    </a>
-                </li>
+                <NavSettings
+                    icon={'▶'}
+                    onClick={this.state.isGameStarted ? undefined : this.startGame}
+                    backgroundColor={this.state.isGameStarted ? 'green' : ''}
+                />
+                <NavSettings
+                    icon={'🖊️'}
+                    onClick={this.state.isGameStarted ? undefined : this.changePositionEditorDisplayed}
+                    backgroundColor={this.state.isGameStarted ? 'grey' : ''}
+                />
                 <NavSettings icon={'🥷'}>
-                    <div className={'dropdown'}>
-                        {this.renderChoosePlayer()}
-                    </div>
+                    {this.renderChoosePlayer()}
                 </NavSettings>
-                <li className={'navbar__nav--item'}>
-                    <a
-                        className={'navbar__nav--button'}
-                    >
-                        🔄
-                    </a>
-                </li>
-                <NavSettings icon={'🔔'}>
-                    <DropdownMenu leftIcon={'🔔'} text={'No new notifications '}></DropdownMenu>
+                <NavSettings icon={'🔄'} onClick={() => this.setDefaultChessPosition()}/>
+                <NavSettings icon={'🔔'} >
+                    <DropdownMenu
+                        leftIcon={'🔔'}
+                        text={'No new notifications '}
+                    ></DropdownMenu>
                 </NavSettings>
                 <NavSettings icon={'🖌️'}>
-                    <div className={'dropdown'}>
-                        {this.renderColorEditor()}
-                    </div>
+                    {this.renderColorEditor()}
                 </NavSettings>
                 <NavSettings icon={'⚙'}>
                     <DropdownMenu leftIcon={'🚪'} text={'Logout'}></DropdownMenu>
@@ -114,29 +136,33 @@ export class GameNavigation extends React.Component<any, any> {
 }
 
 function NavSettings(props: any) {
-    const [open, setOpen] = useState(false)
+    let [isOpen, setIsOpen] = useState(false)
 
     return (
         <li className={'navbar__nav--item'}>
             <a
                 className={'navbar__nav--button'}
-                onMouseOver={() => setOpen(!open)}
-                onMouseLeave={() => setOpen(!open)}
+                onMouseOver={() => setIsOpen(!isOpen)}
+                // onMouseLeave={() => setIsOpen(!isOpen)}
+                onClick={() => props.onClick()}
+                style={{backgroundColor: props.backgroundColor}}
             >
                 {props.icon}
             </a>
-            {open ? props.children : null}
+            {isOpen ? props.children : null}
         </li>
     )
 }
 
 function DropdownItem(props: any) {
     return (
-        <a className={'dropdown__item'}>
+        <div className={'dropdown__item'}
+             onClick={() => props.onClick()}
+        >
             <span className={'dropdown__item--icon'}>{props.leftIcon}</span>
 
             {props.children}
-        </a>
+        </div>
     )
 }
 

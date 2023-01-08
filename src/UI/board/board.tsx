@@ -1,5 +1,5 @@
 import React from 'react'
-import {GameService, MovingService, CoordinateService} from '../../game/suppliers'
+import {GameService, MovingService, CoordinateService, NavigationService} from '../../game/suppliers'
 import {Piece} from '../../game/pieces'
 import {Field} from '../field'
 
@@ -8,6 +8,7 @@ export class Board extends React.Component<any, any> {
     gameService: GameService
     allFields: Array<Field>
     movingService: MovingService
+    navigationService: NavigationService
 
     constructor(props: any) {
         super(props)
@@ -16,6 +17,7 @@ export class Board extends React.Component<any, any> {
         this.pieces = props.pieces
         this.gameService = props.gameService
         this.movingService = props.movingService
+        this.navigationService = props.navigationService
         this.allFields = []
         this.state = {
             isTrashOn: false,
@@ -24,6 +26,7 @@ export class Board extends React.Component<any, any> {
 
         this.movingService.board = this
         this.gameService.board = this
+        this.navigationService.board = this
     }
 
     setVectorDirection(direction: number) {
