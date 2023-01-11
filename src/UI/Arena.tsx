@@ -2,7 +2,7 @@ import React from 'react'
 import '../Arena.css'
 import {GameNavigation} from './start-game'
 import {defaultChessArrangement} from '../chess_arrangement'
-import {GameService, MovingService, NavigationService} from '../game/suppliers'
+import {GameService, HistoryService, MovingService, NavigationService} from '../game/suppliers'
 import {AddPiecePanel} from './new-figure'
 import {PromotePawnPanel} from './new-figure'
 import {HistoryOfMoves} from './history'
@@ -15,6 +15,7 @@ export class Arena extends React.Component<any, any> {
     kings: Array<Piece>
     movingService: MovingService
     navigationService: NavigationService
+    historyService: HistoryService
 
     constructor(props: any) {
         super(props)
@@ -22,6 +23,7 @@ export class Arena extends React.Component<any, any> {
         this.gameService = this.props.gameService
         this.movingService = this.props.movingService
         this.navigationService = this.props.navigationService
+        this.historyService = this.props.historyService
         this.navigationService.arena = this
         this.pieces = defaultChessArrangement
         this.kings = this.pieces.filter(piece => piece instanceof King)
@@ -121,6 +123,7 @@ export class Arena extends React.Component<any, any> {
                 />
                 <HistoryOfMoves
                     gameService={this.gameService}
+                    historyService={this.historyService}
                 />
                 <div className={'game__arena'}>
                     <AddPiecePanel
@@ -134,6 +137,7 @@ export class Arena extends React.Component<any, any> {
                         movingService={this.props.movingService}
                         navigationService={this.navigationService}
                         pieces={this.pieces}
+                        historyService={this.historyService}
                     />
                     <AddPiecePanel
                         color={'white'}

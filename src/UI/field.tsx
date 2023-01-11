@@ -1,6 +1,6 @@
 import React from 'react'
 import '../Arena.css'
-import {GameService,MovingService,CoordinateService} from '../game/suppliers'
+import {GameService, MovingService, CoordinateService, HistoryService} from '../game/suppliers'
 import {Coordinate} from '../game/chess-possible-move'
 import {Piece} from '../game/pieces'
 
@@ -12,6 +12,7 @@ export class Field extends React.Component<any, any> {
     coordinate: Coordinate
     piece: Piece | undefined
     gameService: GameService
+    historyService: HistoryService
     movingService: MovingService
 
     constructor(props: any) {
@@ -25,6 +26,7 @@ export class Field extends React.Component<any, any> {
         this.coordinate = CoordinateService.getCoordinateById(this.id)
         this.gameService = props.gameService
         this.movingService = props.movingService
+        this.historyService = props.historyService
         this.state = {
             isCheck: false,
             isChosen: false,
@@ -36,6 +38,7 @@ export class Field extends React.Component<any, any> {
             isTrashActive: false
         }
         props.gameService.addFieldToGameService(this)
+        props.historyService.addFieldToHistoryService(this)
         props.movingService.addFieldToMovingService(this)
 
     }

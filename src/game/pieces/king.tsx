@@ -38,7 +38,7 @@ export class King extends Piece {
         return [MoveType.SMALL_CASTLE, MoveType.BIG_CASTLE]
     }
 
-    canBeChecked(): boolean {
+    isKing(): boolean {
         return true
     }
 }

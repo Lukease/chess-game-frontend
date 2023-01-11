@@ -2,9 +2,16 @@
   background-color: #47627e
   filter: brightness(1.2)
 
-@mixin correctMoveColor()
-  background: #66d97f
+@mixin correctMoveHoveredColor()
+  background: #40704a
   transition: filter 300ms
+
+@mixin lastMoveOrActiveField()
+  opacity: 0.7
+
+@mixin correctMove()
+  background: #578a61
+  opacity: 0.5
 
 #root
   width: 100vw
@@ -46,7 +53,7 @@
     background-color: burlywood
 
   &__chosen
-    background-color: greenyellow
+    @include lastMoveOrActiveField()
 
   &__e-p
     background-color: green
@@ -179,13 +186,12 @@
     width: 40%
     height: 40%
     border-radius: 50%
-    background: greenyellow center
+    @include correctMove
 
   &__move-figure
     height: 90%
     border-radius: 50%
-    border-style: solid
-    border-color: greenyellow
+    @include correctMove
 
   &__add
     width: 100%
@@ -302,11 +308,11 @@
   @include hovered()
 
 .field:has(.figure__move-empty):hover
-  @include correctMoveColor()
+  @include correctMoveHoveredColor()
   opacity: 0.9
 
 .field:has(.figure__move-figure):hover
-  @include correctMoveColor()
+  @include correctMoveHoveredColor()
   opacity: 0.9
 
 .history__move:hover
@@ -327,6 +333,14 @@ button
 div
   color: #eae8e2
   font-weight: bold
+
+ul
+  list-style: none
+  margin: 0
+  padding: 0
+
+a
+  text-decoration: none
 
 .select__player > img:hover
   @include hovered()
@@ -362,12 +376,3 @@ div
 
   .panel
     width: 100%
-
-
-ul
-  list-style: none
-  margin: 0
-  padding: 0
-
-a
-  text-decoration: none

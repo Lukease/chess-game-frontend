@@ -1,14 +1,17 @@
 import React from 'react'
 import {GameService} from '../../game/suppliers'
 import {Move} from './move'
+import {HistoryService} from '../../game/suppliers'
 
 export class HistoryOfMoves extends React.Component<any, any> {
     gameService: GameService
+    historyService: HistoryService
 
     constructor(props: any) {
         super(props)
 
         this.gameService = props.gameService
+        this.historyService = props.historyService
         this.gameService.historyOfMoves = this
         this.state = {
             history: []
@@ -16,10 +19,12 @@ export class HistoryOfMoves extends React.Component<any, any> {
     }
 
     renderMoves(index: number) {
-        this.gameService.renderHistory(index)
+        this.historyService.renderHistory(index)
     }
 
     setHistoryOfMoves(arrayOfMoves: Array<Move>) {
+        this.historyService.setArrayOfMoves(arrayOfMoves)
+
         this.setState({
             history: arrayOfMoves.map(move => move.nameOfMove)
                 .reduce((acc, item, currentIndex) => {
@@ -71,8 +76,8 @@ export class HistoryOfMoves extends React.Component<any, any> {
                             >
                                 {moveNumber}
                             </div>
-                            {this.renderNameOfMove(whiteTurn, (index * 2))}
-                            {this.renderNameOfMove(blackTurn, (index * 2) + 1)}
+                            {this.renderNameOfMove(whiteTurn, (index * 2) - 1)}
+                            {this.renderNameOfMove(blackTurn, (index * 2))}
                         </div>
                     </div>
                 )

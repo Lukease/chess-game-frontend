@@ -55,7 +55,7 @@ export abstract class Piece {
         return false
     }
 
-    canBeChecked(): boolean {
+    isKing(): boolean {
         return false
     }
 }

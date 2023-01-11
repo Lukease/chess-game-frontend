@@ -31,16 +31,28 @@ export class Move {
         this.secondMove = secondMove
     }
 
-    setNameOfMove(fieldFrom: string, piece: Piece | undefined) {
+    setNameOfMove(fieldFromName: string, piece: Piece | undefined) {
         if (this.specialMove?.specialName) {
-            this.nameOfMove = this.specialMove.name
+            this.setSpecialMoveName()
         } else {
-            const icon: string = this.fieldFrom.piece!.getPieceIcon()
-            const capture: string = this.fieldTo.piece !== undefined ? 'x' : ''
-
-            this.nameOfMove = icon + fieldFrom + capture + this.fieldTo.id.toLowerCase() + this.specialMove!.name
+            this.setIconOfMoveAndAddAllLetters(fieldFromName)
         }
 
+        this.setPiecePromotion(piece!)
+    }
+
+    setSpecialMoveName(){
+        this.nameOfMove = this.specialMove!.name
+    }
+
+    setIconOfMoveAndAddAllLetters(fieldFromName: string) {
+        const icon: string = this.fieldFrom.piece!.getPieceIcon()
+        const capture: string = this.fieldTo.piece !== undefined ? 'x' : ''
+
+        this.nameOfMove = icon + fieldFromName + capture + this.fieldTo.id.toLowerCase() + this.specialMove!.name
+    }
+
+    setPiecePromotion(piece: Piece) {
         if (this.specialMove === MoveType.PROM && Piece) {
             this.nameOfMove += piece?.getPieceIcon()
         }
