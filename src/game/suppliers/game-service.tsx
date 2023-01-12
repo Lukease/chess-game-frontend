@@ -30,6 +30,7 @@ export class GameService {
     arrayOfMoves: Array<Move> = []
     lastMove: Move | undefined
     kingCheck: Field | undefined
+    coveringKingFields: Array<Field> = []
 
     constructor() {
         this.whiteTurn = true
@@ -39,6 +40,7 @@ export class GameService {
     fieldClick(field: Field) {
         this.ifTrashActiveDeletePiece(field)
         if (this.fieldHasPieceAndGameStarted(field) && this.isPlayerPiece(field.piece!)) {
+            this.coveringKingFields = this.canPreventCheck()
             this.clearActiveField()
             this.setActiveFieldAndShowPossibleMoves(field)
             this.getTheKingIsChecked(false)
@@ -181,6 +183,7 @@ export class GameService {
             .concat(specialMove)
             .map(field => field.fieldTo)
         this.dontCauseCheck(field)
+        this.checkFieldIsCoveringKing(field)
         this.setPossibleMovesActive(true)
     }
 
@@ -482,7 +485,7 @@ export class GameService {
 
     getAllPossibleMovesFromDirection(currentField: Field, direction: Vector2d): Array<Field> {
         if (!currentField.piece?.canMoveMultipleSquares()) {
-            return this.getPossibleMovesOfPawnAndKing(currentField,direction)
+            return this.getPossibleMovesOfPawnAndKing(currentField, direction)
         } else {
             return this.getPossibleMovesOfPiecesWhoCanMoveMultipleSquares(currentField, direction)
         }
@@ -494,6 +497,65 @@ export class GameService {
             .flat(1)
             .map(move => new Move(undefined, currentField, undefined, move, undefined, '',
                 MoveType.NORMAL, false))
+    }
+
+    getAllMovesFromDirectionAndSearchKing(currentField: Field, direction: Vector2d) {
+        let counter = 1
+        let canGoFurther: boolean = true
+        let isKingField: boolean = false
+        let field = this.getFieldByXY(
+            currentField.coordinate.x + (direction.x * counter),
+            currentField.coordinate.y + (direction.y * counter))
+        let arrayField: Array<Field> = []
+        while (field && canGoFurther) {
+            if (field.piece?.isKing() && field.piece?.color !== currentField.piece?.color) {
+                canGoFurther = false
+                isKingField = true
+            } else {
+
+                counter++
+
+                arrayField = arrayField.concat(field)
+
+                field = this.getFieldByXY(
+                    currentField.coordinate.x + (direction.x * counter),
+                    currentField.coordinate.y + (direction.y * counter))
+            }
+        }
+        return isKingField ? arrayField : []
+    }
+
+    canPreventCheck() {
+        const arrayOfPieceWithDirections = this.allFields.map(field => {
+            if (field.piece && field.piece.canMoveMultipleSquares() && field.piece.color !== this.getColor()) {
+                return {
+                    field: field,
+                    directions: field.piece!.getAllPossibleDirectionsWithColor()
+                }
+            }
+        }).filter(Boolean)
+
+        return arrayOfPieceWithDirections.map(pieceWithDirections => {
+            return pieceWithDirections!.directions.map(direction => {
+                return this.getAllMovesFromDirectionAndSearchKing(pieceWithDirections!.field, direction)
+            })
+        }).flat(2)
+    }
+
+    checkFieldIsCoveringKing(selectedField: Field) {
+        if (this.coveringKingFields.includes(selectedField)) {
+            this.coveringKingFields.forEach(directionField => {
+                console.log(!this.possibleMoves.includes(directionField))
+                if (!this.possibleMoves.includes(directionField)){
+                    this.possibleMoves.filter(correctMoveOfSelectedPiece => correctMoveOfSelectedPiece !== directionField)
+                }
+                this.possibleMoves = this.possibleMoves.map(field => {
+                    return this.getAllPossibleMovesOfPlayer(false).includes(field) ? [] : field
+                }).flat(1)
+            })
+            // console.log(this.coveringKingFields)
+        }
+
     }
 
     dontCauseCheck(selectedField: Field) {
@@ -522,7 +584,7 @@ export class GameService {
             this.kingCheck = undefined
         }
 
-        const kingPosition = this.allFields.find(field => field.piece! instanceof  King &&
+        const kingPosition = this.allFields.find(field => field.piece! instanceof King &&
             (field.piece?.color === this.getColor()) !== checkEnemyKingIsChecked)!
         const allPossibleMovesOfEnemy = this.getAllPossibleMovesOfPlayer(checkEnemyKingIsChecked)
 
@@ -602,14 +664,6 @@ export class GameService {
             )
         }
         return []
-    }
-
-    canPreventCheck(selectedField: Field) {
-        const kingPosition = this.allFields.find(field => field.piece!.isKing() && field.piece?.color !== selectedField.piece!.color)!
-
-        if (this.checkFieldIsCheckedByEnemy(selectedField)){
-
-        }
     }
 
     setPositionEditorDisplayed(isDisplayed: boolean) {

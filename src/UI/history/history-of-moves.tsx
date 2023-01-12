@@ -14,17 +14,38 @@ export class HistoryOfMoves extends React.Component<any, any> {
         this.historyService = props.historyService
         this.gameService.historyOfMoves = this
         this.state = {
-            history: []
+            history: [],
+            lastMoveIndex: 0,
+            rewindIndex: 0
         }
     }
 
     renderMoves(index: number) {
+        this.setRewindIndex(index)
         this.historyService.renderHistory(index)
+    }
+
+    renderMovesRewindOrForwardByOne(direction: number) {
+        const rewindIndex = this.state.rewindIndex + direction
+
+        if (rewindIndex > -2 && rewindIndex <= this.state.lastMoveIndex) {
+            this.setRewindIndex(rewindIndex)
+            this.renderMoves(rewindIndex)
+        }
+    }
+
+    setRewindIndex(index: number) {
+        this.setState({rewindIndex: index})
+    }
+
+    setLastMoveIndex(index: number) {
+        this.setState({lastMoveIndex: index})
     }
 
     setHistoryOfMoves(arrayOfMoves: Array<Move>) {
         this.historyService.setArrayOfMoves(arrayOfMoves)
-
+        this.setRewindIndex((arrayOfMoves.length - 1))
+        this.setLastMoveIndex((arrayOfMoves.length - 1) )
         this.setState({
             history: arrayOfMoves.map(move => move.nameOfMove)
                 .reduce((acc, item, currentIndex) => {
@@ -96,8 +117,18 @@ export class HistoryOfMoves extends React.Component<any, any> {
                     className={'history__container'}
                     style={{backgroundColor: 'rgba(41,36,36,0.8)'}}
                 >
-
-                    {/*<img src={require('/src/menu-icons/history-back.png').default}></img>*/}
+                    <div className={'history__button'}
+                         onClick={() => this.renderMoves(-1)}
+                    > {'◀◀'}</div>
+                    <div className={'history__button'}
+                         onClick={() => this.renderMovesRewindOrForwardByOne(-1)}
+                    > {'◀'}</div>
+                    <div className={'history__button'}
+                         onClick={() => this.renderMovesRewindOrForwardByOne(1)}
+                    > {'▶'}</div>
+                    <div className={'history__button'}
+                         onClick={() => this.renderMoves(this.state.lastMoveIndex)}
+                    > {'▶▶'}</div>
 
                 </div>
                 <div className={'history__navigation'}
