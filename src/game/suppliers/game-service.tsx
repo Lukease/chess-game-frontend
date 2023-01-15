@@ -3,7 +3,7 @@ import {AddPiecePanel} from '../../UI/new-figure'
 import {Arena} from '../../UI/Arena'
 import {Field} from '../../UI'
 import {Board} from '../../UI/board'
-import {King, Pawn, Piece} from '../pieces'
+import {King, Piece} from '../pieces'
 import {Coordinate, PromotePawnPanel, Vector2d} from '../chess-possible-move'
 import {Move} from '../../UI/history/move'
 import {HistoryOfMoves} from '../../UI/history'
@@ -242,29 +242,12 @@ export class GameService {
         for (let i = 1; i <= size; i++) {
             const searchedField = this.getFieldByXY(kingCoordinate.x + (i * direction), kingCoordinate.y)!
 
-            if (searchedField && searchedField.piece) {
+            if ((searchedField && searchedField.piece) || this.checkFieldIsCheckedByEnemy(searchedField)) {
                 return false
             }
         }
         return true
     }
-
-//todo make one function from  checkCastleCheckedFields And checkCastleEmptyFields
-    checkCastleCheckedFields(field: Field, smallCastle: boolean) {
-        const size = smallCastle ? 2 : 3
-        const direction = smallCastle ? 1 : -1
-        const kingCoordinate = field.coordinate
-
-        for (let i = 1; i <= size; i++) {
-            const searchedField = this.getFieldByXY(kingCoordinate.x + (i * direction), kingCoordinate.y)!
-
-            if (this.checkFieldIsCheckedByEnemy(searchedField)) {
-                return false
-            }
-        }
-        return true
-    }
-
 
     getRookToCastle(field: Field, smallCastle: boolean): boolean {
         const rookX = smallCastle ? 8 : 1
@@ -284,7 +267,7 @@ export class GameService {
 
     getFieldForCastle(field: Field, smallCastle: boolean) {
         if (!this.getRookToCastle(field, smallCastle) && this.checkCastleEmptyFields(field, smallCastle)
-            && !this.getKingToCastle(field) && this.checkCastleCheckedFields(field, smallCastle)) {
+            && !this.getKingToCastle(field)) {
 
             return this.getReturnedFieldForCastle(field, smallCastle)
         }
@@ -502,7 +485,6 @@ export class GameService {
     getAllMovesFromDirectionAndSearchKing(currentField: Field, direction: Vector2d) {
         let counter = 1
         let canGoFurther: boolean = true
-        let isKingField: boolean = false
         let field = this.getFieldByXY(
             currentField.coordinate.x + (direction.x * counter),
             currentField.coordinate.y + (direction.y * counter))
@@ -510,7 +492,6 @@ export class GameService {
         while (field && canGoFurther) {
             if (field.piece?.isKing() && field.piece?.color !== currentField.piece?.color) {
                 canGoFurther = false
-                isKingField = true
             } else {
 
                 counter++
@@ -522,7 +503,7 @@ export class GameService {
                     currentField.coordinate.y + (direction.y * counter))
             }
         }
-        return isKingField ? arrayField : []
+        return canGoFurther ? [] : arrayField.concat(currentField)
     }
 
     canPreventCheck() {
@@ -543,17 +524,12 @@ export class GameService {
     }
 
     checkFieldIsCoveringKing(selectedField: Field) {
-        if (this.coveringKingFields.includes(selectedField)) {
-            this.coveringKingFields.forEach(directionField => {
-                console.log(!this.possibleMoves.includes(directionField))
-                if (!this.possibleMoves.includes(directionField)){
-                    this.possibleMoves.filter(correctMoveOfSelectedPiece => correctMoveOfSelectedPiece !== directionField)
-                }
-                this.possibleMoves = this.possibleMoves.map(field => {
-                    return this.getAllPossibleMovesOfPlayer(false).includes(field) ? [] : field
-                }).flat(1)
-            })
-            // console.log(this.coveringKingFields)
+        const numberOfFieldsWithPiece = 2
+        const numberOfFieldsWhichHavePiece = this.coveringKingFields.filter(field => field.piece).length
+        if (this.coveringKingFields.includes(selectedField) && numberOfFieldsWhichHavePiece === numberOfFieldsWithPiece) {
+            this.possibleMoves = this.possibleMoves.map(field => {
+                return this.coveringKingFields.includes(field) ? field : []
+            }).flat(1)
         }
 
     }
