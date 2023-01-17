@@ -1,8 +1,8 @@
 export class UserDto {
-    private id: number | undefined
-    private login: string
-    private password: string
-    private email: string
+     id: number | undefined
+     login: string
+     password: string
+     email: string
 
 
     constructor(id: number | undefined, login: string, password: string, email: string) {

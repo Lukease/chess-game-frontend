@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import {GameService, MovingService, NavigationService} from '../../game/suppliers'
 import {Piece} from '../../game/pieces'
-import {UserService} from "../../backend-service-connector/service/userService";
 
 export class GameNavigation extends React.Component<any, any> {
     gameService: GameService

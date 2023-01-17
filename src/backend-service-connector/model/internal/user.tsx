@@ -1,11 +1,11 @@
 export class User {
-    private id: number
+    private id: number | undefined
     private login: string
     private password: string
-    private email: string
+    private email: string | undefined
 
 
-    constructor(id: number, login: string, password: string, email: string) {
+    constructor(id: number | undefined, login: string, password: string, email: string | undefined) {
         this.id = id;
         this.login = login;
         this.password = password;
@@ -13,7 +13,7 @@ export class User {
     }
 
 
-    getId(): number {
+    getId(): number | undefined {
         return this.id;
     }
 
@@ -37,7 +37,7 @@ export class User {
         this.password = value;
     }
 
-    getEmail(): string {
+    getEmail(): string | undefined {
         return this.email;
     }
 
