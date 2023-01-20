@@ -127,9 +127,18 @@ export class GameNavigation extends React.Component<any, any> {
                 <NavSettings icon={'🖌️'}>
                     {this.renderColorEditor()}
                 </NavSettings>
-                <NavSettings icon={'⚙'}>
-                    <DropdownMenu leftIcon={'🚪'} text={'Logout'}></DropdownMenu>
-                </NavSettings>
+                {/*<NavSettings icon={'⚙'} >*/}
+                {/*    <DropdownMenu leftIcon={'🚪'} text={'Logout'}></DropdownMenu>*/}
+                {/*</NavSettings>*/}
+                <li className={'navbar__nav--item'}>
+                    <a
+                        className={'navbar__nav--button'}
+                        href={'/settings'}
+                        style={{color: 'white'}}
+                    >
+                        ⚙
+                    </a>
+                </li>
             </div>
         )
     }

@@ -52,11 +52,8 @@ export class UserService {
         return login
     }
 
-    getUserByLogin(login
-                       :
-                       string
-    ) {
-        fetch(Config.baseUrl + `?login=${login}`, {
+    async getUserByLogin(login: string) {
+        await fetch(Config.baseUrl + `?login=${login}`, {
             method: 'GET',
             headers: {'Content-Type': 'application/json', Accept: 'application/json'},
         })
@@ -66,12 +63,7 @@ export class UserService {
         return login
     }
 
-    editUserEmailById(userId
-                          :
-                          number, newEmail
-                          :
-                          string
-    ) {
+    editUserEmailById(userId: number, newEmail: string) {
         fetch(Config.baseUrl + `/${userId}/${newEmail}`, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json', Accept: 'application/json'},
@@ -80,12 +72,7 @@ export class UserService {
             .catch(error => error)
     }
 
-    editUserPasswordById(userId
-                             :
-                             number, newEmail
-                             :
-                             string
-    ) {
+    editUserPasswordById(userId: number, newEmail: string) {
         fetch(Config.baseUrl + `/${userId}/${newEmail}`, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json', Accept: 'application/json'},
@@ -94,12 +81,7 @@ export class UserService {
             .catch(error => error)
     }
 
-    editUserLoginById(userId
-                          :
-                          number, newEmail
-                          :
-                          string
-    ) {
+    editUserLoginById(userId: number, newEmail: string) {
         fetch(Config.baseUrl + `/${userId}/${newEmail}`, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json', Accept: 'application/json'},

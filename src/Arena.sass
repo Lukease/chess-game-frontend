@@ -1,4 +1,12 @@
 @import "login"
+@import "settings"
+
+@mixin appBackgroundImage()
+  background-image: linear-gradient(#413f3f, black)
+
+@mixin pawnPromotionColor()
+  background-image: linear-gradient(#c7783f, red)
+  border-radius: 40px
 
 @mixin hovered()
   background-color: #47627e
@@ -30,7 +38,7 @@
   justify-content: center
   gap: 10px
   flex-direction: column
-  background-image: linear-gradient(#413f3f, black)
+  @include appBackgroundImage()
 
   &__trash
     background-image: url('icons/garbage-trash-svgrepo-com.svg')
@@ -358,8 +366,7 @@ a
   @include hovered()
 
 .select__promotion > div:hover
-  background-image: linear-gradient(#c7783f, red)
-  border-radius: 40px
+  @include pawnPromotionColor()
 
 .game
   cursor: pointer
