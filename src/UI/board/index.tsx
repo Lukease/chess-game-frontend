@@ -1,1 +1,2 @@
-export { Board } from './board'
+
+export { Field } from './Field'

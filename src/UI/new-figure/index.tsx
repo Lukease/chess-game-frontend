@@ -1,3 +1,3 @@
-export { AddPiecePanel } from './add-piece-panel'
-export { addPiece } from './add-figure'
-export { PromotePawnPanel } from './promotion-of-pawn'
+export { AddPiecePanel } from './AddPiecePanel'
+export { addPiece } from './addFigure'
+export { PromotePawnPanel } from './PromotionOfPawn'

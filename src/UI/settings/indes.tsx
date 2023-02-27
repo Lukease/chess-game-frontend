@@ -1,3 +1,3 @@
-import {SettingsMenu} from './settings-menu'
-import {EditUserInformation} from './edit-user-information'
-import {UserAbout} from './user-about'
+import {UserSettings} from './UserSettings'
+import {EditUserInformation} from './EditUserInformation'
+import {UserAbout} from './UserAbout'
