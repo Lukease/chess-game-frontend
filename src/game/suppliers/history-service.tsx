@@ -1,4 +1,4 @@
-import {Move} from '../../UI/history/move'
+import {Move} from '../../UI/history/Move'
 import {King, Pawn} from '../pieces'
 import {Field} from '../../UI'
 

@@ -1,1 +1,1 @@
-export { GameNavigation } from './game-navigation'
+export { GameNavigation } from './GameNavigation'

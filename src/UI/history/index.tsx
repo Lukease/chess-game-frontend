@@ -1,1 +1,1 @@
-export { HistoryOfMoves } from './history-of-moves'
+export { HistoryOfMoves } from './HistoryOfMoves'

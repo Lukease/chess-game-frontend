@@ -1,11 +1,11 @@
 import {GameNavigation} from '../../UI/start-game'
 import {AddPiecePanel} from '../../UI/new-figure'
-import {Arena} from '../../UI/Arena'
+import {Arena} from '../../UI/arena/Arena'
 import {Field} from '../../UI'
 import {Board} from '../../UI/board'
 import {King, Piece} from '../pieces'
 import {Coordinate, PromotePawnPanel, Vector2d} from '../chess-possible-move'
-import {Move} from '../../UI/history/move'
+import {Move} from '../../UI/history/Move'
 import {HistoryOfMoves} from '../../UI/history'
 import {MoveType} from './move-type'
 

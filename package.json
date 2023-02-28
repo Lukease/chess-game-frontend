@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.0.6",
     "axios": "^0.24.0",
     "chessboardjsx": "^2.4.7",
+    "dotenv": "^16.0.3",
     "jquery": "^3.6.0",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
@@ -44,5 +45,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "eslint": "^8.35.0",
+    "eslint-plugin-react": "^7.32.2",
+    "prettier": "2.8.4"
   }
 }

@@ -1,2 +1,2 @@
-export { Field } from './field'
-export { Arena} from './Arena'
+export { Field } from './field/Field'
+export { Arena} from './arena/Arena'

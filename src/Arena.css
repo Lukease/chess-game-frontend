@@ -1,3 +1,4 @@
+@import "settings.css";
 .form {
   width: 20%;
   min-height: 20%;
@@ -5,7 +6,7 @@
   background-image: linear-gradient(#595555, #282727);
   font-weight: bold;
   position: absolute;
-  top: 30%;
+  top: 20%;
   left: 40%;
   align-items: center;
   flex-direction: column;
@@ -58,131 +59,6 @@ input[type=submit]:hover {
   flex-direction: column;
   gap: 8px;
   margin: 10px;
-}
-
-.settings {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-}
-.settings__nav {
-  width: 80%;
-  height: 80%;
-  display: flex;
-  padding: 40px;
-  gap: 30px;
-}
-
-.user {
-  display: flex;
-  width: 30%;
-  background-color: white;
-  border-radius: 20px;
-  height: 100%;
-  flex-direction: column;
-  padding: 15px;
-}
-.user__image {
-  display: flex;
-  padding: 7px;
-  height: 20%;
-  width: 50%;
-  border-radius: 45px;
-  align-items: center;
-  justify-content: center;
-  font-size: 100px;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-.user__about {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.user__container {
-  display: flex;
-  gap: 10px;
-  padding: 5px;
-  width: 90%;
-  justify-content: left;
-  flex-direction: column;
-  min-height: 15%;
-}
-.user__container--nav {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  color: black;
-}
-
-.editor-container {
-  display: flex;
-  gap: 10px;
-  width: 70%;
-  justify-content: left;
-  background-color: white;
-  border-radius: 20px;
-  height: 100%;
-  flex-direction: column;
-  padding: 15px;
-}
-.editor-container__nav {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  min-height: 10%;
-  width: 100%;
-  border-bottom-style: groove;
-  border-color: gray;
-  padding: 5px;
-  justify-content: space-between;
-}
-.editor-container__title {
-  width: 100%;
-  font-size: 40px;
-  padding: 10px;
-}
-
-input[type=password],
-input[type=text],
-input[type=email] {
-  width: 200px;
-  height: 25px;
-  border-radius: 10px;
-  font-weight: bold;
-}
-
-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 6px 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
-  border-radius: 6px;
-  border: none;
-  width: 100px;
-  font-size: x-small;
-  background: #6E6D70;
-  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.5), 0 0 0 0.5px rgba(0, 0, 0, 0.12);
-  color: #DFDEDF;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-
-h3 {
-  color: black;
-}
-
-button:hover,
-.user__about--text:hover {
-  box-shadow: rgba(0, 1, 0, 0.2) 0 2px 8px;
-  opacity: 0.85;
 }
 
 #root {
