@@ -3,12 +3,12 @@ import '../../Arena.css'
 import { GameNavigation } from '../start-game'
 import { defaultChessArrangement } from '../../chess_arrangement'
 import { GameService, HistoryService, MovingService, NavigationService } from '../../game/suppliers'
-import { AddPiecePanel } from '../new-figure'
-import { PromotePawnPanel } from '../new-figure'
 import { HistoryOfMoves } from '../history'
 import { Board } from '../board'
 import { King, Piece } from '../../game/pieces'
 import { TArena } from './types/TArena'
+import { AddPiecePanel } from '../new-figure/AddPiecePanel'
+import { PromotePawnPanel } from '../new-figure/PromotionOfPawn'
 
 export class Arena extends React.Component<any, any> {
   pieces: Array<Piece>

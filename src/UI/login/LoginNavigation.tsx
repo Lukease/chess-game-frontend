@@ -193,5 +193,4 @@ export function LoginNavigation(): JSX.Element {
       }
     </form>
   )
-
 }
