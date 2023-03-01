@@ -1,4 +1,3 @@
-import {GameNavigation} from '../../UI/start-game'
 import {Arena, Field} from '../../UI'
 import {Board} from '../../UI/board'
 import {Piece} from '../pieces'
@@ -8,7 +7,6 @@ export class MovingService {
     isMovingPiece: boolean = false
     allFields: Array<Field> = []
     board: Board | undefined
-    gameNavigation: GameNavigation | undefined
     isGameStarted: boolean = false
     isPieceFromBoard: boolean = true
 

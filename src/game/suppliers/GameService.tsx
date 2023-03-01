@@ -1,4 +1,3 @@
-import {GameNavigation} from '../../UI/start-game'
 import {Field} from '../../UI'
 import {Board} from '../../UI/board'
 import {King, Piece} from '../pieces'
@@ -10,7 +9,6 @@ import Arena from '../../UI/arena/Arena'
 import { Move } from '../../UI/history/Move'
 
 export class GameService {
-    gameNavigation: GameNavigation | undefined
     addPiecePanels: Array<AddPiecePanel> = []
     board: Board | undefined
     arena: Arena | undefined
@@ -419,7 +417,7 @@ export class GameService {
 
     changeColor() {
         this.whiteTurn = !this.whiteTurn
-        this.gameNavigation!.changeTurn(this.getColor())
+        // this.gameNavigation!.changeTurn(this.getColor())
     }
 
     getPossibleMovesOfPawns(field: Field, currentField: Field,) {

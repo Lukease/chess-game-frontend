@@ -152,7 +152,7 @@ input[type=submit]:hover {
 
 .dropdown {
   position: absolute;
-  top: 58px;
+  top: 40px;
   width: 300px;
   transform: translateX(-45%);
   background-color: rgba(0, 0, 0, 0.2);
