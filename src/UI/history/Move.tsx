@@ -10,7 +10,7 @@ export class Move {
   fieldTo: Field
   pieceTo: Piece | undefined
   additionalField: Field | undefined
-  nameOfMove: string = ''
+  nameOfMove = ''
   secondMove: Move | undefined
   promotedPiece: Piece | undefined
   isCheck: boolean

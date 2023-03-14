@@ -7,7 +7,7 @@ export abstract class Piece {
     startingCoordinate: Coordinate
     name: string
     movingStrategies: Array<MovingStrategy>
-    hasMoved: boolean = false
+    hasMoved = false
 
     protected constructor(color: string, id: string, name: string, movingStrategies: Array<MovingStrategy>) {
         this.color = color

@@ -69,7 +69,7 @@ export class AddPiecePanel extends React.Component<any, any> {
   }
 
   renderPieces() {
-    let output: Array<JSX.Element> = this.addNewPiece.map((piece, index) => {
+    const output: Array<JSX.Element> = this.addNewPiece.map((piece, index) => {
 
       return (
         <div

@@ -4,11 +4,11 @@ import {Piece} from '../pieces'
 
 export class MovingService {
     arena: Arena | undefined
-    isMovingPiece: boolean = false
+    isMovingPiece = false
     allFields: Array<Field> = []
     board: Board | undefined
-    isGameStarted: boolean = false
-    isPieceFromBoard: boolean = true
+    isGameStarted = false
+    isPieceFromBoard = true
 
     constructor() {
         this.allFields = []

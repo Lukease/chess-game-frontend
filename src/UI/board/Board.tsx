@@ -61,7 +61,7 @@ export class Board extends React.Component<any, any> {
   }
 
   renderFieldNumbers() {
-    let output: Array<JSX.Element> = Array.apply(null, Array(8)).map((x, index) => {
+    const output: Array<JSX.Element> = Array.from(Array(8)).map((x, index) => {
       const boardRow: number = this.state.vector === -1 ? -index + 8 : index + 1
 
       return (
@@ -76,7 +76,7 @@ export class Board extends React.Component<any, any> {
   }
 
   renderAllFields(letter: string, boardColumn: number) {
-    let output: Array<JSX.Element> = Array.apply(null, Array(8)).map((x, index) => {
+    const output: Array<JSX.Element> = Array.from(Array(8)).map((x, index) => {
       const boardRow: number = this.state.vector === -1 ? -index + 8 : index + 1
       const currentPiece: Piece = this.getPieceById(`${letter}${boardRow}`)
 
@@ -98,7 +98,7 @@ export class Board extends React.Component<any, any> {
   }
 
   renderAllColumns() {
-    let output: Array<JSX.Element> = Array.apply(null, Array(8)).map((x, index) => {
+    const output: Array<JSX.Element> = Array.from(Array(8)).map((x, index) => {
       const letter: string = String.fromCharCode(64 + (index + 1))
       const boardColumn: number = index + 1
 
