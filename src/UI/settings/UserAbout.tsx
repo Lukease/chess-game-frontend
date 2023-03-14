@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../context/context'
-import { User } from '../../backend-service-connector/model/rest/User'
+import { User } from '../../backend-service-connector/model/rest/user/User'
 
 export function UserAbout(): JSX.Element {
   const userService = useContext(Context)

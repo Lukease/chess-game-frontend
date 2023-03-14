@@ -8,7 +8,8 @@ import { Board } from '../board'
 import { King, Piece } from '../../game/pieces'
 import { TArena } from './types/TArena'
 import { AddPiecePanel } from '../new-figure/AddPiecePanel'
-import { PromotePawnPanel } from '../new-figure/PromotionOfPawn'
+import { PromotePawnPanel } from '../new-figure/PromotePawnPanel'
+import { GameServiceBackend } from '../../backend-service-connector/service/GameServiceBackend'
 
 export class Arena extends React.Component<any, any> {
   pieces: Array<Piece>
@@ -17,10 +18,12 @@ export class Arena extends React.Component<any, any> {
   movingService: MovingService
   navigationService: NavigationService
   historyService: HistoryService
+  gameServiceBackend: GameServiceBackend
 
-  constructor({ gameService, movingService, navigationService, historyService }: TArena) {
-    super({ gameService, movingService, navigationService, historyService })
+  constructor({ gameService, movingService, navigationService, historyService,gameServiceBackend }: TArena) {
+    super({ gameService, movingService, navigationService, historyService,gameServiceBackend })
 
+    this.gameServiceBackend = gameServiceBackend
     this.gameService = gameService
     this.movingService = movingService
     this.navigationService = navigationService
@@ -58,8 +61,8 @@ export class Arena extends React.Component<any, any> {
 
   editorMouseMoveFigure = (event: any) => {
     if (this.state.isMovingPiece) {
-      let x: number = event.clientX - 30
-      let y: number = event.clientY - 30
+      const x: number = event.clientX - 30
+      const y: number = event.clientY - 30
 
       this.setState({
         coordinateX: x,
@@ -146,10 +149,7 @@ export class Arena extends React.Component<any, any> {
             gameService={this.gameService}
             movingService={this.movingService}
           />
-          <PromotePawnPanel
-            gameService={this.gameService}
-            arena={this}
-          />
+          <PromotePawnPanel gameServiceBackend={this.gameServiceBackend} />
         </div>
       </div>
     )

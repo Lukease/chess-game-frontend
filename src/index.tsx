@@ -7,9 +7,10 @@ import { GameService, HistoryService, MovingService, NavigationService } from '.
 import { UserService } from './backend-service-connector/service'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { LoginNavigation } from './UI/login/LoginNavigation'
-import { Context } from './UI/context/context'
+import { Context, ContextGameBackend } from "./UI/context/context"
 import { UserSettings } from './UI/settings/UserSettings'
-
+import { NewGamePanel } from "./UI/new-game/NewGamePanel"
+import { GameServiceBackend } from "./backend-service-connector/service/GameServiceBackend"
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -20,6 +21,7 @@ const userService = new UserService()
 const movingService = new MovingService()
 const navigationService = new NavigationService()
 const historyService = new HistoryService()
+const gameServiceBackend = new GameServiceBackend()
 
 root.render(
   <Router>
@@ -46,6 +48,13 @@ root.render(
                <Context.Provider value={userService}>
                  <UserSettings />
                </Context.Provider>
+             }
+      />
+      <Route path={'/new-game'}
+             element={
+               <ContextGameBackend.Provider value={gameServiceBackend}>
+                 <NewGamePanel />
+               </ContextGameBackend.Provider>
              }
       />
     </Routes>

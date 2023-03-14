@@ -1,6 +1,7 @@
-import { UserLogIn } from '../model/rest/UserLogIn'
-import { User } from '../model/rest/User'
+import { UserLogIn } from '../model/rest/user/UserLogIn'
+import { User } from '../model/rest/user/User'
 import { Config } from '../config'
+import { ChangePasswordRequest } from '../model/rest/user/dto/ChangePasswordRequest'
 
 export class UserService {
   logInUser: UserLogIn | undefined
@@ -71,6 +72,34 @@ export class UserService {
       body: JSON.stringify({ email: newEmail }),
     })
       .then(response => response.json())
+      .catch(error => error)
+  }
+
+  editUserPassword(changePasswordRequest: ChangePasswordRequest) {
+    const activeToken: string = this.getActiveToken()
+
+    fetch(Config.baseUsersUrl + Config.editUserPasswordPath, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      },
+      body: JSON.stringify(changePasswordRequest),
+    })
+      .then(response => {
+        if (response.ok) {
+          const user: User = this.getLogInUserFromLocalStorage()
+
+          alert('Succes')
+          user.password = changePasswordRequest.password
+          this.setLogInUserToLocalStorage(user)
+
+          return response.json()
+        } else {
+          alert('Wrong data!')
+        }
+      })
       .catch(error => error)
   }
 

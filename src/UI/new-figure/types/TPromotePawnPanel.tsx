@@ -1,5 +1,5 @@
-import { GameService } from '../../../game/suppliers'
+import { GameServiceBackend } from '../../../backend-service-connector/service/GameServiceBackend'
 
 export type TPromotePawnPanel = {
-  gameService: GameService
+  gameServiceBackend: GameServiceBackend
 }

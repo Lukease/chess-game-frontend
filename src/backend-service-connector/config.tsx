@@ -1,7 +1,13 @@
 export class Config {
-  static readonly baseUsersUrl =  process.env.REACT_APP_BASE_USERS_URL!
-  static readonly getAllUsersPath =  process.env.REACT_APP_GET_ALL_USERS_PATH!
-  static readonly logInUserPath =  process.env.REACT_APP_lOG_IN_USER_PATH!
-  static readonly editUserEmailPath =  process.env.REACT_APP_EDIT_USER_EMAIL_PATH!
-  static readonly editUserLoginPath = process.env.REACT_APP_EDIT_USER_LOGIN_PATH!
+  static readonly baseUsersUrl = 'http://localhost:8080/users'
+  static readonly getAllUsersPath = '/get-all'
+  static readonly logInUserPath = '/log-in'
+  static readonly editUserEmailPath = '/new-email'
+  static readonly editUserLoginPath = '/new-login'
+  static readonly editUserPasswordPath = '/new-password'
+
+  static readonly baseGamesUrl = 'http://localhost:8080/games'
+  static readonly getAllCreatedGamesPath = '/get-all'
+  static readonly joinGamePath = '/join-game'
+  static readonly makeMovePath = '/make-move'
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Piece } from '../../game/pieces'
-import { TGameNavigation } from './types/TGameNavigation'
-import { Settings } from './Settings'
+import { TGameNavigation } from '../start-game/types/TGameNavigation'
+import { Settings } from '../start-game/Settings'
 
 export function GameNavigation({ gameService, movingService, navigationService, kings }: TGameNavigation) {
   const colorButton = [
@@ -20,10 +20,8 @@ export function GameNavigation({ gameService, movingService, navigationService, 
   }
 
   const changePositionEditorDisplayed = () => {
-    const isDisplayed: boolean = !isPieceEditorDisplayed
-
-    setPieceEditorDisplayed(isDisplayed)
-    gameService.setPositionEditorDisplayed(isDisplayed)
+    setPieceEditorDisplayed(!isPieceEditorDisplayed)
+    gameService.setPositionEditorDisplayed(!isPieceEditorDisplayed)
   }
 
   const setMenuColor = (color: string) => {
@@ -49,9 +47,11 @@ export function GameNavigation({ gameService, movingService, navigationService, 
   }
 
   function ChoosePlayer() {
+    const KingsArray: Array<Piece> = kings
+
     return (
       <div className={'dropdown'}>{
-        kings.map((king, index) => {
+        KingsArray.map((king, index) => {
           return (
             <DropdownItem
               leftIcon={king.getPieceIcon()}
@@ -127,6 +127,14 @@ export function GameNavigation({ gameService, movingService, navigationService, 
 
   return (
     <div className={'navbar'}>
+      <li className={'navbar__nav--item'}>
+        <a
+          className={'navbar__nav--button'}
+          href={'/new-game'}
+        >
+          {'➕'}
+        </a>
+      </li>
       <NavSettings
         icon={'▶'}
         onClick={isGameStarted ? undefined : startGame}
@@ -161,7 +169,7 @@ export function GameNavigation({ gameService, movingService, navigationService, 
           renderColorEditor()
         }
       </NavSettings>
-      <Settings/>
+      <Settings />
     </div>
   )
 }

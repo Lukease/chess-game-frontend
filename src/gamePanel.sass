@@ -1,0 +1,87 @@
+@import "login.sass"
+
+@mixin backgroundGames()
+  background-image: linear-gradient(#888787, #484646)
+
+@mixin gameContainer()
+  gap: 10px
+  flex-direction: column
+  overflow-y: auto
+  display: flex
+  border-radius: 10px
+
+.games
+  display: flex
+  width: 100%
+  height: 100%
+  @include background()
+  justify-content: center
+  flex-direction: column
+  align-items: center
+  gap: 40px
+
+  &__container
+    min-height: 30%
+    max-height: 50%
+    max-width: 50%
+    min-width: 30%
+    @include backgroundGames()
+    @include gameContainer()
+
+  &__navigation
+    display: flex
+    width: 100%
+    min-height: 30px
+    align-items: center
+    justify-content: flex-start
+    border-radius: 10px
+    border-bottom-style: ridge
+
+    &--item
+      width: 33%
+      min-height: 30px
+      text-align: center
+
+.new-game
+  min-width: 20%
+  max-width: 40%
+  min-height: 30%
+  max-height: 50%
+  @include backgroundGames()
+  @include gameContainer()
+  justify-content: center
+  align-items: center
+
+  &__title
+    display: flex
+    width: 100%
+    border-bottom-style: ridge
+    border-color: white
+    justify-content: center
+
+  &__player
+    display: flex
+    width: 50px
+    height: 50px
+
+.create-button
+  display: flex
+  width: 150px
+  height: 50px
+  @include backgroundGames()
+  justify-content: center
+  align-items: center
+  border-radius: 10px
+
+::-webkit-scrollbar
+  width: 5px
+
+::-webkit-scrollbar-track
+  background: #cecece
+
+::-webkit-scrollbar-thumb
+  background: #262424
+  border-radius: 10px
+
+::-webkit-scrollbar-thumb:hover
+  background: #555

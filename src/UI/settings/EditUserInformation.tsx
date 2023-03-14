@@ -1,12 +1,17 @@
 import React, { useContext, useState } from 'react'
-import { User } from '../../backend-service-connector/model/rest/User'
+import { User } from '../../backend-service-connector/model/rest/user/User'
 import { Context } from '../context/context'
+import { ChangePasswordRequest } from '../../backend-service-connector/model/rest/user/dto/ChangePasswordRequest'
+import { ErrorWindow } from "../utils/ErrorWindow";
 
 export function EditUserInformation(): JSX.Element {
   const userService = useContext(Context)
   const [userLogin, setUserLogin] = useState('')
   const [userEmail, setUserEmail] = useState('')
-  const [escape, setEscape] = useState(false)
+  const [oldUserPassword, setOldUserPassword] = useState('')
+  const [newUserPassword, setNewUserPassword] = useState('')
+  const [confirmUserPassword, setConfirmUserPassword] = useState('')
+  const [error, setError] = useState('')
 
   const setNewUserDataToDb = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, isLogin: boolean) => {
     event.preventDefault()
@@ -26,26 +31,31 @@ export function EditUserInformation(): JSX.Element {
     userService.setLogInUserToLocalStorage(user)
   }
 
+  const setNewPasswordToDb = (event: any) => {
+    event.preventDefault()
+
+    if (confirmUserPassword === newUserPassword) {
+      const changePasswordRequest: ChangePasswordRequest = {
+        oldPassword: oldUserPassword,
+        password: newUserPassword
+      }
+
+      return userService.editUserPassword(changePasswordRequest)
+    }
+      return setError('Wrong password!')
+  }
+
+  const closeError = () => {
+    setError('')
+  }
+
   return (
     <div className={'editor-container'}>
-      <div style={{ display: 'flex', justifyContent: 'end' }}>
-        <a
-          href={'/game'}
-          style={{
-            color: escape ? 'red' : 'black',
-          }}
-          onMouseEnter={() => {
-            console.log(true)
-            setEscape(true)
-          }}
-          onMouseLeave={() => {
-            console.log(false)
-            setEscape(false)
-          }}
-        >
-          X
-        </a>
-      </div>
+      {
+        error
+          ? <ErrorWindow message={error} sendDataToParent={closeError} />
+          : null
+      }
       <h1 className={'editor-container__title'}> Edit Profile </h1>
       <label> Set login </label>
       <form className={'editor-container__nav'}>
@@ -76,6 +86,34 @@ export function EditUserInformation(): JSX.Element {
           onClick={event => setNewUserDataToDb(event, false)}
         >
           Edit Email
+        </button>
+      </form>
+      <form
+        className={'editor-container__nav'}
+        onSubmit={event =>setNewPasswordToDb(event)}
+      >
+        <input
+          type={'password'}
+          placeholder={'🔑 Old password'}
+          required={true}
+          onChange={event => setOldUserPassword(event.target.value)}
+        />
+        <input
+          type={'password'}
+          placeholder={'🔑 New password'}
+          required={true} minLength={5}
+          onChange={event => setNewUserPassword(event.target.value)}
+        />
+        <input
+          type={'password'}
+          placeholder={'🔑 Confirm new password'}
+          required={true} minLength={5}
+          onChange={event => setConfirmUserPassword(event.target.value)}
+        />
+        <button
+          type={'submit'}
+        >
+          Edit Password
         </button>
       </form>
     </div>

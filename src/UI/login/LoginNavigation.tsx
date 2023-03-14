@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { Context } from '../context/context'
-import { User } from '../../backend-service-connector/model/rest/User'
+import { User } from '../../backend-service-connector/model/rest/user/User'
 
 export function LoginNavigation(): JSX.Element {
   const userService = useContext(Context)
@@ -21,7 +21,7 @@ export function LoginNavigation(): JSX.Element {
     const userLogged = await userService.logIn(login, password)
 
     if (userLogged) {
-      window.location.href = 'http://localhost:3000/home'
+      window.location.href = 'http://localhost:3000/game'
 
     } else {
       const incorrectData = 'Incorrect login or password'

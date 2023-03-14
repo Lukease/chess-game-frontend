@@ -1,5 +1,5 @@
 @mixin containersStyle()
-  background-color: white
+  background-image: linear-gradient(#888787, #484646)
   border-radius: 20px
   min-height: 200px
   max-height: 700px
@@ -12,17 +12,11 @@
   height: 100%
   align-items: center
   justify-content: center
-
-  &__nav
-    width: 80%
-    height: 80%
-    display: flex
-    padding: 40px
-    gap: 30px
+  gap: 30px
 
 .user
   display: flex
-  width: 30%
+  width: 20%
   @include containersStyle()
 
   &__image
@@ -115,6 +109,3 @@ button:hover,
 .user__about--text:hover
   box-shadow: rgba(0, 1, 0, .2) 0 2px 8px
   opacity: .85
-
-
-
