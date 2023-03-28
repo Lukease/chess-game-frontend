@@ -5,6 +5,5 @@ export type TBoard = {
     gameService: GameService
     movingService: MovingService
     navigationService: NavigationService
-    pieces: Array<Piece>
     historyService: HistoryService
 }

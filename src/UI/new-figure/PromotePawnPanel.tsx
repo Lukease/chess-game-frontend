@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { addPieceArrangement } from '../../chess_arrangement'
 import { TPromotePawnPanel } from './types/TPromotePawnPanel'
 import { ContextGame } from '../context/context'
-import { TPlayerGame } from '../../backend-service-connector/model/rest/game/dto/TPlayerGame'
 import { Pawn, Piece } from '../../game/pieces'
 
 export function PromotePawnPanel({ gameServiceBackend }: TPromotePawnPanel) {
@@ -23,7 +22,7 @@ export function PromotePawnPanel({ gameServiceBackend }: TPromotePawnPanel) {
     }
 
     const selectFigure = (piece: Piece) => {
-        gameService.setPromotedFigureToField(piece)
+        // gameService.setPromotedFigureToField(piece)
         renderPawnPromotion(false)
     }
 
@@ -55,7 +54,6 @@ export function PromotePawnPanel({ gameServiceBackend }: TPromotePawnPanel) {
           })
         )
     }
-
 
     return (
       <div

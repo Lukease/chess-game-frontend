@@ -23,8 +23,4 @@ export class CoordinateService {
 
         return this.allCoordinate.find(coordinate => coordinate.boardColumn === column && coordinate.boardRow === row)!
     }
-
-    static getCoordinateByColumnAndRow(column: number, row: number): Coordinate {
-        return this.allCoordinate.find(coordinate => coordinate.x === column && coordinate.y === row)!
-    }
 }

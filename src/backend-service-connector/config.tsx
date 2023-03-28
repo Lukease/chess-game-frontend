@@ -8,6 +8,11 @@ export class Config {
 
   static readonly baseGamesUrl = 'http://localhost:8080/games'
   static readonly getAllCreatedGamesPath = '/get-all'
+  static readonly getActiveGamePath = '/get-active'
+  static readonly closeActiveGamePath = '/resign'
   static readonly joinGamePath = '/join-game'
   static readonly makeMovePath = '/make-move'
+
+  static readonly baseDrawOfferUrl = 'http://localhost:8080/draw-offers'
+  static readonly responseDrawOfferUrl = '/response'
 }

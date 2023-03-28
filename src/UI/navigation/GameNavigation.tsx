@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { Piece } from '../../game/pieces'
+import { King, Piece } from '../../game/pieces'
 import { TGameNavigation } from '../start-game/types/TGameNavigation'
 import { Settings } from '../start-game/Settings'
 
-export function GameNavigation({ gameService, movingService, navigationService, kings }: TGameNavigation) {
+export function GameNavigation({ gameService, movingService, navigationService }: TGameNavigation) {
   const colorButton = [
     { icon: '⚫', text: 'Dark style', colorMenu: 'black' },
     { icon: '⚪', text: 'White style', colorMenu: 'white' },
@@ -47,7 +47,10 @@ export function GameNavigation({ gameService, movingService, navigationService, 
   }
 
   function ChoosePlayer() {
-    const KingsArray: Array<Piece> = kings
+    const KingsArray: Array<Piece> = [
+      new King('white','','king',[]),
+      new King('black','','king',[]),
+    ]
 
     return (
       <div className={'dropdown'}>{

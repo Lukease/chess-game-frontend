@@ -5,8 +5,8 @@ import { GoBackNav } from '../navigation/GoBackNav'
 import { GameItem } from './GameItem'
 import { CreateButton } from './CreateButton'
 import { CreateNewGame } from './CreateGame'
-import { Loader } from "../utils/Loader";
-import { ErrorWindow } from "../utils/ErrorWindow";
+import { Loader } from '../utils/Loader'
+import { ErrorWindow } from '../utils/ErrorWindow'
 
 export function NewGamePanel(): JSX.Element {
   const gameServiceBackend = useContext(ContextGameBackend)
@@ -105,7 +105,8 @@ export function NewGamePanel(): JSX.Element {
             setVisibleCreate={setVisibleCreate}
             setError={setError}
           />
-          : <CreateButton setVisibleCreate={setVisibleCreate} />
+          :
+          <CreateButton setVisibleCreate={setVisibleCreate} />
       }
     </div>
   )

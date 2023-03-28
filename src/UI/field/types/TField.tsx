@@ -1,13 +1,10 @@
 import { Piece } from '../../../game/pieces'
-import { GameService, HistoryService, MovingService } from '../../../game/suppliers'
+import { GameService, MovingService } from '../../../game/suppliers'
 
 export type TField = {
-  rowNumber: number
   id: string
-  columnNumber: number
-  piece: Piece
+  selectedPiece: Piece
   color: string
   gameService: GameService
   movingService: MovingService
-  historyService: HistoryService
 }

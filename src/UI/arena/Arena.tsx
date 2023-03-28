@@ -1,159 +1,120 @@
-import React from 'react'
+import React, { useState } from 'react'
 import '../../Arena.css'
 import { GameNavigation } from '../start-game'
-import { defaultChessArrangement } from '../../chess_arrangement'
-import { GameService, HistoryService, MovingService, NavigationService } from '../../game/suppliers'
 import { HistoryOfMoves } from '../history'
 import { Board } from '../board'
-import { King, Piece } from '../../game/pieces'
+import { Piece } from '../../game/pieces'
 import { TArena } from './types/TArena'
 import { AddPiecePanel } from '../new-figure/AddPiecePanel'
 import { PromotePawnPanel } from '../new-figure/PromotePawnPanel'
-import { GameServiceBackend } from '../../backend-service-connector/service/GameServiceBackend'
 
-export class Arena extends React.Component<any, any> {
-  pieces: Array<Piece>
-  gameService: GameService
-  kings: Array<Piece>
-  movingService: MovingService
-  navigationService: NavigationService
-  historyService: HistoryService
-  gameServiceBackend: GameServiceBackend
+export function Arena({ gameService, movingService, navigationService, historyService, gameServiceBackend }: TArena) {
+  const [isMovingPiece, setMovingPiece] = useState(false)
+  const [selectedPiece, setSelectedPiece] = useState<Piece | undefined>(undefined)
+  const [coordinateX, setCoordinateX] = useState<number>(0)
+  const [coordinateY, setCoordinateY] = useState<number>(0)
+  const [movingId, setMovingId] = useState<string>('')
+  const [newPieceId, setNewPieceId] = useState<string>('')
+  const [backgroundColor, setBackgroundColor] = useState<string>('')
 
-  constructor({ gameService, movingService, navigationService, historyService,gameServiceBackend }: TArena) {
-    super({ gameService, movingService, navigationService, historyService,gameServiceBackend })
+  const addNewPiecePiece = (isMoving: boolean, piece: Piece, x: number, y: number, id: string) => {
+    const setId = id ? id : ''
 
-    this.gameServiceBackend = gameServiceBackend
-    this.gameService = gameService
-    this.movingService = movingService
-    this.navigationService = navigationService
-    this.historyService = historyService
-    this.navigationService.arena = this
-    this.pieces = defaultChessArrangement
-    this.kings = this.pieces.filter(piece => piece instanceof King)
-    this.state = {
-      isMovingPiece: false,
-      selectedPiece: '',
-      coordinateX: 0,
-      coordinateY: 0,
-      movingId: '',
-      newPieceId: '',
-      backgroundColor: 'black',
-    }
-    this.gameService.arena = this
-    this.movingService.arena = this
+    setMovingPiece(isMoving)
+    setSelectedPiece(piece)
+    setMovingId(setId)
+    setCoordinateX(x - 30)
+    setCoordinateY(y - 30)
   }
 
-
-  setBackgroundColor(color: string) {
-    this.setState({ backgroundColor: color })
-  }
-
-  setMovingPiece(isMoving: boolean, piece: Piece, x: number, y: number, id: string) {
-    this.setState({
-      isMovingPiece: isMoving,
-      selectedPiece: piece,
-      movingId: id ? id : '',
-      coordinateX: x - 30,
-      coordinateY: y - 30,
-    })
-  }
-
-  editorMouseMoveFigure = (event: any) => {
-    if (this.state.isMovingPiece) {
+  const editorMouseMoveFigure = (event: any) => {
+    if (isMovingPiece) {
       const x: number = event.clientX - 30
       const y: number = event.clientY - 30
 
-      this.setState({
-        coordinateX: x,
-        coordinateY: y,
-      })
+      setCoordinateX(x)
+      setCoordinateY(y)
     }
   }
 
-  addNewPieceToField() {
-    if (this.state.isMovingPiece) {
-      this.setState({ isMovingPiece: false })
+  const addNewPieceToField = () => {
+    if (isMovingPiece) {
+      setMovingPiece(false)
       document.body.style.cursor = 'auto'
-      let newPieceId: string
 
-      const mouseUpTarget = document.elementsFromPoint(this.state.coordinateX, this.state.coordinateY)
+      let newPieceId: string
+      const mouseUpTarget = document.elementsFromPoint(coordinateX, coordinateY)
 
       mouseUpTarget.forEach(element => {
         if (element.id !== '' && element.id !== 'root') {
-          this.setState({ newPieceId: element.id })
+          setNewPieceId(element.id)
           newPieceId = element.id
         }
       })
-      this.movingService.setCurrentPiecePosition(newPieceId!, this.state.selectedPiece, this.state.movingId)
+      movingService.setCurrentPiecePosition(newPieceId!, selectedPiece!, movingId)
     }
   }
 
-  render() {
-    return (
-      <div className={'content'}
-           onMouseMove={this.editorMouseMoveFigure}
-           onMouseUp={() => this.addNewPieceToField()}
-           style={{ backgroundImage: `linear-gradient(#413f3f, ${this.state.backgroundColor})` }}
-      >
-        {
-          this.state.isMovingPiece ?
-            <img
-              className={'figure'}
-              style={
-                {
-                  left: this.state.isMovingPiece ? `${this.state.coordinateX}px` : '',
-                  top: this.state.isMovingPiece ? `${this.state.coordinateY}px` : '',
-                  position: 'absolute',
-                  display: this.state.isMovingPiece ? 'flex' : 'none',
-                }
-              }
-              src={this.state.selectedPiece!.getImageUrl()}
-              alt={''}
-              draggable={false}
-            >
 
-            </img> :
-            <div
-              style={{ position: 'absolute' }}
-            >
-            </div>
-        }
-        <GameNavigation
-          gameService={this.gameService}
-          movingService={this.movingService}
-          navigationService={this.navigationService}
-          kings={this.kings}
+  return (
+    <div className={'content'}
+         onMouseMove={editorMouseMoveFigure}
+         onMouseUp={() => addNewPieceToField()}
+         style={{ backgroundImage: `linear-gradient(#413f3f, ${backgroundColor})` }}
+    >
+      {
+        isMovingPiece ?
+          <img
+            className={'figure'}
+            style={
+              {
+                left: isMovingPiece ? `${coordinateX}px` : '',
+                top: isMovingPiece ? `${coordinateY}px` : '',
+                position: 'absolute',
+                display: isMovingPiece ? 'flex' : 'none',
+              }
+            }
+            src={selectedPiece!.getImageUrl()}
+            alt={''}
+            draggable={false}
+          >
+
+          </img> :
+          <div
+            style={{ position: 'absolute' }}
+          >
+          </div>
+      }
+      <GameNavigation
+        gameService={gameService}
+        movingService={movingService}
+        navigationService={navigationService}
+      />
+      <HistoryOfMoves
+        gameService={gameService}
+        historyService={historyService}
+      />
+      <div className={'game__arena'}>
+        <AddPiecePanel
+          color={'black'}
+          gameService={gameService}
+          movingService={movingService}
         />
-        <HistoryOfMoves
-          gameService={this.gameService}
-          historyService={this.historyService}
+        <Board
+          gameService={gameService}
+          movingService={movingService}
+          navigationService={navigationService}
+          historyService={historyService}
         />
-        <div className={'game__arena'}>
-          <AddPiecePanel
-            color={'black'}
-            pieces={this.pieces}
-            gameService={this.gameService}
-            movingService={this.props.movingService}
-          />
-          <Board
-            gameService={this.gameService}
-            movingService={this.props.movingService}
-            navigationService={this.navigationService}
-            pieces={this.pieces}
-            historyService={this.historyService}
-          />
-          <AddPiecePanel
-            color={'white'}
-            pieces={this.pieces}
-            gameService={this.gameService}
-            movingService={this.movingService}
-          />
-          <PromotePawnPanel gameServiceBackend={this.gameServiceBackend} />
-        </div>
+        <AddPiecePanel
+          color={'white'}
+          gameService={gameService}
+          movingService={movingService}
+        />
+        <PromotePawnPanel gameServiceBackend={gameServiceBackend} />
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default Arena

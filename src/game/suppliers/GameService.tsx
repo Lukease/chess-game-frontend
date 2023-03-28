@@ -1,33 +1,18 @@
 import { Field } from '../../UI'
-import { Board } from '../../UI/board'
 import { King, Piece } from '../pieces'
 import { Coordinate, Vector2d } from '../chess-possible-move'
-import { HistoryOfMoves } from '../../UI/history'
 import { MoveType } from './MoveType'
-import { AddPiecePanel } from '../../UI/new-figure/AddPiecePanel'
-import Arena from '../../UI/arena/Arena'
-import { Move } from '../../UI/history/Move'
+import { Config } from '../../backend-service-connector/config'
 
 export class GameService {
-  addPiecePanels: Array<AddPiecePanel> = []
-  board: Board | undefined
-  arena: Arena | undefined
-  historyOfMoves: HistoryOfMoves | undefined
-  promotedField: Field | undefined
-  private activeField: Field | undefined
   whiteTurn: boolean
-  private possibleMoves: Array<Field> = []
-  private previousMoveFields: Array<Field> = []
+
   arrayOfPossibleMoves: Array<Move> = []
-  allFields: Array<Field> = []
   isPositionEditorDisplayed = false
   isTrashActive = false
   isGameStarted = false
   playerColor = -1
   arrayOfMoves: Array<Move> = []
-  lastMove: Move | undefined
-  kingCheck: Field | undefined
-  coveringKingFields: Array<Field> = []
 
   constructor() {
     this.whiteTurn = true
@@ -369,11 +354,38 @@ export class GameService {
     move?.fieldFrom.setActive(true)
   }
 
+  getActiveToken() {
+    return JSON.parse(localStorage.getItem('logInUser')!).activeToken
+  }
+
+  async addMoveToDb(move: string) {
+    const activeToken: string = this.getActiveToken()
+
+    return await fetch(Config.baseGamesUrl + Config.makeMovePath, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      },
+      body: JSON.stringify({ move: move }),
+    })
+      .then(response => {
+        return response.json()
+          .then((data) => {
+            return data
+          })
+          .catch(error => {
+            alert(error)
+          })
+      })
+  }
+
   createAndMakeMove(field: Field, isAdditionalMove = false) {
     const move = this.createMove(field)
 
     this.makeMove(move)
-
+    this.addMoveToDb(move.nameOfMove).then(r => console.log(move.nameOfMove))
     if (!isAdditionalMove) {
       this.addKingIsCheckedAndChangeNameOfMove(move)
       this.addMoveToHistory(move)
@@ -612,34 +624,35 @@ export class GameService {
     )
   }
 
-  getCheckedFields() {
-    if (this.kingCheck) {
-      return (this.allFields.map(field => {
-          if (field.piece) {
-            const correctFields: Array<Field> = field.piece!.getAllPossibleDirectionsWithColor()
-              .map(direction => {
-                const attackDirectionFields = this.getAllPossibleMovesFromDirection(field, direction)
-                if (attackDirectionFields.includes(this.kingCheck!)) {
-                  return attackDirectionFields
-                }
-                return []
-              })
-              .flat(1)
-
-            if (field.piece.isPawn()) {
-              correctFields.concat(this.isPawnCapturePossible(field))
-            }
-            if (correctFields.includes(this.kingCheck!)) {
-              return correctFields.concat(field)
-            }
-          }
-          return []
-        }).filter(field => field !== undefined)
-          .flat(1)
-      )
-    }
-    return []
-  }
+  //
+  // getCheckedFields() {
+  //   if (this.kingCheck) {
+  //     return (this.allFields.map(field => {
+  //         if (field.piece) {
+  //           const correctFields: Array<Field> = field.piece!.getAllPossibleDirectionsWithColor()
+  //             .map(direction => {
+  //               const attackDirectionFields = this.getAllPossibleMovesFromDirection(field, direction)
+  //               if (attackDirectionFields.includes(this.kingCheck!)) {
+  //                 return attackDirectionFields
+  //               }
+  //               return []
+  //             })
+  //             .flat(1)
+  //
+  //           if (field.piece.isPawn()) {
+  //             correctFields.concat(this.isPawnCapturePossible(field))
+  //           }
+  //           if (correctFields.includes(this.kingCheck!)) {
+  //             return correctFields.concat(field)
+  //           }
+  //         }
+  //         return []
+  //       }).filter(field => field !== undefined)
+  //         .flat(1)
+  //     )
+  //   }
+  //   return []
+  // }
 
   setPositionEditorDisplayed(isDisplayed: boolean) {
     this.isPositionEditorDisplayed = isDisplayed

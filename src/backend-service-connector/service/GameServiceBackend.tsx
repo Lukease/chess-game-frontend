@@ -8,9 +8,47 @@ export class GameServiceBackend {
     return JSON.parse(localStorage.getItem('logInUser')!).activeToken
   }
 
+  async closeActiveGameUser() {
+    const activeToken: string = this.getActiveToken()
+    const games: Array<Game> = await fetch(Config.baseGamesUrl + Config.closeActiveGamePath, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      }
+    })
+      .then(res => res.json())
+      .catch(err => alert(err))
+
+    return games
+  }
+
   async getAllCreatedGames() {
+    const activeToken: string = this.getActiveToken()
     const games: Array<Game> = await fetch(Config.baseGamesUrl + Config.getAllCreatedGamesPath, {
       method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      },
+    })
+      .then(res => res.json())
+      .catch(err => alert(err))
+
+    return games
+  }
+
+  async getActiveGame() {
+    const activeToken: string = this.getActiveToken()
+    const games: Game = await fetch(Config.baseGamesUrl + Config.getActiveGamePath, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      }
     })
       .then(res => res.json())
       .catch(err => alert(err))
@@ -59,29 +97,6 @@ export class GameServiceBackend {
             return data
           })
           .catch(() => alert('Game not found, refresh page!'))
-      })
-  }
-
-  async makeMove(move: string) {
-    const activeToken: string = this.getActiveToken()
-
-    return await fetch(Config.baseGamesUrl + Config.makeMovePath, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-      body: JSON.stringify({ move: move }),
-    })
-      .then(response => {
-        return response.json()
-          .then((data) => {
-            return data
-          })
-          .catch(error => {
-            alert(error)
-          })
       })
   }
 

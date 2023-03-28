@@ -4,6 +4,5 @@ import { Piece } from '../../../game/pieces'
 export type TAddPiecePanel = {
   gameService: GameService
   movingService: MovingService
-  pieces: Array<Piece>
   color: string
 }

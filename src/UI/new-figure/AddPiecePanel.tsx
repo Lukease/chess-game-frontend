@@ -1,75 +1,60 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { addPieceArrangement } from '../../chess_arrangement'
-import { GameService, MovingService } from '../../game/suppliers'
 import { Piece } from '../../game/pieces'
 import { TAddPiecePanel } from './types/TAddPiecePanel'
 
-export class AddPiecePanel extends React.Component<any, any> {
-  color: string
-  pieces: Array<Piece>
-  addNewPiece: Array<Piece>
-  gameService: GameService
-  movingService: MovingService
+export function AddPiecePanel({ color, gameService, movingService }: TAddPiecePanel) {
+  const [isTrashActive, setTrashActive] = useState(false)
+  const [isPositionEditorDisplayed, setPositionEditorDisplayed] = useState(false)
+  const [coordinateX, setCoordinateX] = useState(0)
+  const [coordinateY, setCoordinateY] = useState(0)
+  const [addNewPiece, setNewPiece] = useState<Array<Piece>>([])
+  const [isMoving, setMoving] = useState(false)
 
-  constructor({ color, pieces, movingService, gameService }: TAddPiecePanel) {
-    super({ color, pieces, movingService, gameService })
+  useEffect(() => {
+    const pieces = addPieceArrangement(color)
 
-    this.gameService = gameService
-    this.movingService = movingService
-    this.pieces = pieces
-    this.color = this.props.color
-    this.addNewPiece = addPieceArrangement(this.color)
-    this.state = {
-      isTrashActive: false,
-      isPositionEditorDisplayed: false,
-      isMoving: false,
-      coordinateX: 0,
-      coordinateY: 0,
-    }
-    this.gameService.addPiecePanels = this.gameService.addPiecePanels.concat(this)
-  }
+    setNewPiece(pieces)
+  }, [])
 
 
-  isDeleteIconActive = (isFromOtherService: boolean) => {
-    const isActive: boolean = this.state.isTrashActive
+  const isDeleteIconActive = (isFromOtherService: boolean) => {
+    const isActive: boolean = isTrashActive
 
-    this.setState({ isTrashActive: !isActive })
+    setTrashActive(!isActive)
 
     if (!isFromOtherService) {
-      this.gameService.setTrashActive(!isActive)
+      // gameService.setTrashActive(!isActive)
     }
   }
 
-  isPositionEditorDisplayed = () => {
-    const isDisplayed = this.gameService.isPositionEditorDisplayed
+  const togglePositionEditorDisplayed = () => {
+    const isDisplayed = gameService.isPositionEditorDisplayed
 
-    this.setState({ isPositionEditorDisplayed: isDisplayed })
+    setPositionEditorDisplayed(isDisplayed)
   }
 
-  selectPiece = (piece: Piece, event: any) => {
+  const selectPiece = (piece: Piece, event: any) => {
     const coordinateX = event.clientX
     const coordinateY = event.clientY
-    this.setMoving(true)
-    this.setCoordinate(event)
+    setMoving(true)
+    setCoordinate(event)
 
     document.body.style.cursor = 'none'
-    this.movingService.movePiece(piece, coordinateX, coordinateY, '', false)
+    movingService.movePiece(piece, coordinateX, coordinateY, '', false)
   }
 
-  setCoordinate = (event: any) => {
-    this.setState({ coordinateX: event.screenX - 50, coordinateY: event.screenY - 30 })
+  const setCoordinate = (event: any) => {
+    setCoordinateX(event.screenX - 50)
+    setCoordinateY(event.screenY - 30)
   }
 
-  setMoving(isMoving: boolean) {
-    this.setState({ isMoving: isMoving })
+  const removePiece = () => {
+    setMoving(false)
   }
 
-  removePiece() {
-    this.setMoving(false)
-  }
-
-  renderPieces() {
-    const output: Array<JSX.Element> = this.addNewPiece.map((piece, index) => {
+  const renderPieces = () => {
+    const output: Array<JSX.Element> = addNewPiece.map((piece, index) => {
 
       return (
         <div
@@ -81,43 +66,38 @@ export class AddPiecePanel extends React.Component<any, any> {
             src={piece.getImageUrl()}
             key={index}
             alt={''}
-
-            onMouseDown={event => this.state.isTrashActive ? '' : this.selectPiece(piece, event)}
+            onMouseDown={event => isTrashActive ? '' : selectPiece(piece, event)}
           >
           </img>
         </div>
       )
-
     })
 
     return output
   }
 
-  render() {
-    return (
-      <div
-        className={'panel'}
-        style={{ display: this.state.isPositionEditorDisplayed ? `flex` : `none` }}
-        onChange={this.isPositionEditorDisplayed}
-      >
-        <div className={'field'}
-        ></div>
-        <div className={'panel__add'}>
-          {
-            this.renderPieces()
-          }
-          <div
-            className={'content__trash'}
-            style={{ backgroundColor: this.state.isTrashActive ? `firebrick` : `` }}
-            onClick={() => this.isDeleteIconActive(false)}
-            id={'trashIcon'}
-          >
-          </div>
+  return (
+    <div
+      className={'panel'}
+      style={{ display: isPositionEditorDisplayed ? `flex` : `none` }}
+      onChange={() => togglePositionEditorDisplayed()}
+    >
+      <div className={'field'}
+      ></div>
+      <div className={'panel__add'}>
+        {
+          renderPieces()
+        }
+        <div
+          className={'content__trash'}
+          style={{ backgroundColor: isTrashActive ? `firebrick` : `` }}
+          onClick={() => isDeleteIconActive(false)}
+          id={'trashIcon'}
+        >
         </div>
-        <div className={'field'}
-        ></div>
       </div>
-    )
-  }
-
+      <div className={'field'}
+      ></div>
+    </div>
+  )
 }
