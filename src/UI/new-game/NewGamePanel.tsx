@@ -18,10 +18,21 @@ export function NewGamePanel(): JSX.Element {
   const getCreatedGames = async () => {
     const response = await gameServiceBackend.getAllCreatedGames()
 
-    return response.map(res => {
-      return new Game(res.timePerPlayerInSeconds, res.gameStatus, res.whitePlayer,
-        res.blackPlayer, res.id, '', undefined, undefined)
+    const gameArray: Array<Game> = response.map(res => {
+      return {
+        timePerPlayerInSeconds: res.timePerPlayerInSeconds,
+        gameStatus: res.gameStatus,
+        whitePlayer: res.whitePlayer,
+        blackPlayer: res.blackPlayer,
+        id: res.id,
+        fen: '',
+        moves: '',
+        lastMoveWhite: undefined,
+        lastMoveBlack: undefined,
+      }
     })
+
+    return gameArray
   }
 
   useEffect(() => {

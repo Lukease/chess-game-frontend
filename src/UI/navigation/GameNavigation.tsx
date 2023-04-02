@@ -25,7 +25,7 @@ export function GameNavigation({ gameService, movingService, navigationService }
   }
 
   const setMenuColor = (color: string) => {
-    navigationService.setBackgroundColor(color)
+    // navigationService.setBackgroundColor(color)
   }
 
   const renderColorEditor = () => {
@@ -79,7 +79,7 @@ export function GameNavigation({ gameService, movingService, navigationService }
   const selectPieceColor = (piece: Piece) => {
     const vector: number = piece.color === 'white' ? -1 : 1
 
-    navigationService.toggleSide(vector)
+    // navigationService.toggleSide(vector)
     gameService.setPlayerColor(vector)
 
     return piece

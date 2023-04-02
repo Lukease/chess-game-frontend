@@ -1,5 +1,0 @@
-export { MovingStrategy } from './MovingStrategy'
-export { PawnMovingStrategy } from './PawnMovingStrategy'
-export { LineMovingStrategy } from './LineMovingStrategy'
-export { KnightMovingStrategy } from './KnightMovingStrategy'
-export { DiagonalMovingStrategy } from './DiagonalMovingStrategy'

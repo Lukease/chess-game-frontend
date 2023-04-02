@@ -41,6 +41,7 @@ root.render(
             movingService={movingService}
             navigationService={navigationService}
             historyService={historyService}
+            gameServiceBackend={gameServiceBackend}
           />
         } />
       <Route path={'/settings'}

@@ -2,6 +2,7 @@ import { Config } from '../config'
 import { Game } from '../model/rest/game/Game'
 import { NewGame } from '../model/rest/game/NewGame'
 import { TPlayerGame } from '../model/rest/game/dto/TPlayerGame'
+import { MakeMoveRequest } from '../model/rest/game/MakeMoveRequest'
 
 export class GameServiceBackend {
   getActiveToken() {
@@ -16,7 +17,7 @@ export class GameServiceBackend {
         'Content-Type': 'application/json',
         Accept: 'application/json',
         Authorization: activeToken,
-      }
+      },
     })
       .then(res => res.json())
       .catch(err => alert(err))
@@ -34,7 +35,13 @@ export class GameServiceBackend {
         Authorization: activeToken,
       },
     })
-      .then(res => res.json())
+      .then(res => {
+
+
+        console.log(res.json())
+
+        return res.json()
+      })
       .catch(err => alert(err))
 
     return games
@@ -48,12 +55,26 @@ export class GameServiceBackend {
         'Content-Type': 'application/json',
         Accept: 'application/json',
         Authorization: activeToken,
-      }
+      },
     })
       .then(res => res.json())
       .catch(err => alert(err))
 
     return games
+  }
+
+  async getActiveGameAndReturnMoves(): Promise<any> {
+    const activeToken: string = this.getActiveToken()
+    return await fetch(Config.baseGamesUrl + Config.getActiveGameAndReturnMovesPath, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      },
+    })
+      .then(res => res.json())
+      .catch(err => alert(err))
   }
 
   async createGame(newGame: NewGame) {
@@ -77,6 +98,19 @@ export class GameServiceBackend {
             alert(error)
           })
       })
+  }
+
+  async makeMove(move: MakeMoveRequest) {
+    const activeToken: string = this.getActiveToken()
+    return await fetch(Config.baseGamesUrl + Config.makeMovePath, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      },
+      body: JSON.stringify(move),
+    })
   }
 
   async joinGame(gameId: number) {
@@ -106,6 +140,6 @@ export class GameServiceBackend {
   }
 
   getGameFromLocalStorage(): TPlayerGame {
-    return JSON.parse( localStorage.getItem('game')! )
+    return JSON.parse(localStorage.getItem('game')!)
   }
 }

@@ -103,6 +103,7 @@ export function Arena({ gameService, movingService, navigationService, historySe
         <Board
           gameService={gameService}
           movingService={movingService}
+          gameServiceBackend={gameServiceBackend}
           navigationService={navigationService}
           historyService={historyService}
         />

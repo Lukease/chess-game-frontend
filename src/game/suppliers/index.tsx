@@ -1,7 +1,4 @@
 export { GameService} from './GameService'
-export { CoordinateService} from './CoordinateService'
 export { MovingService} from './MovingService'
-export { MovingStrategies} from './MovingStrategyService'
 export { NavigationService} from './NavigationService'
-export { MoveType} from './MoveType'
 export { HistoryService} from './HistoryService'
