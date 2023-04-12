@@ -15,10 +15,9 @@ export function NewGamePanel(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('User not found!')
 
-  const getCreatedGames = async () => {
+  const getCreatedGames = async (): Promise<Array<Game>> => {
     const response = await gameServiceBackend.getAllCreatedGames()
-
-    const gameArray: Array<Game> = response.map(res => {
+    return response.map(res => {
       return {
         timePerPlayerInSeconds: res.timePerPlayerInSeconds,
         gameStatus: res.gameStatus,
@@ -31,15 +30,13 @@ export function NewGamePanel(): JSX.Element {
         lastMoveBlack: undefined,
       }
     })
-
-    return gameArray
   }
 
   useEffect(() => {
-    getCreatedGames().then((response: Array<Game> | null) => setCreatedGames(response))
+    getCreatedGames().then((response) => setCreatedGames(response))
   }, [])
 
-  const enterGame = async (event: any, gameId: number, playerColor: string) => {
+  async function enterGame(event: React.MouseEvent<HTMLDivElement, MouseEvent>, gameId: number, playerColor: string) {
     event.preventDefault()
     setIsLoading(true)
 
@@ -53,20 +50,22 @@ export function NewGamePanel(): JSX.Element {
   }
 
   const renderAllCreatedGames = () => {
-    return createdGames?.map((game, index) => {
-      const user = game.whitePlayer ? game.whitePlayer : game.blackPlayer
-      const playerColor = game.whitePlayer ? 'white' : 'black'
+    return createdGames ?
+      createdGames.map((game, index) => {
+        const user = game.whitePlayer ? game.whitePlayer : game.blackPlayer
+        const playerColor = game.whitePlayer ? 'white' : 'black'
 
-      return <GameItem
-        id={game.id!}
-        createdBy={user!}
-        gameStatus={game.gameStatus!}
-        timePerPlayerInSeconds={game.timePerPlayerInSeconds}
-        key={index}
-        enterGame={enterGame}
-        playerColor={playerColor}
-      />
-    })
+        return <GameItem
+          id={game.id!}
+          createdBy={user!}
+          gameStatus={game.gameStatus!}
+          timePerPlayerInSeconds={game.timePerPlayerInSeconds}
+          key={index}
+          enterGame={enterGame}
+          playerColor={playerColor}
+        />
+      })
+      : null
   }
 
   function ActiveGames() {
@@ -96,7 +95,8 @@ export function NewGamePanel(): JSX.Element {
       className={'games'}
       style={{ flexDirection: visibleCreate ? 'row' : 'column' }}
     >
-      {isLoading
+      {
+        isLoading
         ? <Loader />
         : null
       }

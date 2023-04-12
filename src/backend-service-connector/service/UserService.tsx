@@ -1,7 +1,7 @@
 import { UserLogIn } from '../model/rest/user/UserLogIn'
 import { User } from '../model/rest/user/User'
 import { Config } from '../config'
-import { ChangePasswordRequest } from '../model/rest/user/dto/ChangePasswordRequest'
+import { ChangePasswordRequest } from '../model/rest/user/ChangePasswordRequest'
 
 export class UserService {
   logInUser: UserLogIn | undefined
@@ -104,7 +104,7 @@ export class UserService {
   }
 
   async logIn(login: string, password: string) {
-    const userLogIn: UserLogIn = new UserLogIn(login, password)
+    const userLogIn: UserLogIn = { login: login, password: password }
 
     return await fetch(Config.baseUsersUrl + Config.logInUserPath, {
       method: 'POST',

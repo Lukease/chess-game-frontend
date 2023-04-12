@@ -19,7 +19,7 @@ export function UserAbout(): JSX.Element {
 
     setUserLogin(loggedUser.login)
     setUserEmail(loggedUser.email)
-  }, [User])
+  }, [])
 
   return (
     <div className={'user'}>

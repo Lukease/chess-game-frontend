@@ -9,6 +9,7 @@ export type TField = {
   gameServiceBackend: GameServiceBackend
   movingService: MovingService
   onPieceClick: any
-  isChosen?: string
+  correctMove: boolean
   makeMove:any
+  isCheck: boolean
 }

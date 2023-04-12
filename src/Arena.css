@@ -294,6 +294,7 @@ input[type=submit]:hover {
   border-radius: 10px;
   justify-content: center;
   align-items: center;
+  padding: 10px;
 }
 .new-game__title {
   display: flex;

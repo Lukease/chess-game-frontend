@@ -15,11 +15,19 @@ import whiteRook from '../../chess_icon/white-Rook.svg'
 import blackPawn from '../../chess_icon/black-Pawn.svg'
 import whitePawn from '../../chess_icon/white-Pawn.svg'
 
-export function Field({ id, piece, color, gameServiceBackend, movingService, onPieceClick, isChosen,makeMove }: TField) {
-  const [isCheck, setCheck] = useState<boolean>(false)
-  const [correctMove, setCorrectMove] = useState<boolean>(false)
-  const [imageLoaded, setImageLoaded] = useState<boolean>(false)
+export function Field({
+                        id,
+                        piece,
+                        color,
+                        gameServiceBackend,
+                        movingService,
+                        onPieceClick,
+                        correctMove,
+                        makeMove,
+                        isCheck
+                      }: TField) {
   const [isMoving, setIsMoving] = useState<boolean>(false)
+  const [isChosen, setChosen] = useState<boolean>(false)
   const [isGameStarted, setGameStarted] = useState<boolean>(false)
   const [img, setImg] = useState<string>('')
   const [isTrashActive, setTrashActive] = useState<boolean>(false)
@@ -72,7 +80,7 @@ export function Field({ id, piece, color, gameServiceBackend, movingService, onP
       className={isChosen ? `field  field__${color} field__chosen` : `field  field__${color}`}
       onClick={() => {
         choosePiece(id)
-        isChosen ? clickCorrectField() : null
+        correctMove ? clickCorrectField() : null
       }}
       // onMouseDown={event => isGameStarted || isTrashActive ? '' : setPiecePosition(this!, event)}
       id={id}

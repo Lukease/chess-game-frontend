@@ -43,7 +43,14 @@ export function LoginNavigation(): JSX.Element {
     const userDontExist: boolean = !userLoginExist && !userEmailExist
 
     if (equalsPassword && userDontExist && userUnderstandPolity) {
-      const userDto: User = new User(undefined, login, password, email, undefined, undefined)
+      const userDto: User = {
+        id: undefined,
+        login: login,
+        password: password,
+        email: email,
+        activeToken: undefined,
+        validUtil: undefined,
+      }
 
       await userService.addNewUser(userDto)
       window.location.reload()

@@ -6,4 +6,5 @@ export type MakeMoveResponse = {
   gameDto: GameDto
   whoseTurn: string
   playerColor: string
+  kingIsChecked: boolean
 }

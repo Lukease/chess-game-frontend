@@ -37,12 +37,9 @@ export class GameServiceBackend {
     })
       .then(res => {
 
-
-        console.log(res.json())
-
         return res.json()
       })
-      .catch(err => alert(err))
+      // .catch(err => alert(err))
 
     return games
   }
@@ -102,6 +99,7 @@ export class GameServiceBackend {
 
   async makeMove(move: MakeMoveRequest) {
     const activeToken: string = this.getActiveToken()
+    console.log(move)
     return await fetch(Config.baseGamesUrl + Config.makeMovePath, {
       method: 'POST',
       headers: {

@@ -11,7 +11,10 @@ export function CreateNewGame({ setIsLoading, gameServiceBackend, setVisibleCrea
     event.preventDefault()
     setIsLoading(true)
 
-    const newGame = new NewGame(isWhitePlayer, time)
+    const newGame: NewGame = {
+      isWhitePlayer: isWhitePlayer,
+      timePerPlayerInSeconds: time,
+    }
 
     gameServiceBackend.createGame(newGame)
       .then(() => {
