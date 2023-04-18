@@ -1,5 +1,5 @@
 import { GameServiceBackend } from '../../../backend-service-connector/service'
 
-export type THistoryOfMoves ={
+export type TGameInfo = {
   gameServiceBackend: GameServiceBackend
 }

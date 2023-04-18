@@ -3,15 +3,16 @@ import { Game } from '../model/rest/game/Game'
 import { NewGame } from '../model/rest/game/NewGame'
 import { TPlayerGame } from '../model/rest/game/dto/TPlayerGame'
 import { MakeMoveRequest } from '../model/rest/game/MakeMoveRequest'
+import { DrawOfferRequest } from '../model/rest/draw-offer/DrawOfferRequest'
 
 export class GameServiceBackend {
   getActiveToken() {
     return JSON.parse(localStorage.getItem('logInUser')!).activeToken
   }
 
-  async closeActiveGameUser() {
+  async resignGameUser() {
     const activeToken: string = this.getActiveToken()
-    const games: Array<Game> = await fetch(Config.baseGamesUrl + Config.closeActiveGamePath, {
+    const games: Array<Game> = await fetch(Config.baseGamesUrl + Config.resignGamePath, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -39,7 +40,7 @@ export class GameServiceBackend {
 
         return res.json()
       })
-      // .catch(err => alert(err))
+    // .catch(err => alert(err))
 
     return games
   }
@@ -130,6 +131,64 @@ export class GameServiceBackend {
           })
           .catch(() => alert('Game not found, refresh page!'))
       })
+  }
+
+  async createDrawOffer() {
+    const activeToken: string = this.getActiveToken()
+    return await fetch(Config.baseDrawOfferUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      },
+    })
+      .then(response => {
+        return response.json()
+          .then((data) => {
+            return data
+          })
+          .catch(error => {
+            alert(error)
+          })
+      })
+  }
+
+  async responseDrawOffer(drawOfferRequest: DrawOfferRequest) {
+    const activeToken: string = this.getActiveToken()
+
+    return await fetch(Config.baseDrawOfferUrl + Config.responseDrawOfferUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      },
+      body: JSON.stringify(drawOfferRequest),
+    })
+      .then(response => {
+        return response.json()
+          .then((data) => {
+            return data
+          })
+          .catch(error => {
+            alert(error)
+          })
+      })
+  }
+
+  async getDrawOffer() {
+    const activeToken: string = this.getActiveToken()
+    return await fetch(Config.baseDrawOfferUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      },
+    })
+      .then(res => res.json())
+      .catch(err => alert(err))
   }
 
   setGameToLocalStorage(player: TPlayerGame) {

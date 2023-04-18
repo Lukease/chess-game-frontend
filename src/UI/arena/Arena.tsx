@@ -7,6 +7,7 @@ import { Piece } from '../../game/pieces'
 import { TArena } from './types/TArena'
 import { AddPiecePanel } from '../new-figure/AddPiecePanel'
 import { PromotePawnPanel } from '../new-figure/PromotePawnPanel'
+import { GameInfo } from '../game-info/GameInfo'
 
 export function Arena({ gameService, movingService, navigationService, historyService, gameServiceBackend }: TArena) {
   const [isMovingPiece, setMovingPiece] = useState(false)
@@ -89,11 +90,9 @@ export function Arena({ gameService, movingService, navigationService, historySe
         gameService={gameService}
         movingService={movingService}
         navigationService={navigationService}
+        gameServiceBackend={gameServiceBackend}
       />
-      <HistoryOfMoves
-        gameService={gameService}
-        historyService={historyService}
-      />
+      <HistoryOfMoves gameServiceBackend={gameServiceBackend} />
       <div className={'game__arena'}>
         <AddPiecePanel
           color={'black'}
@@ -114,6 +113,7 @@ export function Arena({ gameService, movingService, navigationService, historySe
         />
         <PromotePawnPanel gameServiceBackend={gameServiceBackend} />
       </div>
+      <GameInfo gameServiceBackend={gameServiceBackend}></GameInfo>
     </div>
   )
 }

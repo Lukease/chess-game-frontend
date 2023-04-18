@@ -1,25 +1,32 @@
 import React, { useEffect, useState } from 'react'
 import { THistoryOfMoves } from './types/THistoryOfMoves'
+import { MakeMoveResponse } from '../../backend-service-connector/model/rest/game/MakeMoveResponse'
 
-export function HistoryOfMoves({ historyService, gameService }: THistoryOfMoves) {
+export function HistoryOfMoves({ gameServiceBackend }: THistoryOfMoves) {
   const [history, setHistory] = useState<Array<string>>([])
   const [lastMoveIndex, setLastMoveIndex] = useState<number>(0)
   const [rewindIndex, setRewindIndex] = useState<number>(0)
 
   useEffect(() => {
-    // historyService.setArrayOfMoves(arrayOfMoves)
-    // const historyArray: string= historyService.getAllMoves()
+    const setGameState = (res: MakeMoveResponse | undefined) => {
+      if (res?.gameInfo.moves) {
+        const moves = res.gameInfo.moves
+        setHistory(moves.split(','))
+      }
 
-    const historyArray = ''
-    const historySplit = historyArray.split(',').filter(m => m !== '')
-    setRewindIndex(historySplit.length - 1)
-    setLastMoveIndex(historySplit.length - 1)
-    setHistory(historySplit)
-  }, [])
+    }
+
+    gameServiceBackend.getActiveGameAndReturnMoves().then(setGameState)
+    const intervalId = setInterval(() => {
+      gameServiceBackend.getActiveGameAndReturnMoves().then(setGameState)
+    }, 5000)
+
+    return () => clearInterval(intervalId)
+  }, [gameServiceBackend])
 
   const renderMoves = (index: number) => {
     setRewindIndex(index)
-    historyService.renderHistory(index)
+
   }
 
   const renderMovesRewindOrForwardByOne = (direction: number) => {
@@ -44,9 +51,13 @@ export function HistoryOfMoves({ historyService, gameService }: THistoryOfMoves)
   }
 
   const renderHistory = () => {
-    return history
-      .map((move: string, index: number) => {
-        const [whiteTurn, blackTurn] = move.split(',')
+    const pairs = []
+    for (let i = 0; i < history.length; i += 2) {
+      pairs.push([history[i], history[i+1]])
+    }
+    return pairs
+      .map((move: Array<string>, index: number) => {
+        const [whiteTurn, blackTurn] = move
         const moveNumber = index + 1
 
         return (

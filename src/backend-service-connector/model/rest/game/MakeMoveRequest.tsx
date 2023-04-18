@@ -1,7 +1,5 @@
-import { Piece } from '../../../../game/pieces'
-
 export type MakeMoveRequest = {
-  piece: Piece
-  moveId: string
-  moveName: string
+  pieceFromId: string
+  fieldToId: string
+  promotedPieceName?: string
 }

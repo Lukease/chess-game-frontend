@@ -1,4 +1,6 @@
+import { MoveType } from './MoveType'
+
 export type SpecialMoves = {
-  moveType: string
+  moveType: MoveType
   fieldId: string
 }

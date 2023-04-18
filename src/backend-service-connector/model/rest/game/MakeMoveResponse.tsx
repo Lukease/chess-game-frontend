@@ -3,7 +3,7 @@ import { GameDto } from './GameDto'
 
 export type MakeMoveResponse = {
   pieces: Array<Piece>
-  gameDto: GameDto
+  gameInfo: GameDto
   whoseTurn: string
   playerColor: string
   kingIsChecked: boolean

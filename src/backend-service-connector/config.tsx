@@ -10,10 +10,10 @@ export class Config {
   static readonly getAllCreatedGamesPath = '/get-all'
   static readonly getActiveGamePath = '/get-active'
   static readonly getActiveGameAndReturnMovesPath = '/get-in-progress'
-  static readonly closeActiveGamePath = '/resign'
+  static readonly resignGamePath = '/resign'
   static readonly joinGamePath = '/join-game'
   static readonly makeMovePath = '/make-move'
 
-  static readonly baseDrawOfferUrl = 'http://localhost:8080/draw-offers'
+  static readonly baseDrawOfferUrl = 'http://localhost:8080/games/draw-offers'
   static readonly responseDrawOfferUrl = '/response'
 }

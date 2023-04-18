@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { King, Piece } from '../../game/pieces'
+import { Piece } from '../../game/pieces'
 import { Field } from '../field/Field'
 import { TBoard } from './types/TBoard'
 import { MakeMoveResponse } from '../../backend-service-connector/model/rest/game/MakeMoveResponse'
@@ -13,96 +13,63 @@ export function Board({ gameService, movingService, gameServiceBackend, navigati
   const [history, setHistory] = useState<string>('')
   const [whoseTurn, setWhoseTurn] = useState<string>('white')
   const [selectedPiece, setSelectedPiece] = useState<Piece | undefined>(undefined)
+  const [promotedPiece, setPromotedPiece] = useState<Piece | undefined>(undefined)
   const [kingIsChecked, setKingIsChecked] = useState<boolean>(false)
   const [playerColor, setPlayerColor] = useState<string>('white')
 
   useEffect(() => {
-
-    getGameInProgress().then((res: MakeMoveResponse) => {
-      setPieces(res.pieces)
-      setFen(res.gameDto.fen)
-      setWhoseTurn(res.whoseTurn)
-      setKingIsChecked(res.kingIsChecked)
-      setPlayerColor(res.playerColor)
-
-      if (res.playerColor === 'white') {
-        setVector(-1)
-      } else {
-        setVector(1)
-      }
-    })
-
-    const intervalId = setInterval(() => {
-      getGameInProgress().then((res: MakeMoveResponse) => {
+    const setGameState = (res: MakeMoveResponse | undefined) => {
+      if (res) {
         setPieces(res.pieces)
-        setFen(res.gameDto.fen)
+        setFen(res.gameInfo.fen)
         setWhoseTurn(res.whoseTurn)
         setKingIsChecked(res.kingIsChecked)
         setPlayerColor(res.playerColor)
-      })
+
+        res.playerColor === 'white' ? setVector(-1) : setVector(1)
+      }
+    }
+
+    gameServiceBackend.getActiveGameAndReturnMoves().then(setGameState)
+    const intervalId = setInterval(() => {
+      gameServiceBackend.getActiveGameAndReturnMoves().then(setGameState)
     }, 5000)
 
     return () => clearInterval(intervalId)
-  }, [])
-
-  const getGameInProgress = async (): Promise<MakeMoveResponse> => {
-    const response = await gameServiceBackend.getActiveGameAndReturnMoves()
-    return {
-      pieces: response.pieces,
-      whoseTurn: response.whoseTurn,
-      gameDto: response.gameDto,
-      playerColor: response.playerColor,
-      kingIsChecked: response.kingIsChecked,
-    }
-  }
+  }, [gameServiceBackend])
 
   const getPieceById = (id: string) => {
-    if (pieces) {
-      return pieces.find(piece => piece.id === id)
-    }
+    return pieces ? pieces.find(piece => piece.id === id) : undefined
   }
 
   const getPiece = (fieldId: string) => {
-    const piece = pieces.find(currentPiece => currentPiece.id === fieldId)
+    if (pieces) {
+      const piece = pieces.find(currentPiece => currentPiece.id === fieldId)
 
-    piece && piece.possibleMoves ? setSelectedPiece(piece) : setSelectedPiece(undefined)
-  }
-
-  const makeMove = (id: string, specialMove: string) => {
-    if (selectedPiece) {
-      const move: MakeMoveRequest = {
-        moveId: id,
-        piece: selectedPiece,
-        moveName: specialMove ? specialMove : '',
-      }
-      gameServiceBackend.makeMove(move).then(r => console.log(r))
+      piece && piece.possibleMoves ? setSelectedPiece(piece) : setSelectedPiece(undefined)
     }
   }
 
-  const removePieceFromArray = (piece: Piece) => {
-    const newArray = pieces.filter(chess => chess !== piece)
-
-    setPieces(newArray)
+  const makeMove = (id: string) => {
+    if (selectedPiece?.name == 'Pawn' && (id[1] === '8' || id[1] === '1')) {
+      return null
+    }
+    if (selectedPiece) {
+      const move: MakeMoveRequest = {
+        pieceFromId: selectedPiece.id,
+        fieldToId: id,
+        promotedPieceName: promotedPiece?.name,
+      }
+      gameServiceBackend.makeMove(move).then(r => console.log(r))
+      setSelectedPiece(undefined)
+    }
   }
-
-  // const deletePiece=(field: Field)=> {
-  //   if (isTrashOn) {
-  //     const pieceId = field.id
-  //
-  //     removePieceFromArray(getPieceById(pieceId))
-  //   }
-  // }
-
-  // const setTrashToggle = (active: boolean) => {
-  //   setState({ isTrashOn: !active })
-  // }
 
   const renderFieldNumbers = () => {
     const output: Array<JSX.Element> = Array.from(Array(8)).map((x, index) => {
       const boardRow: number = vector === -1 ? -index + 8 : index + 1
 
       return (
-
         <div
           style={{ height: '12.5%' }}
           key={index}
@@ -115,17 +82,11 @@ export function Board({ gameService, movingService, gameServiceBackend, navigati
   }
 
   const doesPieceContainFieldId = (fieldId: string): boolean => {
-    if (selectedPiece) {
-      return selectedPiece.possibleMoves.some(move => {
-        return move.fieldId === fieldId
-      })
-    } else {
-      return false
-    }
+    return Boolean(selectedPiece?.possibleMoves.map(move => move.fieldId).includes(fieldId))
   }
 
   const isFieldChecked = (fieldId: string): boolean => {
-    const kingPosition = pieces.find(piece => piece.name=== 'King' && piece.color === playerColor && piece.id === fieldId)
+    const kingPosition = pieces?.find(piece => piece.name === 'King' && piece.color === playerColor && piece.id === fieldId)
     return kingIsChecked && kingPosition != null
   }
 
@@ -138,9 +99,7 @@ export function Board({ gameService, movingService, gameServiceBackend, navigati
       const fieldChecked = isFieldChecked(fieldId)
       return (
         <Field
-          // rowNumber={boardRow}
           id={fieldId}
-          // columnNumber={boardColumn}
           piece={currentPiece}
           key={`${letter}${boardRow}`}
           color={(boardColumn + boardRow) % 2 ? 'white' : 'black'}
@@ -150,7 +109,6 @@ export function Board({ gameService, movingService, gameServiceBackend, navigati
           correctMove={correctMove}
           makeMove={makeMove}
           isCheck={fieldChecked}
-          // historyService={historyService}
         />
       )
     })
@@ -159,7 +117,7 @@ export function Board({ gameService, movingService, gameServiceBackend, navigati
 
   const renderAllColumns = () => {
     const output: Array<JSX.Element> = Array.from(Array(8)).map((x, index) => {
-      const letter: string = String.fromCharCode(64 + (index + 1))
+      const letter: string = String.fromCharCode(65 + index)
       const boardColumn: number = index + 1
 
       return (
@@ -173,10 +131,8 @@ export function Board({ gameService, movingService, gameServiceBackend, navigati
     return output
   }
 
-
   return (
     <div className={'game'}
-      // onClick={() => deletePiece}
     >
       {renderAllColumns()}
       <div className={'field__numbers'}>
@@ -184,5 +140,4 @@ export function Board({ gameService, movingService, gameServiceBackend, navigati
       </div>
     </div>
   )
-
 }

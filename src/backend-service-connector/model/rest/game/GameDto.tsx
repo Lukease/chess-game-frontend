@@ -4,6 +4,7 @@ export type GameDto = {
   id: number
   moves: string
   lastMoveWhite: Date
+  lastMoveBlack: Date
   timePerPlayerInSeconds: number
   gameStatus: string
   fen: string

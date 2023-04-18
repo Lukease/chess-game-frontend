@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { addPieceArrangement } from '../../chess_arrangement'
 import { TPromotePawnPanel } from './types/TPromotePawnPanel'
 import { ContextGame } from '../context/context'
@@ -9,13 +9,6 @@ export function PromotePawnPanel({ gameServiceBackend }: TPromotePawnPanel) {
     const [color, setColor] = useState<string>('white')
     const [pieceColumn, setPieceColumn] = useState<number>(0)
     const [isPawnPromotionDisplayed, setPawnPromotionDisplayed] = useState<boolean>(false)
-
-    // useEffect(() => {
-    //     const player = gameServiceBackend.getGameFromLocalStorage()
-    //     const playerColor = player? player.pieceColor : 'white'
-    //
-    //     setColor(playerColor)
-    // }, [])
 
     const renderPawnPromotion = (display: boolean) => {
         setPawnPromotionDisplayed(display)
