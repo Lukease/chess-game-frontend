@@ -1,10 +1,10 @@
-import {GameService, HistoryService, MovingService, NavigationService} from '../../../game/suppliers'
-import { GameServiceBackend } from '../../../backend-service-connector/service/GameServiceBackend'
+import { HistoryService, MovingService, NavigationService } from '../../../game/suppliers'
+import { GameServiceBackend } from '../../../backend-service-connector/service'
 
 export type TBoard = {
-    gameService: GameService
-    movingService: MovingService
-    navigationService: NavigationService
-    historyService: HistoryService
-    gameServiceBackend: GameServiceBackend
+  movingService: MovingService
+  navigationService: NavigationService
+  historyService: HistoryService
+  gameServiceBackend: GameServiceBackend
+  isPawnPromotion: any
 }

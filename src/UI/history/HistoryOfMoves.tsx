@@ -9,7 +9,7 @@ export function HistoryOfMoves({ gameServiceBackend }: THistoryOfMoves) {
 
   useEffect(() => {
     const setGameState = (res: MakeMoveResponse | undefined) => {
-      if (res?.gameInfo.moves) {
+      if (res != undefined && res.gameInfo != undefined) {
         const moves = res.gameInfo.moves
         setHistory(moves.split(','))
       }

@@ -3,20 +3,19 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
 import Arena from './UI/arena/Arena'
-import { GameService, HistoryService, MovingService, NavigationService } from './game/suppliers'
+import { HistoryService, MovingService, NavigationService } from './game/suppliers'
 import { UserService } from './backend-service-connector/service'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { LoginNavigation } from './UI/login/LoginNavigation'
 import { Context, ContextGameBackend } from "./UI/context/context"
 import { UserSettings } from './UI/settings/UserSettings'
 import { NewGamePanel } from "./UI/new-game/NewGamePanel"
-import { GameServiceBackend } from "./backend-service-connector/service/GameServiceBackend"
+import { GameServiceBackend } from './backend-service-connector/service'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 )
 
-const gameService = new GameService()
 const userService = new UserService()
 const movingService = new MovingService()
 const navigationService = new NavigationService()
@@ -37,7 +36,6 @@ root.render(
         path='/game'
         element={
           <Arena
-            gameService={gameService}
             movingService={movingService}
             navigationService={navigationService}
             historyService={historyService}

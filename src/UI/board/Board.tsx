@@ -4,24 +4,30 @@ import { Field } from '../field/Field'
 import { TBoard } from './types/TBoard'
 import { MakeMoveResponse } from '../../backend-service-connector/model/rest/game/MakeMoveResponse'
 import { MakeMoveRequest } from '../../backend-service-connector/model/rest/game/MakeMoveRequest'
+import { GameDto } from '../../backend-service-connector/model/rest/game/GameDto'
 
-export function Board({ gameService, movingService, gameServiceBackend, navigationService, historyService }: TBoard) {
+export function Board({
+                        movingService,
+                        gameServiceBackend,
+                        navigationService,
+                        historyService,
+                        isPawnPromotion,
+                      }: TBoard) {
   const [isTrashOn, setTrashOn] = useState(false)
   const [vector, setVector] = useState(-1)
   const [pieces, setPieces] = useState<Array<Piece>>([])
-  const [fen, setFen] = useState<string>('')
+  const [game, setGame] = useState<GameDto | undefined>(undefined)
   const [history, setHistory] = useState<string>('')
   const [whoseTurn, setWhoseTurn] = useState<string>('white')
   const [selectedPiece, setSelectedPiece] = useState<Piece | undefined>(undefined)
-  const [promotedPiece, setPromotedPiece] = useState<Piece | undefined>(undefined)
-  const [kingIsChecked, setKingIsChecked] = useState<boolean>(false)
+  const [kingIsChecked, setKingIsChecked] = useState<Array<string>>([])
   const [playerColor, setPlayerColor] = useState<string>('white')
 
   useEffect(() => {
     const setGameState = (res: MakeMoveResponse | undefined) => {
       if (res) {
         setPieces(res.pieces)
-        setFen(res.gameInfo.fen)
+        setGame(res.gameInfo)
         setWhoseTurn(res.whoseTurn)
         setKingIsChecked(res.kingIsChecked)
         setPlayerColor(res.playerColor)
@@ -51,18 +57,21 @@ export function Board({ gameService, movingService, gameServiceBackend, navigati
   }
 
   const makeMove = (id: string) => {
-    if (selectedPiece?.name == 'Pawn' && (id[1] === '8' || id[1] === '1')) {
-      return null
+    if (!selectedPiece) return
+
+    const move: MakeMoveRequest = {
+      pieceFromId: selectedPiece.id,
+      fieldToId: id,
+      promotedPieceName: undefined,
     }
-    if (selectedPiece) {
-      const move: MakeMoveRequest = {
-        pieceFromId: selectedPiece.id,
-        fieldToId: id,
-        promotedPieceName: promotedPiece?.name,
-      }
-      gameServiceBackend.makeMove(move).then(r => console.log(r))
-      setSelectedPiece(undefined)
+
+    if (selectedPiece.name === 'Pawn' && (id[1] === '8' || id[1] === '1')) {
+      isPawnPromotion(move)
+    } else {
+      gameServiceBackend.makeMove(move).then(console.log)
     }
+
+    setSelectedPiece(undefined)
   }
 
   const renderFieldNumbers = () => {
@@ -85,18 +94,13 @@ export function Board({ gameService, movingService, gameServiceBackend, navigati
     return Boolean(selectedPiece?.possibleMoves.map(move => move.fieldId).includes(fieldId))
   }
 
-  const isFieldChecked = (fieldId: string): boolean => {
-    const kingPosition = pieces?.find(piece => piece.name === 'King' && piece.color === playerColor && piece.id === fieldId)
-    return kingIsChecked && kingPosition != null
-  }
-
   const renderAllFields = (letter: string, boardColumn: number) => {
     const output: Array<JSX.Element> = Array.from(Array(8)).map((x, index) => {
       const boardRow: number = vector === -1 ? -index + 8 : index + 1
       const currentPiece = getPieceById(`${letter}${boardRow}`)
       const fieldId = `${letter}${boardRow}`
       const correctMove = doesPieceContainFieldId(fieldId)
-      const fieldChecked = isFieldChecked(fieldId)
+      const fieldChecked = kingIsChecked ? kingIsChecked.includes(fieldId) : false
       return (
         <Field
           id={fieldId}

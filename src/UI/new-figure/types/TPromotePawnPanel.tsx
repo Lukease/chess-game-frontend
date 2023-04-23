@@ -1,5 +1,6 @@
-import { GameServiceBackend } from '../../../backend-service-connector/service/GameServiceBackend'
+import { GameServiceBackend } from '../../../backend-service-connector/service'
 
 export type TPromotePawnPanel = {
-  gameServiceBackend: GameServiceBackend
+  gameServiceBackend: GameServiceBackend,
+  sendPromotion: any
 }

@@ -6,5 +6,5 @@ export type MakeMoveResponse = {
   gameInfo: GameDto
   whoseTurn: string
   playerColor: string
-  kingIsChecked: boolean
+  kingIsChecked: Array<string>
 }

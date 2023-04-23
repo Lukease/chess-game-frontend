@@ -4,7 +4,7 @@ import { Settings } from '../start-game/Settings'
 import { RespondingDrawOffer } from '../utils/RespondingDrawOffer'
 import { DrawOffer } from '../../backend-service-connector/model/rest/draw-offer/DrawOffer'
 
-export function GameNavigation({ gameService, movingService, navigationService, gameServiceBackend }: TGameNavigation) {
+export function GameNavigation({ movingService, navigationService, gameServiceBackend }: TGameNavigation) {
   const colorButton = [
     { icon: '⚫', text: 'Dark style', colorMenu: 'black' },
     { icon: '⚪', text: 'White style', colorMenu: 'white' },
@@ -17,11 +17,11 @@ export function GameNavigation({ gameService, movingService, navigationService, 
   const [drawOffer, setDrawOffer] = useState<number | undefined>(undefined)
 
   async function getDrawOffers() {
-      await gameServiceBackend.getDrawOffer().then((res: DrawOffer | undefined) => {
-        if (res) {
-          setDrawOffer(res.id)
-        }
-      })
+    await gameServiceBackend.getDrawOffer().then((res: DrawOffer | undefined) => {
+      if (res) {
+        setDrawOffer(res.id)
+      }
+    })
   }
 
   function NavSettings(props: any) {

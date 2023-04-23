@@ -72,7 +72,6 @@ export class GameServiceBackend {
       },
     })
       .then(res => res.json())
-      .catch(err => alert(err))
   }
 
   async createGame(newGame: NewGame) {

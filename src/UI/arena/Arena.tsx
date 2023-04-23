@@ -8,8 +8,9 @@ import { TArena } from './types/TArena'
 import { AddPiecePanel } from '../new-figure/AddPiecePanel'
 import { PromotePawnPanel } from '../new-figure/PromotePawnPanel'
 import { GameInfo } from '../game-info/GameInfo'
+import { MakeMoveRequest } from '../../backend-service-connector/model/rest/game/MakeMoveRequest'
 
-export function Arena({ gameService, movingService, navigationService, historyService, gameServiceBackend }: TArena) {
+export function Arena({ movingService, navigationService, historyService, gameServiceBackend }: TArena) {
   const [isMovingPiece, setMovingPiece] = useState(false)
   const [selectedPiece, setSelectedPiece] = useState<Piece | undefined>(undefined)
   const [coordinateX, setCoordinateX] = useState<number>(0)
@@ -17,6 +18,8 @@ export function Arena({ gameService, movingService, navigationService, historySe
   const [movingId, setMovingId] = useState<string>('')
   const [newPieceId, setNewPieceId] = useState<string>('')
   const [backgroundColor, setBackgroundColor] = useState<string>('')
+  const [makeMoveRequest, setMakeMoveRequest] = useState<MakeMoveRequest | undefined>(undefined)
+  const [promotedPieceName, setPromotedPieceName] = useState<string>('')
 
   const addNewPiecePiece = (isMoving: boolean, piece: Piece, x: number, y: number, id: string) => {
     const setId = id ? id : ''
@@ -56,6 +59,14 @@ export function Arena({ gameService, movingService, navigationService, historySe
     }
   }
 
+  const makePromotion = (promotedPieceName: string) => {
+    if (!makeMoveRequest) return
+    gameServiceBackend.makeMove({
+      pieceFromId: makeMoveRequest.pieceFromId,
+      fieldToId: makeMoveRequest.fieldToId,
+      promotedPieceName: promotedPieceName,
+    }).then(r => console.log(r))
+  }
 
   return (
     <div className={'content'}
@@ -63,31 +74,7 @@ export function Arena({ gameService, movingService, navigationService, historySe
          onMouseUp={() => addNewPieceToField()}
          style={{ backgroundImage: `linear-gradient(#413f3f, ${backgroundColor})` }}
     >
-      {
-        isMovingPiece ?
-          <img
-            className={'figure'}
-            style={
-              {
-                left: isMovingPiece ? `${coordinateX}px` : '',
-                top: isMovingPiece ? `${coordinateY}px` : '',
-                position: 'absolute',
-                display: isMovingPiece ? 'flex' : 'none',
-              }
-            }
-            src={selectedPiece!.getImageUrl()}
-            alt={''}
-            draggable={false}
-          >
-
-          </img> :
-          <div
-            style={{ position: 'absolute' }}
-          >
-          </div>
-      }
       <GameNavigation
-        gameService={gameService}
         movingService={movingService}
         navigationService={navigationService}
         gameServiceBackend={gameServiceBackend}
@@ -96,22 +83,24 @@ export function Arena({ gameService, movingService, navigationService, historySe
       <div className={'game__arena'}>
         <AddPiecePanel
           color={'black'}
-          gameService={gameService}
           movingService={movingService}
         />
         <Board
-          gameService={gameService}
           movingService={movingService}
           gameServiceBackend={gameServiceBackend}
           navigationService={navigationService}
           historyService={historyService}
+          isPawnPromotion={setMakeMoveRequest}
         />
         <AddPiecePanel
           color={'white'}
-          gameService={gameService}
           movingService={movingService}
         />
-        <PromotePawnPanel gameServiceBackend={gameServiceBackend} />
+        {
+          makeMoveRequest ?
+            <PromotePawnPanel gameServiceBackend={gameServiceBackend} sendPromotion={makePromotion} />
+            : null
+        }
       </div>
       <GameInfo gameServiceBackend={gameServiceBackend}></GameInfo>
     </div>

@@ -3,7 +3,7 @@ import { addPieceArrangement } from '../../chess_arrangement'
 import { Piece } from '../../game/pieces'
 import { TAddPiecePanel } from './types/TAddPiecePanel'
 
-export function AddPiecePanel({ color, gameService, movingService }: TAddPiecePanel) {
+export function AddPiecePanel({ color, movingService }: TAddPiecePanel) {
   const [isTrashActive, setTrashActive] = useState(false)
   const [isPositionEditorDisplayed, setPositionEditorDisplayed] = useState(false)
   const [coordinateX, setCoordinateX] = useState(0)
@@ -29,9 +29,9 @@ export function AddPiecePanel({ color, gameService, movingService }: TAddPiecePa
   }
 
   const togglePositionEditorDisplayed = () => {
-    const isDisplayed = gameService.isPositionEditorDisplayed
+    // const isDisplayed = gameService.isPositionEditorDisplayed
 
-    setPositionEditorDisplayed(isDisplayed)
+    // setPositionEditorDisplayed(isDisplayed)
   }
 
   const selectPiece = (piece: Piece, event: any) => {
