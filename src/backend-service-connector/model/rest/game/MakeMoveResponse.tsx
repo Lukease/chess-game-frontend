@@ -1,10 +1,11 @@
 import { Piece } from '../../../../game/pieces'
-import { GameDto } from './GameDto'
+import { Game } from './Game'
 
 export type MakeMoveResponse = {
   pieces: Array<Piece>
-  gameInfo: GameDto
+  gameInfo: Game
   whoseTurn: string
   playerColor: string
   kingIsChecked: Array<string>
+  fieldFromTo: Array<string>
 }

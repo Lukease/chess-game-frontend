@@ -3,7 +3,7 @@ import { addPieceArrangement } from '../../chess_arrangement'
 import { Piece } from '../../game/pieces'
 import { TAddPiecePanel } from './types/TAddPiecePanel'
 
-export function AddPiecePanel({ color, movingService }: TAddPiecePanel) {
+export function AddPiecePanel({ color, movingService, makeMoveResponse }: TAddPiecePanel) {
   const [isTrashActive, setTrashActive] = useState(false)
   const [isPositionEditorDisplayed, setPositionEditorDisplayed] = useState(false)
   const [coordinateX, setCoordinateX] = useState(0)
@@ -12,10 +12,12 @@ export function AddPiecePanel({ color, movingService }: TAddPiecePanel) {
   const [isMoving, setMoving] = useState(false)
 
   useEffect(() => {
-    const pieces = addPieceArrangement(color)
+    if (makeMoveResponse) {
+      const pieces = addPieceArrangement(makeMoveResponse.playerColor)
 
-    setNewPiece(pieces)
-  }, [])
+      setNewPiece(pieces)
+    }
+  }, [makeMoveResponse])
 
 
   const isDeleteIconActive = (isFromOtherService: boolean) => {
@@ -63,7 +65,7 @@ export function AddPiecePanel({ color, movingService }: TAddPiecePanel) {
         >
           <img
             className={'figure'}
-            src={piece.getImageUrl()}
+            // src={piece.getImageUrl()}
             key={index}
             alt={''}
             onMouseDown={event => isTrashActive ? '' : selectPiece(piece, event)}

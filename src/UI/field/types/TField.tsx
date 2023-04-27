@@ -1,15 +1,16 @@
 import { Piece } from '../../../game/pieces'
 import { MovingService } from '../../../game/suppliers'
-import { GameServiceBackend } from '../../../backend-service-connector/service/GameServiceBackend'
+import { GameService } from '../../../backend-service-connector/service'
 
 export type TField = {
   id: string
   piece?: Piece
   color: string
-  gameServiceBackend: GameServiceBackend
+  gameServiceBackend: GameService
   movingService: MovingService
   onPieceClick: any
   correctMove: boolean
   makeMove:any
   isCheck: boolean
+  lastMove: boolean
 }

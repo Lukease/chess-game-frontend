@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import { TTimer } from './types/TTimer'
 
-export function Timer({ secondsLeft }: TTimer) {
-  const [seconds, setSeconds] = useState(secondsLeft)
+export function Timer({ whiteTimeLeft, blackTimeLeft, whoseTour }: TTimer) {
+  const [whitePlayerSeconds, setWhitePlayerSeconds] = useState(whiteTimeLeft)
+  const [blackPlayerSeconds, setBlackPlayerSeconds] = useState(blackTimeLeft)
 
   useEffect(() => {
-    if (seconds <= 0) {
-      return
+    if (whoseTour === 'white' && whitePlayerSeconds > 0) {
+      const interval = setInterval(() => {
+        setWhitePlayerSeconds(whitePlayerSeconds => whitePlayerSeconds - 1)
+      }, 1000)
+      return () => clearInterval(interval)
+    } else if (whoseTour === 'black' && blackPlayerSeconds > 0) {
+      const interval = setInterval(() => {
+        setBlackPlayerSeconds(blackPlayerSeconds => blackPlayerSeconds - 1)
+      }, 1000)
+      return () => clearInterval(interval)
     }
-    const interval = setInterval(() => {
-      setSeconds(seconds => seconds - 1)
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [seconds])
+  }, [whitePlayerSeconds, blackPlayerSeconds, whoseTour])
 
-  const formattedTime = new Date(seconds * 1000).toISOString().substr(14, 5)
+  const whiteFormattedTime = new Date(whitePlayerSeconds * 1000).toISOString().substr(14, 5)
+  const blackFormattedTime = new Date(blackPlayerSeconds * 1000).toISOString().substr(14, 5)
 
-  return <div>{formattedTime}</div>
+  return (
+    <div>
+      <div>{`Time Black: ${blackFormattedTime}`}</div>
+      <div>{`Time White: ${whiteFormattedTime}`}</div>
+    </div>
+  )
 }

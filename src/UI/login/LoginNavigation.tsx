@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react'
-import { Context } from '../context/context'
+import { ContextUser } from '../context/contextUser'
 import { User } from '../../backend-service-connector/model/rest/user/User'
 
 export function LoginNavigation(): JSX.Element {
-  const userService = useContext(Context)
+  const userService = useContext(ContextUser)
   const [isSignInForm, setSignInForm] = useState(true)
   const [login, setLogin] = useState('')
   const [email, setEmail] = useState('')
@@ -21,7 +21,7 @@ export function LoginNavigation(): JSX.Element {
     const userLogged = await userService.logIn(login, password)
 
     if (userLogged) {
-      window.location.href = 'http://localhost:3000/game'
+      window.location.href = 'http://localhost:3000/new-game'
 
     } else {
       const incorrectData = 'Incorrect login or password'

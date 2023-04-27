@@ -1,4 +1,4 @@
-import { GameServiceBackend } from '../../../backend-service-connector/service/GameServiceBackend'
+import { GameService } from '../../../backend-service-connector/service/GameService'
 
 export type TCreateButton = {
   setVisibleCreate: any

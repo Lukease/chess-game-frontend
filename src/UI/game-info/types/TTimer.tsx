@@ -1,3 +1,5 @@
 export type TTimer = {
-  secondsLeft: number
+  whiteTimeLeft: number
+  blackTimeLeft: number
+  whoseTour: string
 }

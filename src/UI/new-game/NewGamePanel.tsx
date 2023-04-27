@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ContextGameBackend } from '../context/context'
+import { ContextGame } from '../context/contextUser'
 import { Game } from '../../backend-service-connector/model/rest/game/Game'
 import { GoBackNav } from '../navigation/GoBackNav'
 import { GameItem } from './GameItem'
@@ -9,8 +9,8 @@ import { Loader } from '../utils/Loader'
 import { ErrorWindow } from '../utils/ErrorWindow'
 
 export function NewGamePanel(): JSX.Element {
-  const gameServiceBackend = useContext(ContextGameBackend)
-  const [createdGames, setCreatedGames] = useState<Array<Game> | null>(null)
+  const gameServiceBackend = useContext(ContextGame)
+  const [createdGames, setCreatedGames] = useState<Array<Game> >([])
   const [visibleCreate, setVisibleCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('User not found!')
@@ -28,12 +28,18 @@ export function NewGamePanel(): JSX.Element {
         moves: '',
         lastMoveWhite: undefined,
         lastMoveBlack: undefined,
+        timeLeftBlack: res.timePerPlayerInSeconds,
+        timeLeftWhite: res.timePerPlayerInSeconds,
       }
     })
   }
 
   useEffect(() => {
-    getCreatedGames().then((response) => setCreatedGames(response))
+    const interval = setInterval(() => {
+      getCreatedGames().then((response) => setCreatedGames(response))
+    }, 5000)
+
+    return () => clearInterval(interval)
   }, [])
 
   async function enterGame(event: React.MouseEvent<HTMLDivElement, MouseEvent>, gameId: number, playerColor: string) {
@@ -97,8 +103,8 @@ export function NewGamePanel(): JSX.Element {
     >
       {
         isLoading
-        ? <Loader />
-        : null
+          ? <Loader />
+          : null
       }
       {
         error

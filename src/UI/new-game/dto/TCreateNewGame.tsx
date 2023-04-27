@@ -1,8 +1,8 @@
-import { GameServiceBackend } from '../../../backend-service-connector/service/GameServiceBackend'
+import { GameService } from '../../../backend-service-connector/service/GameService'
 
 export type TCreateNewGame = {
   setIsLoading: any
-  gameServiceBackend: GameServiceBackend
+  gameServiceBackend: GameService
   setVisibleCreate: any
   setError: any
 }

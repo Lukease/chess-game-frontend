@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../../Arena.css'
 import { GameNavigation } from '../start-game'
 import { HistoryOfMoves } from '../history'
@@ -9,8 +9,9 @@ import { AddPiecePanel } from '../new-figure/AddPiecePanel'
 import { PromotePawnPanel } from '../new-figure/PromotePawnPanel'
 import { GameInfo } from '../game-info/GameInfo'
 import { MakeMoveRequest } from '../../backend-service-connector/model/rest/game/MakeMoveRequest'
+import { MakeMoveResponse } from '../../backend-service-connector/model/rest/game/MakeMoveResponse'
 
-export function Arena({ movingService, navigationService, historyService, gameServiceBackend }: TArena) {
+export function Arena({ movingService, navigationService, historyService, gameService: gameService }: TArena) {
   const [isMovingPiece, setMovingPiece] = useState(false)
   const [selectedPiece, setSelectedPiece] = useState<Piece | undefined>(undefined)
   const [coordinateX, setCoordinateX] = useState<number>(0)
@@ -20,6 +21,23 @@ export function Arena({ movingService, navigationService, historyService, gameSe
   const [backgroundColor, setBackgroundColor] = useState<string>('')
   const [makeMoveRequest, setMakeMoveRequest] = useState<MakeMoveRequest | undefined>(undefined)
   const [promotedPieceName, setPromotedPieceName] = useState<string>('')
+  const [gameInfo, setGameInfo] = useState<MakeMoveResponse | undefined>(undefined)
+
+
+  useEffect(() => {
+    const setGameState = (response: MakeMoveResponse | undefined) => {
+      if (response) {
+        setGameInfo(response)
+      }
+    }
+
+    gameService.getActiveGameAndReturnMoves().then(setGameState)
+    const intervalId = setInterval(() => {
+      gameService.getActiveGameAndReturnMoves().then(setGameState)
+    }, 5000)
+
+    return () => clearInterval(intervalId)
+  }, [gameService])
 
   const addNewPiecePiece = (isMoving: boolean, piece: Piece, x: number, y: number, id: string) => {
     const setId = id ? id : ''
@@ -61,7 +79,7 @@ export function Arena({ movingService, navigationService, historyService, gameSe
 
   const makePromotion = (promotedPieceName: string) => {
     if (!makeMoveRequest) return
-    gameServiceBackend.makeMove({
+    gameService.makeMove({
       pieceFromId: makeMoveRequest.pieceFromId,
       fieldToId: makeMoveRequest.fieldToId,
       promotedPieceName: promotedPieceName,
@@ -74,35 +92,26 @@ export function Arena({ movingService, navigationService, historyService, gameSe
          onMouseUp={() => addNewPieceToField()}
          style={{ backgroundImage: `linear-gradient(#413f3f, ${backgroundColor})` }}
     >
-      <GameNavigation
-        movingService={movingService}
-        navigationService={navigationService}
-        gameServiceBackend={gameServiceBackend}
-      />
-      <HistoryOfMoves gameServiceBackend={gameServiceBackend} />
+      <GameNavigation movingService={movingService} navigationService={navigationService} gameService={gameService} />
+      <HistoryOfMoves gameService={gameService} makeMoveResponse={gameInfo}/>
       <div className={'game__arena'}>
-        <AddPiecePanel
-          color={'black'}
-          movingService={movingService}
-        />
+        <AddPiecePanel color={'black'} movingService={movingService} makeMoveResponse={gameInfo} />
         <Board
           movingService={movingService}
-          gameServiceBackend={gameServiceBackend}
+          gameService={gameService}
           navigationService={navigationService}
           historyService={historyService}
           isPawnPromotion={setMakeMoveRequest}
+          makeMoveResponse={gameInfo}
         />
-        <AddPiecePanel
-          color={'white'}
-          movingService={movingService}
-        />
+        <AddPiecePanel color={'white'} movingService={movingService} makeMoveResponse={gameInfo} />
         {
           makeMoveRequest ?
-            <PromotePawnPanel gameServiceBackend={gameServiceBackend} sendPromotion={makePromotion} />
+            <PromotePawnPanel gameService={gameService} sendPromotion={makePromotion} makeMoveResponse={gameInfo} />
             : null
         }
       </div>
-      <GameInfo gameServiceBackend={gameServiceBackend}></GameInfo>
+      <GameInfo gameService={gameService} makeMoveResponse={gameInfo}></GameInfo>
     </div>
   )
 }

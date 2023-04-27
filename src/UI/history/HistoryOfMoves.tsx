@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { THistoryOfMoves } from './types/THistoryOfMoves'
-import { MakeMoveResponse } from '../../backend-service-connector/model/rest/game/MakeMoveResponse'
 
-export function HistoryOfMoves({ gameServiceBackend }: THistoryOfMoves) {
+export function HistoryOfMoves({ gameService, makeMoveResponse }: THistoryOfMoves) {
   const [history, setHistory] = useState<Array<string>>([])
   const [lastMoveIndex, setLastMoveIndex] = useState<number>(0)
   const [rewindIndex, setRewindIndex] = useState<number>(0)
 
   useEffect(() => {
-    const setGameState = (res: MakeMoveResponse | undefined) => {
-      if (res != undefined && res.gameInfo != undefined) {
-        const moves = res.gameInfo.moves
-        setHistory(moves.split(','))
-      }
-
+    if (makeMoveResponse?.gameInfo?.moves) {
+      setHistory(makeMoveResponse.gameInfo.moves.split(','))
     }
-
-    gameServiceBackend.getActiveGameAndReturnMoves().then(setGameState)
-    const intervalId = setInterval(() => {
-      gameServiceBackend.getActiveGameAndReturnMoves().then(setGameState)
-    }, 5000)
-
-    return () => clearInterval(intervalId)
-  }, [gameServiceBackend])
+  }, [makeMoveResponse])
 
   const renderMoves = (index: number) => {
     setRewindIndex(index)
@@ -51,6 +39,7 @@ export function HistoryOfMoves({ gameServiceBackend }: THistoryOfMoves) {
   }
 
   const renderHistory = () => {
+
     const pairs = []
     for (let i = 0; i < history.length; i += 2) {
       pairs.push([history[i], history[i+1]])

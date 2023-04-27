@@ -1,13 +1,15 @@
 import { User } from '../user/User'
 
 export type Game = {
-  id: number | undefined
+  id?: number
   moves: string
-  lastMoveBlack: Date | undefined
-  lastMoveWhite: Date | undefined
+  lastMoveBlack?: Date
+  lastMoveWhite?: Date
+  timeLeftWhite: number
+  timeLeftBlack: number
   timePerPlayerInSeconds: number
-  gameStatus: string | undefined
+  gameStatus: string
   fen: string
-  whitePlayer: User | undefined
-  blackPlayer: User | undefined
+  whitePlayer?: User
+  blackPlayer?: User
 }

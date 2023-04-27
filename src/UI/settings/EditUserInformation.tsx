@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { User } from '../../backend-service-connector/model/rest/user/User'
-import { Context } from '../context/context'
+import { ContextUser } from '../context/contextUser'
 import { ChangePasswordRequest } from '../../backend-service-connector/model/rest/user/ChangePasswordRequest'
-import { ErrorWindow } from "../utils/ErrorWindow";
+import { ErrorWindow } from "../utils/ErrorWindow"
 
 export function EditUserInformation(): JSX.Element {
-  const userService = useContext(Context)
+  const userService = useContext(ContextUser)
   const [userLogin, setUserLogin] = useState('')
   const [userEmail, setUserEmail] = useState('')
   const [oldUserPassword, setOldUserPassword] = useState('')

@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { TGameNavigation } from '../start-game/types/TGameNavigation'
 import { Settings } from '../start-game/Settings'
 import { RespondingDrawOffer } from '../utils/RespondingDrawOffer'
-import { DrawOffer } from '../../backend-service-connector/model/rest/draw-offer/DrawOffer'
+import { DrawOffer } from '../../backend-service-connector/model/rest/game/DrawOffer'
 
-export function GameNavigation({ movingService, navigationService, gameServiceBackend }: TGameNavigation) {
+export function GameNavigation({ movingService, navigationService, gameService }: TGameNavigation) {
   const colorButton = [
     { icon: '⚫', text: 'Dark style', colorMenu: 'black' },
     { icon: '⚪', text: 'White style', colorMenu: 'white' },
@@ -17,7 +17,7 @@ export function GameNavigation({ movingService, navigationService, gameServiceBa
   const [drawOffer, setDrawOffer] = useState<number | undefined>(undefined)
 
   async function getDrawOffers() {
-    await gameServiceBackend.getDrawOffer().then((res: DrawOffer | undefined) => {
+    await gameService.getDrawOffer().then((res: DrawOffer | undefined) => {
       if (res) {
         setDrawOffer(res.id)
       }
@@ -131,7 +131,7 @@ export function GameNavigation({ movingService, navigationService, gameServiceBa
         windowResponseOffer ?
           <RespondingDrawOffer
             sendDataToParent={setWindowResponseOffer}
-            gameServiceBackend={gameServiceBackend}
+            gameServiceBackend={gameService}
             drawOfferId={drawOfferId}
             isCreateOffer={createOffer}
           ></RespondingDrawOffer>

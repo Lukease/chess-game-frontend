@@ -1,2 +1,2 @@
 export { UserService } from './UserService'
-export { GameServiceBackend } from './GameServiceBackend'
+export { GameService } from './GameService'

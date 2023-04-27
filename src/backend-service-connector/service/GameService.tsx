@@ -3,9 +3,9 @@ import { Game } from '../model/rest/game/Game'
 import { NewGame } from '../model/rest/game/NewGame'
 import { TPlayerGame } from '../model/rest/game/dto/TPlayerGame'
 import { MakeMoveRequest } from '../model/rest/game/MakeMoveRequest'
-import { DrawOfferRequest } from '../model/rest/draw-offer/DrawOfferRequest'
+import { DrawOfferRequest } from '../model/rest/game/DrawOfferRequest'
 
-export class GameServiceBackend {
+export class GameService {
   getActiveToken() {
     return JSON.parse(localStorage.getItem('logInUser')!).activeToken
   }

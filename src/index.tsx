@@ -7,10 +7,10 @@ import { HistoryService, MovingService, NavigationService } from './game/supplie
 import { UserService } from './backend-service-connector/service'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { LoginNavigation } from './UI/login/LoginNavigation'
-import { Context, ContextGameBackend } from "./UI/context/context"
+import { ContextUser, ContextGame } from './UI/context/contextUser'
 import { UserSettings } from './UI/settings/UserSettings'
-import { NewGamePanel } from "./UI/new-game/NewGamePanel"
-import { GameServiceBackend } from './backend-service-connector/service'
+import { NewGamePanel } from './UI/new-game/NewGamePanel'
+import { GameService } from './backend-service-connector/service'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -20,16 +20,16 @@ const userService = new UserService()
 const movingService = new MovingService()
 const navigationService = new NavigationService()
 const historyService = new HistoryService()
-const gameServiceBackend = new GameServiceBackend()
+const gameService = new GameService()
 
 root.render(
   <Router>
     <Routes>
       <Route path={'/'}
              element={
-               <Context.Provider value={userService}>
+               <ContextUser.Provider value={userService}>
                  <LoginNavigation />
-               </Context.Provider>
+               </ContextUser.Provider>
              }
       />
       <Route
@@ -39,21 +39,21 @@ root.render(
             movingService={movingService}
             navigationService={navigationService}
             historyService={historyService}
-            gameServiceBackend={gameServiceBackend}
+            gameService={gameService}
           />
         } />
       <Route path={'/settings'}
              element={
-               <Context.Provider value={userService}>
+               <ContextUser.Provider value={userService}>
                  <UserSettings />
-               </Context.Provider>
+               </ContextUser.Provider>
              }
       />
       <Route path={'/new-game'}
              element={
-               <ContextGameBackend.Provider value={gameServiceBackend}>
+               <ContextGame.Provider value={gameService}>
                  <NewGamePanel />
-               </ContextGameBackend.Provider>
+               </ContextGame.Provider>
              }
       />
     </Routes>

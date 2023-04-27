@@ -1,9 +1,9 @@
 import { HistoryService, MovingService, NavigationService } from '../../../game/suppliers'
-import { GameServiceBackend } from '../../../backend-service-connector/service'
+import { GameService } from '../../../backend-service-connector/service'
 
 export type TArena = {
   movingService: MovingService
   navigationService: NavigationService
-  gameServiceBackend: GameServiceBackend
+  gameService: GameService
   historyService: HistoryService
 }

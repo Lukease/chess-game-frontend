@@ -1,6 +1,6 @@
 import React from 'react'
 import { TRespondingDrawOffer } from './dto/TRespondingDrawOffer'
-import { DrawOfferRequest } from '../../backend-service-connector/model/rest/draw-offer/DrawOfferRequest'
+import { DrawOfferRequest } from '../../backend-service-connector/model/rest/game/DrawOfferRequest'
 
 export function RespondingDrawOffer({
                                       sendDataToParent,

@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { addPieceArrangement } from '../../chess_arrangement'
 import { TPromotePawnPanel } from './types/TPromotePawnPanel'
 import { Pawn, Piece } from '../../game/pieces'
 
-export function PromotePawnPanel({ gameServiceBackend, sendPromotion }: TPromotePawnPanel) {
+export function PromotePawnPanel({ gameService, sendPromotion, makeMoveResponse }: TPromotePawnPanel) {
   const [color, setColor] = useState<string>('white')
   const [pieceColumn, setPieceColumn] = useState<number>(0)
+
+  useEffect(() => {
+    if (makeMoveResponse) {
+      setColor(makeMoveResponse.playerColor)
+    }
+  }, [makeMoveResponse])
 
   const selectFigure = (piece: Piece) => {
     sendPromotion(piece.name)

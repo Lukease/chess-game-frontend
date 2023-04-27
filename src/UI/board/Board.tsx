@@ -2,47 +2,39 @@ import React, { useEffect, useState } from 'react'
 import { Piece } from '../../game/pieces'
 import { Field } from '../field/Field'
 import { TBoard } from './types/TBoard'
-import { MakeMoveResponse } from '../../backend-service-connector/model/rest/game/MakeMoveResponse'
 import { MakeMoveRequest } from '../../backend-service-connector/model/rest/game/MakeMoveRequest'
-import { GameDto } from '../../backend-service-connector/model/rest/game/GameDto'
+import { Game } from '../../backend-service-connector/model/rest/game/Game'
 
 export function Board({
                         movingService,
-                        gameServiceBackend,
+                        gameService,
                         navigationService,
                         historyService,
                         isPawnPromotion,
+                        makeMoveResponse,
                       }: TBoard) {
   const [isTrashOn, setTrashOn] = useState(false)
   const [vector, setVector] = useState(-1)
   const [pieces, setPieces] = useState<Array<Piece>>([])
-  const [game, setGame] = useState<GameDto | undefined>(undefined)
+  const [game, setGame] = useState<Game | undefined>(makeMoveResponse?.gameInfo)
   const [history, setHistory] = useState<string>('')
   const [whoseTurn, setWhoseTurn] = useState<string>('white')
   const [selectedPiece, setSelectedPiece] = useState<Piece | undefined>(undefined)
   const [kingIsChecked, setKingIsChecked] = useState<Array<string>>([])
   const [playerColor, setPlayerColor] = useState<string>('white')
+  const [lastMove, setLastMove] = useState<Array<string>>([])
 
   useEffect(() => {
-    const setGameState = (res: MakeMoveResponse | undefined) => {
-      if (res) {
-        setPieces(res.pieces)
-        setGame(res.gameInfo)
-        setWhoseTurn(res.whoseTurn)
-        setKingIsChecked(res.kingIsChecked)
-        setPlayerColor(res.playerColor)
-
-        res.playerColor === 'white' ? setVector(-1) : setVector(1)
-      }
+    if (makeMoveResponse) {
+      setPieces(makeMoveResponse.pieces)
+      setGame(makeMoveResponse.gameInfo)
+      setWhoseTurn(makeMoveResponse.whoseTurn)
+      setKingIsChecked(makeMoveResponse.kingIsChecked)
+      setPlayerColor(makeMoveResponse.playerColor)
+      setVector(makeMoveResponse.playerColor === 'white' ? -1 : 1)
+      setLastMove(makeMoveResponse.fieldFromTo)
     }
-
-    gameServiceBackend.getActiveGameAndReturnMoves().then(setGameState)
-    const intervalId = setInterval(() => {
-      gameServiceBackend.getActiveGameAndReturnMoves().then(setGameState)
-    }, 5000)
-
-    return () => clearInterval(intervalId)
-  }, [gameServiceBackend])
+  }, [makeMoveResponse])
 
   const getPieceById = (id: string) => {
     return pieces ? pieces.find(piece => piece.id === id) : undefined
@@ -68,7 +60,7 @@ export function Board({
     if (selectedPiece.name === 'Pawn' && (id[1] === '8' || id[1] === '1')) {
       isPawnPromotion(move)
     } else {
-      gameServiceBackend.makeMove(move).then(console.log)
+      gameService.makeMove(move).then(console.log)
     }
 
     setSelectedPiece(undefined)
@@ -107,12 +99,13 @@ export function Board({
           piece={currentPiece}
           key={`${letter}${boardRow}`}
           color={(boardColumn + boardRow) % 2 ? 'white' : 'black'}
-          gameServiceBackend={gameServiceBackend}
+          gameServiceBackend={gameService}
           movingService={movingService}
           onPieceClick={getPiece}
           correctMove={correctMove}
           makeMove={makeMove}
           isCheck={fieldChecked}
+          lastMove={lastMove ? lastMove.includes(fieldId) : false}
         />
       )
     })

@@ -24,7 +24,8 @@ export function Field({
                         onPieceClick,
                         correctMove,
                         makeMove,
-                        isCheck
+                        isCheck,
+                        lastMove,
                       }: TField) {
   const [isMoving, setIsMoving] = useState<boolean>(false)
   const [isChosen, setChosen] = useState<boolean>(false)
@@ -77,7 +78,7 @@ export function Field({
 
   return (
     <div
-      className={isChosen ? `field  field__${color} field__chosen` : `field  field__${color}`}
+      className={isChosen || lastMove ? `field  field__${color} field__chosen` : `field  field__${color}`}
       onClick={() => {
         choosePiece(id)
         correctMove ? clickCorrectField() : null
