@@ -19,7 +19,7 @@ export function Field({
                         id,
                         piece,
                         color,
-                        gameServiceBackend,
+                        gameService,
                         movingService,
                         onPieceClick,
                         correctMove,

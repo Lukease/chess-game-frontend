@@ -99,7 +99,7 @@ export function Board({
           piece={currentPiece}
           key={`${letter}${boardRow}`}
           color={(boardColumn + boardRow) % 2 ? 'white' : 'black'}
-          gameServiceBackend={gameService}
+          gameService={gameService}
           movingService={movingService}
           onPieceClick={getPiece}
           correctMove={correctMove}

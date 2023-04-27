@@ -88,6 +88,7 @@ export function EditUserInformation(): JSX.Element {
           Edit Email
         </button>
       </form>
+      <label> Set Password</label>
       <form
         className={'editor-container__nav'}
         onSubmit={event =>setNewPasswordToDb(event)}

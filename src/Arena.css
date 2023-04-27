@@ -494,6 +494,75 @@ input[type=submit]:hover {
   font-weight: normal;
 }
 
+.players-info {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.menu {
+  display: flex;
+  width: 10%;
+  height: 90%;
+  flex-direction: column;
+  top: 10%;
+  gap: 30px;
+}
+.menu__button {
+  --button-size: 30px;
+  height: var(--button-size);
+  background-color: #444141;
+  border-radius: 30%;
+  margin: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 300ms;
+  padding: 5px;
+}
+
+.content {
+  display: flex;
+  width: 90%;
+  height: 90%;
+}
+.content__container {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 70%;
+  border-radius: 20px;
+  background-color: #555555;
+}
+.content__element {
+  display: flex;
+  border-bottom-style: groove;
+  width: 100%;
+  height: 7%;
+  justify-content: space-around;
+  align-items: center;
+}
+.content__element--nav {
+  display: flex;
+  width: 8%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  transition: filter 300ms;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.menu__button:hover {
+  background-color: #47627e;
+  filter: brightness(1.2);
+}
+
+.content__navigation--item:hover {
+  background-color: #47627e;
+  filter: brightness(1.2);
+}
+
 #root {
   width: 100vw;
   height: 100vh;

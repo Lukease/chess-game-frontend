@@ -2,6 +2,7 @@ import { UserLogIn } from '../model/rest/user/UserLogIn'
 import { User } from '../model/rest/user/User'
 import { Config } from '../config'
 import { ChangePasswordRequest } from '../model/rest/user/ChangePasswordRequest'
+import { PlayerInfo } from '../model/rest/user/PlayerInfo'
 
 export class UserService {
   logInUser: UserLogIn | undefined
@@ -123,6 +124,22 @@ export class UserService {
             this.logInUser = undefined
           })
       })
+  }
+
+  async getAllPlayerInfo() {
+    const players: Array<PlayerInfo> = await fetch(Config.baseUsersUrl + Config.getAllPlayersInfoPath, {
+      method: 'GET',
+    })
+      .then((response) => {
+        return response.json().then((data) => {
+
+          return data
+        })
+      })
+      .catch(error => console.log(error))
+
+    return players
+
   }
 
   setLogInUserToLocalStorage(user: User | undefined) {

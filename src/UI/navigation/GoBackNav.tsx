@@ -1,10 +1,11 @@
 import { TGoBackNav } from './dto/TGoBackNav'
 import React from 'react'
+import { Settings } from '../start-game/Settings'
 
 export function GoBackNav({backToUrl}: TGoBackNav) {
   return(
     <div className={'navbar'}>
-      <li className={'navbar__nav--item'}>
+      <div className={'navbar__nav--item'}>
         <a
           className={'navbar__nav--button'}
           href={`/${backToUrl}`}
@@ -12,7 +13,17 @@ export function GoBackNav({backToUrl}: TGoBackNav) {
         >
           {'↩'}
         </a>
-      </li>
+      </div>
+      <div className={'navbar__nav--item'}>
+        <a
+          className={'navbar__nav--button'}
+          href={`/players-info`}
+          style={{color: 'white'}}
+        >
+          {'👨‍👨‍👦‍👦'}
+        </a>
+      </div>
+      <Settings/>
     </div>
   )
 }

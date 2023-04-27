@@ -11,6 +11,7 @@ import { ContextUser, ContextGame } from './UI/context/contextUser'
 import { UserSettings } from './UI/settings/UserSettings'
 import { NewGamePanel } from './UI/new-game/NewGamePanel'
 import { GameService } from './backend-service-connector/service'
+import { PlayersInfo } from './UI/players-info/PlayersInfo'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -46,6 +47,13 @@ root.render(
              element={
                <ContextUser.Provider value={userService}>
                  <UserSettings />
+               </ContextUser.Provider>
+             }
+      />
+      <Route path={'/players-info'}
+             element={
+               <ContextUser.Provider value={userService}>
+                 <PlayersInfo gameService={gameService} />
                </ContextUser.Provider>
              }
       />
