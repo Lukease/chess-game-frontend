@@ -53,7 +53,7 @@ root.render(
       <Route path={'/players-info'}
              element={
                <ContextUser.Provider value={userService}>
-                 <PlayersInfo gameService={gameService} />
+                 <PlayersInfo />
                </ContextUser.Provider>
              }
       />

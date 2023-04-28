@@ -6,6 +6,7 @@ export class Config {
   static readonly editUserLoginPath = '/new-login'
   static readonly editUserPasswordPath = '/new-password'
   static readonly getAllPlayersInfoPath = '/all-players'
+  static readonly getPlayerInfoPath = '/player'
 
   static readonly baseGamesUrl = 'http://localhost:8080/games'
   static readonly getAllCreatedGamesPath = '/get-all'

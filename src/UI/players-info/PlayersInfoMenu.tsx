@@ -6,7 +6,7 @@ export function PlayersInfoMenu({ onMenuClick }: TPlayersInfoMenu): JSX.Element 
     <div className={'menu'}>
       <div style={{ height: '10%' }}></div>
       <div className={'menu__button'} onClick={() => onMenuClick(true)}>All users</div>
-      <div className={'menu__button'} onClick={() => onMenuClick(false)}>Player Statistics</div>
+      <div className={'menu__button'} onClick={() => onMenuClick(false)}>Player Stats</div>
     </div>
   )
 }

@@ -142,6 +142,28 @@ export class UserService {
 
   }
 
+  async getPlayerInfo() {
+    const activeToken: string = this.getActiveToken()
+
+    const players: PlayerInfo = await fetch(Config.baseUsersUrl + Config.getPlayerInfoPath, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: activeToken,
+      }
+    })
+      .then((response) => {
+        return response.json().then((data) => {
+
+          return data
+        })
+      })
+      .catch(error => console.log(error))
+
+    return players
+
+  }
   setLogInUserToLocalStorage(user: User | undefined) {
     localStorage.setItem('logInUser', JSON.stringify(user))
     window.dispatchEvent(new Event('storage'))

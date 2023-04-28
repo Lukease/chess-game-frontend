@@ -87,7 +87,7 @@ export function Arena({ movingService, navigationService, historyService, gameSe
   }
 
   return (
-    <div className={'content'}
+    <div className={'charts'}
          onMouseMove={editorMouseMoveFigure}
          onMouseUp={() => addNewPieceToField()}
          style={{ backgroundImage: `linear-gradient(#413f3f, ${backgroundColor})` }}
