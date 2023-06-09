@@ -1,70 +1,48 @@
 import React, { useEffect, useState } from 'react'
 import '../../Arena.css'
-import { Piece } from '../../game/pieces'
 import { TField } from './types/TField'
-import blackQueen from '../../chess_icon/black-Queen.svg'
-import whiteQueen from '../../chess_icon/white-Queen.svg'
-import blackKing from '../../chess_icon/black-King.svg'
-import whiteKing from '../../chess_icon/white-King.svg'
-import blackKnight from '../../chess_icon/black-Knight.svg'
-import whiteKnight from '../../chess_icon/white-Knight.svg'
-import blackBishop from '../../chess_icon/black-Bishop.svg'
-import whiteBishop from '../../chess_icon/white-Bishop.svg'
-import blackRook from '../../chess_icon/black-Rook.svg'
-import whiteRook from '../../chess_icon/white-Rook.svg'
-import blackPawn from '../../chess_icon/black-Pawn.svg'
-import whitePawn from '../../chess_icon/white-Pawn.svg'
+import moveSound from '../../audio/move-self.mp3'
+import captureSound from '../../audio/capture.mp3'
 
 export function Field({
                         id,
                         piece,
                         color,
                         gameService,
-                        movingService,
                         onPieceClick,
                         correctMove,
                         makeMove,
                         isCheck,
                         lastMove,
+                        handleCopy,
+                        location,
+                        trashActive,
+                        isPositionEditorMode,
                       }: TField) {
   const [isMoving, setIsMoving] = useState<boolean>(false)
   const [isChosen, setChosen] = useState<boolean>(false)
-  const [isGameStarted, setGameStarted] = useState<boolean>(false)
   const [img, setImg] = useState<string>('')
-  const [isTrashActive, setTrashActive] = useState<boolean>(false)
+  const [pieceRemoved, setPieceRemoved] = useState(false)
 
   useEffect(() => {
-    const pieceImg = piece ? setImage(piece) : ''
-
-    setImg(pieceImg)
+    piece ? setImg(piece.getImageUrl()) : null
   }, [piece])
 
-  const setImage = (piece: Piece) => {
-    switch (piece.name) {
-      case 'Pawn':
-        return piece.color === 'white' ? whitePawn : blackPawn
-      case 'Knight':
-        return piece.color === 'white' ? whiteKnight : blackKnight
-      case 'Bishop':
-        return piece.color === 'white' ? whiteBishop : blackBishop
-      case 'Rook':
-        return piece.color === 'white' ? whiteRook : blackRook
-      case 'Queen':
-        return piece.color === 'white' ? whiteQueen : blackQueen
-      case 'King':
-        return piece.color === 'white' ? whiteKing : blackKing
-      default:
-        return ''
+  const handleMoveSound = () => {
+    if (correctMove) {
+      const audio = piece ? new Audio(captureSound) : new Audio(moveSound)
+      audio.play()
     }
   }
 
-  const setPiecePosition = (piece: Piece, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const setPiecePosition = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (piece) {
-      const coordinateX = event.clientX
-      const coordinateY = event.clientY
+      const parentRect = event.currentTarget.getBoundingClientRect()
+      const x: number = event.clientX - parentRect.left - 30
+      const y: number = event.clientY - parentRect.top - 30
 
-      document.body.style.cursor = 'none'
-      movingService.movePiece(piece, coordinateX, coordinateY, id, true)
+      setIsMoving(true)
+      handleCopy(piece, x, y, true)
     }
   }
 
@@ -76,38 +54,45 @@ export function Field({
     makeMove(id)
   }
 
+  function removePiece() {
+    piece && piece.name !== 'King' && gameService.removePieceFromPositionEditor(piece.id)
+      .then(() => setPieceRemoved(true))
+  }
+
   return (
     <div
       className={isChosen || lastMove ? `field  field__${color} field__chosen` : `field  field__${color}`}
       onClick={() => {
-        choosePiece(id)
-        correctMove ? clickCorrectField() : null
+        if (location === 'game') {
+          choosePiece(id)
+          correctMove ? clickCorrectField() : null
+          handleMoveSound()
+        } else if (location === 'position-editor') {
+          if (trashActive) {
+            removePiece()
+          } else if (!isPositionEditorMode) {
+            choosePiece(id)
+          }
+        }
       }}
-      // onMouseDown={event => isGameStarted || isTrashActive ? '' : setPiecePosition(this!, event)}
+      onMouseDown={(event) => location === 'position-editor' && isPositionEditorMode && setPiecePosition(event)}
       id={id}
       style={{ backgroundColor: isCheck ? 'red' : '' }}
     >
       {
         piece ?
           <img
+            onClick={() => trashActive && location === 'position-editor' ? removePiece : null}
             className={correctMove ? `figure figure__move-figure` : 'figure'}
             id={id}
             alt={''}
             src={img}
             draggable={false}
-            style={{ display: isMoving ? 'none' : 'block' }}
-
-            // onMouseDown={event => moveFigure(event,props.className,props.id)}
-            // onMouseMove={event => mouseMoveFigure(event)}
-            // onMouseUp={event => moveChess(event)}
+            style={{ display: isMoving || (trashActive && pieceRemoved) ? 'none' : 'block' }}
           >
-
           </img>
-          : <div
-            className={correctMove ? `figure figure__move-empty` : 'figure'}
-          ></div>
+          : <div className={correctMove ? `figure figure__move-empty` : 'figure'}></div>
       }
     </div>
   )
-
 }

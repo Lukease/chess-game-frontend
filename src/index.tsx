@@ -43,6 +43,16 @@ root.render(
             gameService={gameService}
           />
         } />
+      <Route
+        path='/position-editor'
+        element={
+          <Arena
+            movingService={movingService}
+            navigationService={navigationService}
+            historyService={historyService}
+            gameService={gameService}
+          />
+        } />
       <Route path={'/settings'}
              element={
                <ContextUser.Provider value={userService}>

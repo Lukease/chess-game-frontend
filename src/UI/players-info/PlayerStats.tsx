@@ -4,6 +4,9 @@ import React from 'react'
 import { TPlayerStats } from './types/TPlayerStats'
 
 export function PlayerStats({ playerInfo }: TPlayerStats) {
+  if (playerInfo === undefined) {
+    return null;
+  }
   return (
     <div className={'charts'}>
       <div className='player-info-chart__container'>
@@ -17,17 +20,17 @@ export function PlayerStats({ playerInfo }: TPlayerStats) {
         </div>
         <div className='player-info-chart__item'>
           <h4 className={'player-info-chart__title'}>Win Ratio:</h4>
-          <div>{`${playerInfo.winRatio.toFixed(2)}%`}</div>
+          <div>{playerInfo.winRatio ?`${playerInfo.winRatio.toFixed(2)}%` : '0%'}</div>
         </div>
       </div>
       <PlayerInfoChart playerInfo={playerInfo} />
       <WinLossesDrawsChart label={'Wins/Losses/Draws'}
-                           values={[{ title: 'Draws', value: playerInfo.draws, color: '#4CAF50' }, {
-                             title: 'Wins',
-                             value: playerInfo.wins,
-                             color: '#4CAF50',
-                           }, { title: 'Losses', value: playerInfo.losses, color: '#F44336' }]
-                           } />
+                           values={[
+                             { title: 'Draws', value: playerInfo.draws, color: '#4CAF50' },
+                             { title: 'Wins', value: playerInfo.wins, color: '#4CAF50' },
+                             { title: 'Losses', value: playerInfo.losses, color: '#F44336' }
+                           ]}
+      />
     </div>
   )
 }

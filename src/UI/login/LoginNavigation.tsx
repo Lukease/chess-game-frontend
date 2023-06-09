@@ -14,7 +14,7 @@ export function LoginNavigation(): JSX.Element {
   const [isHoverRegister, setIsHoverRegister] = useState(false)
   const [userUnderstandPolity, setUserUnderstandPolity] = useState(false)
 
-  const signIn = async (e: any) => {
+  const signIn = async (e: React.FormEvent<HTMLFormElement>) => {
     setLoginMessage('')
     e.preventDefault()
 
@@ -22,7 +22,6 @@ export function LoginNavigation(): JSX.Element {
 
     if (userLogged) {
       window.location.href = 'http://localhost:3000/new-game'
-
     } else {
       const incorrectData = 'Incorrect login or password'
 
@@ -33,7 +32,7 @@ export function LoginNavigation(): JSX.Element {
     setLogin('')
   }
 
-  const register = async (e: any) => {
+  const register = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const equalsPassword: boolean = password === confirmPassword

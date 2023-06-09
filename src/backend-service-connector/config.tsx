@@ -15,6 +15,10 @@ export class Config {
   static readonly resignGamePath = '/resign'
   static readonly joinGamePath = '/join-game'
   static readonly makeMovePath = '/make-move'
+  static readonly getCurrentPositionEditorPieces = '/position-editor'
+  static readonly getDefaultPositionEditorPieces = '/default-position-editor'
+  static readonly removePieceFromPositionEditor = '/remove-piece'
+  static readonly changePositionOfPiece = '/new-position'
 
   static readonly baseDrawOfferUrl = 'http://localhost:8080/games/draw-offers'
   static readonly responseDrawOfferUrl = '/response'

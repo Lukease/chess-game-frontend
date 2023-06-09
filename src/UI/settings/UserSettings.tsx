@@ -7,7 +7,7 @@ export function UserSettings(): JSX.Element {
 
   return (
     <div className={'settings'}>
-      <GoBackNav backToUrl={'game'}/>
+      <GoBackNav/>
       <UserAbout />
       <EditUserInformation />
     </div>

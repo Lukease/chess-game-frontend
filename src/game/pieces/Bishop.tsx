@@ -1,5 +1,7 @@
 import { Piece } from './Piece'
 import { SpecialMoves } from '../../backend-service-connector/model/rest/game/SpecialMoves'
+import blackBishop from '../../chess_icon/black-Bishop.svg'
+import whiteBishop from '../../chess_icon/white-Bishop.svg'
 
 export class Bishop extends Piece {
   constructor(color: string, id: string, name: string, possibleMoves: Array<SpecialMoves>) {
@@ -7,7 +9,7 @@ export class Bishop extends Piece {
   }
 
   getImageUrl(): string {
-    return require(`../../chess_icon/${this.color}-Bishop.svg`)
+    return this.color === 'white' ? whiteBishop : blackBishop
   }
 
   getPieceIcon(): string {

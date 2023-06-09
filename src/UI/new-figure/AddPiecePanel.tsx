@@ -1,74 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { addPieceArrangement } from '../../chess_arrangement'
-import { Piece } from '../../game/pieces'
 import { TAddPiecePanel } from './types/TAddPiecePanel'
+import trash from '../../icons/garbage-trash-svgrepo-com.svg'
+import hand from '../../icons/cursor-hand-icon.svg'
+import { Piece } from '../../game/pieces'
 
-export function AddPiecePanel({ color, movingService, makeMoveResponse }: TAddPiecePanel) {
-  const [isTrashActive, setTrashActive] = useState(false)
-  const [isPositionEditorDisplayed, setPositionEditorDisplayed] = useState(false)
-  const [coordinateX, setCoordinateX] = useState(0)
-  const [coordinateY, setCoordinateY] = useState(0)
-  const [addNewPiece, setNewPiece] = useState<Array<Piece>>([])
-  const [isMoving, setMoving] = useState(false)
-
-  useEffect(() => {
-    if (makeMoveResponse) {
-      const pieces = addPieceArrangement(makeMoveResponse.playerColor)
-
-      setNewPiece(pieces)
-    }
-  }, [makeMoveResponse])
-
-
-  const isDeleteIconActive = (isFromOtherService: boolean) => {
-    const isActive: boolean = isTrashActive
-
-    setTrashActive(!isActive)
-
-    if (!isFromOtherService) {
-      // gameService.setTrashActive(!isActive)
-    }
-  }
-
-  const togglePositionEditorDisplayed = () => {
-    // const isDisplayed = gameService.isPositionEditorDisplayed
-
-    // setPositionEditorDisplayed(isDisplayed)
-  }
-
-  const selectPiece = (piece: Piece, event: any) => {
-    const coordinateX = event.clientX
-    const coordinateY = event.clientY
-    setMoving(true)
-    setCoordinate(event)
-
-    document.body.style.cursor = 'none'
-    movingService.movePiece(piece, coordinateX, coordinateY, '', false)
-  }
-
-  const setCoordinate = (event: any) => {
-    setCoordinateX(event.screenX - 50)
-    setCoordinateY(event.screenY - 30)
-  }
-
-  const removePiece = () => {
-    setMoving(false)
-  }
+export function AddPiecePanel({
+                                color,
+                                trashActive,
+                                setTrashActive,
+                                handleCopy,
+                                setMode,
+                                isPositionEditorMode,
+                              }: TAddPiecePanel) {
 
   const renderPieces = () => {
-    const output: Array<JSX.Element> = addNewPiece.map((piece, index) => {
-
+    const output: Array<JSX.Element> = addPieceArrangement(color).map((piece, index) => {
       return (
-        <div
-          className={'field'}
-          key={index}
-        >
+        <div className={'field'} key={index} onMouseDown={(event) => selectPiece(event, piece)}>
           <img
             className={'figure'}
-            // src={piece.getImageUrl()}
+            src={piece.getImageUrl()}
             key={index}
             alt={''}
-            onMouseDown={event => isTrashActive ? '' : selectPiece(piece, event)}
+            draggable={false}
           >
           </img>
         </div>
@@ -78,28 +33,51 @@ export function AddPiecePanel({ color, movingService, makeMoveResponse }: TAddPi
     return output
   }
 
+  const selectPiece = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, piece: Piece) => {
+    const parentRect = event.currentTarget.getBoundingClientRect()
+    const x: number = event.clientX - parentRect.left - 30
+    const y: number = event.clientY - parentRect.top - 30
+
+    setTrashActive(true)
+    setMode(true)
+    handleCopy(piece, x, y, false)
+  }
+
   return (
-    <div
-      className={'panel'}
-      style={{ display: isPositionEditorDisplayed ? `flex` : `none` }}
-      onChange={() => togglePositionEditorDisplayed()}
-    >
-      <div className={'field'}
-      ></div>
+    <div className={'panel'}>
+      <div className={'field'}></div>
       <div className={'panel__add'}>
+        <div
+          style={{ backgroundColor: isPositionEditorMode ? `greenyellow` : `` }}
+          onClick={() => {
+            setMode(isPositionEditorMode)
+            setTrashActive(true)
+          }}
+        >
+          <img
+            className={'figure'}
+            src={hand}
+            alt={''}
+          />
+        </div>
         {
           renderPieces()
         }
         <div
-          className={'content__trash'}
-          style={{ backgroundColor: isTrashActive ? `firebrick` : `` }}
-          onClick={() => isDeleteIconActive(false)}
-          id={'trashIcon'}
+          style={{ backgroundColor: trashActive ? `firebrick` : `` }}
+          onClick={() => {
+            setMode(true)
+            setTrashActive(trashActive)
+          }}
         >
+          <img
+            className={'figure'}
+            src={trash}
+            alt={''}
+          />
         </div>
       </div>
-      <div className={'field'}
-      ></div>
+      <div className={'field'}></div>
     </div>
   )
 }

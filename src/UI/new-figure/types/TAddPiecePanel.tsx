@@ -1,8 +1,10 @@
-import { MovingService } from '../../../game/suppliers'
-import { MakeMoveResponse } from '../../../backend-service-connector/model/rest/game/MakeMoveResponse'
+import { Piece } from '../../../game/pieces'
 
 export type TAddPiecePanel = {
-  movingService: MovingService
   color: string
-  makeMoveResponse?:MakeMoveResponse
+  trashActive: boolean
+  setTrashActive: (isActive: boolean) => void
+  handleCopy: (copiedPiece: Piece, x: number, y: number, pieceFromBoard: boolean) => void
+  setMode: (isEditorMode: boolean) => void
+  isPositionEditorMode: boolean
 }

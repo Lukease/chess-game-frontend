@@ -1,201 +1,117 @@
 import { Config } from '../config'
-import { Game } from '../model/rest/game/Game'
 import { NewGame } from '../model/rest/game/NewGame'
 import { TPlayerGame } from '../model/rest/game/dto/TPlayerGame'
 import { MakeMoveRequest } from '../model/rest/game/MakeMoveRequest'
 import { DrawOfferRequest } from '../model/rest/game/DrawOfferRequest'
+import { Game } from '../model/rest/game/Game'
+import { NewPosition } from '../model/rest/game/NewPosition'
 
 export class GameService {
   getActiveToken() {
     return JSON.parse(localStorage.getItem('logInUser')!).activeToken
   }
 
-  async resignGameUser() {
-    const activeToken: string = this.getActiveToken()
-    const games: Array<Game> = await fetch(Config.baseGamesUrl + Config.resignGamePath, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-    })
-      .then(res => res.json())
-      .catch(err => alert(err))
+  async requestAPI(url: string, method: string, body?: any) {
+    const activeToken = this.getActiveToken()
 
-    return games
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: activeToken,
+    }
+
+    const requestOptions = {
+      method,
+      headers,
+      body: JSON.stringify(body),
+    }
+
+
+    const response = await fetch(url, requestOptions)
+    const data = await response.json()
+
+    const { message, status } = data
+    console.log(status)
+    console.log(message)
+    if (message == "No active Token found" && window.location.href !== 'http://localhost:3000/new-game') {
+      alert(message)
+      window.location.href = 'http://localhost:3000/new-game'
+    }
+
+    return data
   }
 
-  async getAllCreatedGames() {
-    const activeToken: string = this.getActiveToken()
-    const games: Array<Game> = await fetch(Config.baseGamesUrl + Config.getAllCreatedGamesPath, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-    })
-      .then(res => {
+  async resignGameUser() {
+    const url = Config.baseGamesUrl + Config.resignGamePath
+    return await this.requestAPI(url, 'PUT')
+  }
 
-        return res.json()
-      })
-    // .catch(err => alert(err))
-
-    return games
+  async getAllCreatedGames(): Promise<Array<Game>> {
+    const url = Config.baseGamesUrl + Config.getAllCreatedGamesPath
+    return await this.requestAPI(url, 'GET')
   }
 
   async getActiveGame() {
-    const activeToken: string = this.getActiveToken()
-    const games: Game = await fetch(Config.baseGamesUrl + Config.getActiveGamePath, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-    })
-      .then(res => res.json())
-      .catch(err => alert(err))
-
-    return games
+    const url = Config.baseGamesUrl + Config.getActiveGamePath
+    return await this.requestAPI(url, 'GET')
   }
 
-  async getActiveGameAndReturnMoves(): Promise<any> {
-    const activeToken: string = this.getActiveToken()
-    return await fetch(Config.baseGamesUrl + Config.getActiveGameAndReturnMovesPath, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-    })
-      .then(res => res.json())
+  async getActiveGameAndReturnMoves() {
+    const url = Config.baseGamesUrl + Config.getActiveGameAndReturnMovesPath
+    return await this.requestAPI(url, 'GET')
   }
 
   async createGame(newGame: NewGame) {
-    const activeToken: string = this.getActiveToken()
-
-    return await fetch(Config.baseGamesUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-      body: JSON.stringify(newGame),
-    })
-      .then(response => {
-        return response.json()
-          .then((data) => {
-            return data
-          })
-          .catch(error => {
-            alert(error)
-          })
-      })
+    const url = Config.baseGamesUrl
+    return await this.requestAPI(url, 'POST', newGame)
   }
 
   async makeMove(move: MakeMoveRequest) {
-    const activeToken: string = this.getActiveToken()
-    console.log(move)
-    return await fetch(Config.baseGamesUrl + Config.makeMovePath, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-      body: JSON.stringify(move),
-    })
+    const url = Config.baseGamesUrl + Config.makeMovePath
+    return await this.requestAPI(url, 'POST', move)
   }
 
   async joinGame(gameId: number) {
-    const activeToken: string = this.getActiveToken()
-
-    return await fetch(Config.baseGamesUrl + Config.joinGamePath, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-      body: JSON.stringify({ gameId: gameId }),
-    })
-      .then(response => {
-        return response.json()
-          .then((data) => {
-            return data
-          })
-          .catch(() => alert('Game not found, refresh page!'))
-      })
+    const url = Config.baseGamesUrl + Config.joinGamePath
+    return await this.requestAPI(url, 'POST', { gameId })
   }
 
   async createDrawOffer() {
-    const activeToken: string = this.getActiveToken()
-    return await fetch(Config.baseDrawOfferUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-    })
-      .then(response => {
-        return response.json()
-          .then((data) => {
-            return data
-          })
-          .catch(error => {
-            alert(error)
-          })
-      })
+    const url = Config.baseDrawOfferUrl
+    return await this.requestAPI(url, 'POST')
   }
 
   async responseDrawOffer(drawOfferRequest: DrawOfferRequest) {
-    const activeToken: string = this.getActiveToken()
-
-    return await fetch(Config.baseDrawOfferUrl + Config.responseDrawOfferUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-      body: JSON.stringify(drawOfferRequest),
-    })
-      .then(response => {
-        return response.json()
-          .then((data) => {
-            return data
-          })
-          .catch(error => {
-            alert(error)
-          })
-      })
+    const url = Config.baseDrawOfferUrl + Config.responseDrawOfferUrl
+    return await this.requestAPI(url, 'PUT', drawOfferRequest)
   }
 
   async getDrawOffer() {
-    const activeToken: string = this.getActiveToken()
-    return await fetch(Config.baseDrawOfferUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-    })
-      .then(res => res.json())
-      .catch(err => alert(err))
+    const url = Config.baseDrawOfferUrl
+    return await this.requestAPI(url, 'GET')
+  }
+
+  async getCurrentPositionEditorPieces() {
+    const url = Config.baseGamesUrl + Config.getCurrentPositionEditorPieces
+    return await this.requestAPI(url, 'GET')
+  }
+
+  async getDefaultPositionEditorPieces() {
+    const url = Config.baseGamesUrl + Config.getDefaultPositionEditorPieces
+    return await this.requestAPI(url, 'GET')
+  }
+
+  async removePieceFromPositionEditor(removedPieceId: string) {
+    const url = Config.baseGamesUrl + Config.removePieceFromPositionEditor + `?pieceId=${removedPieceId}`
+    return await this.requestAPI(url, 'PUT')
+  }
+
+  async ChangePositionOfPieceFromPositionEditor(newPosition: NewPosition) {
+    const url = Config.baseGamesUrl + Config.changePositionOfPiece
+    return await this.requestAPI(url, 'PUT', newPosition)
   }
 
   setGameToLocalStorage(player: TPlayerGame) {
     localStorage.setItem('game', JSON.stringify(player))
-    window.dispatchEvent(new Event('storage'))
-  }
-
-  getGameFromLocalStorage(): TPlayerGame {
-    return JSON.parse(localStorage.getItem('game')!)
   }
 }

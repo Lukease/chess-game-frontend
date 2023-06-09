@@ -50,7 +50,7 @@ export function PlayersInfoNavigation({ players }: TPlayersInfoNavigation) {
   }
 
   return (
-    <div className='charts'>
+    <div className='game-content'>
       <div className='charts__container'>
         <div className='charts__element'>
           <div

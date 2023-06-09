@@ -29,7 +29,7 @@ export function PlayersInfo(): JSX.Element {
 
   return (
     <div className="players-info">
-      <GoBackNav backToUrl="game" />
+      <GoBackNav/>
       <PlayersInfoMenu onMenuClick={handleMenuClick} />
       {isAllPlayersDisplayed ? (
         <PlayersInfoNavigation players={players} />

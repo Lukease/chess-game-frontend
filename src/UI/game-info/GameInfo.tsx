@@ -3,8 +3,8 @@ import { TGameInfo } from './types/TGameInfo'
 import { MakeMoveResponse } from '../../backend-service-connector/model/rest/game/MakeMoveResponse'
 import { Timer } from './Timer'
 
-export function GameInfo({ gameService, makeMoveResponse }: TGameInfo) {
-  const [gameState, setGameState] = useState<MakeMoveResponse | null>(null);
+export function GameInfo({ makeMoveResponse }: TGameInfo) {
+  const [gameState, setGameState] = useState<MakeMoveResponse | null>(null)
 
   useEffect(() => {
     if (makeMoveResponse) {

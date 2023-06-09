@@ -9,14 +9,14 @@ import { Loader } from '../utils/Loader'
 import { ErrorWindow } from '../utils/ErrorWindow'
 
 export function NewGamePanel(): JSX.Element {
-  const gameServiceBackend = useContext(ContextGame)
-  const [createdGames, setCreatedGames] = useState<Array<Game> >([])
+  const gameService = useContext(ContextGame)
+  const [createdGames, setCreatedGames] = useState<Array<Game>>([])
   const [visibleCreate, setVisibleCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('User not found!')
 
   const getCreatedGames = async (): Promise<Array<Game>> => {
-    const response = await gameServiceBackend.getAllCreatedGames()
+    const response = await gameService.getAllCreatedGames()
     return response.map(res => {
       return {
         timePerPlayerInSeconds: res.timePerPlayerInSeconds,
@@ -39,16 +39,24 @@ export function NewGamePanel(): JSX.Element {
       getCreatedGames().then((response) => setCreatedGames(response))
     }, 5000)
 
+    gameService.getActiveGameAndReturnMoves()
+      .then((r) => {
+        if (r.status !== 404 && r.status !== 400){
+          window.location.href = 'http://localhost:3000/game'
+        }
+      })
+      .catch()
     return () => clearInterval(interval)
   }, [])
+
 
   async function enterGame(event: React.MouseEvent<HTMLDivElement, MouseEvent>, gameId: number, playerColor: string) {
     event.preventDefault()
     setIsLoading(true)
 
-    await gameServiceBackend.joinGame(gameId)
+    await gameService.joinGame(gameId)
       .then(() => {
-        gameServiceBackend.setGameToLocalStorage({ pieceColor: playerColor })
+        gameService.setGameToLocalStorage({ pieceColor: playerColor })
         window.location.href = 'http://localhost:3000/game'
       })
       .catch(() => setError('Game not found, refresh page!'))
@@ -111,14 +119,14 @@ export function NewGamePanel(): JSX.Element {
           ? null
           : <ErrorWindow message={error} sendDataToParent={closeError} />
       }
-      <GoBackNav backToUrl={'game'} />
+      <GoBackNav />
       <ActiveGames />
       {
         visibleCreate
           ?
           <CreateNewGame
             setIsLoading={setIsLoading}
-            gameServiceBackend={gameServiceBackend}
+            gameServiceBackend={gameService}
             setVisibleCreate={setVisibleCreate}
             setError={setError}
           />

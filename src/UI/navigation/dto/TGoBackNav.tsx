@@ -1,3 +1,3 @@
-export type TGoBackNav ={
-  backToUrl: string
+export type TGoBackNav = {
+  defaultChessPosition?: () => void
 }

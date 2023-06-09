@@ -2,75 +2,22 @@ import React, { useState } from 'react'
 import { TGameNavigation } from '../start-game/types/TGameNavigation'
 import { Settings } from '../start-game/Settings'
 import { RespondingDrawOffer } from '../utils/RespondingDrawOffer'
-import { DrawOffer } from '../../backend-service-connector/model/rest/game/DrawOffer'
+import { Dropdown } from './Dropdown'
+import { DropdownItem } from './DropdownItem'
 
-export function GameNavigation({ movingService, navigationService, gameService }: TGameNavigation) {
-  const colorButton = [
-    { icon: '⚫', text: 'Dark style', colorMenu: 'black' },
-    { icon: '⚪', text: 'White style', colorMenu: 'white' },
-  ]
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [idDropdown, setIdDropdown] = useState<string>('')
-  const [windowResponseOffer, setWindowResponseOffer] = useState<boolean>(false)
+export function GameNavigation({ gameService }: TGameNavigation) {
+  const [windowResponseOffer, setWindowResponseOffer] = useState(false)
   const [drawOfferId, setDrawOfferId] = useState<number | undefined>(undefined)
-  const [createOffer, setOffer] = useState<boolean>(false)
-  const [drawOffer, setDrawOffer] = useState<number | undefined>(undefined)
+  const [createOffer, setOffer] = useState(false)
 
   async function getDrawOffers() {
-    await gameService.getDrawOffer().then((res: DrawOffer | undefined) => {
-      if (res) {
-        setDrawOffer(res.id)
-      }
-    })
+    const res = await gameService.getDrawOffer()
+    if (res) {
+      setDrawOfferId(res.id)
+    }
   }
 
-  function NavSettings(props: any) {
-    return (
-      <div className={'navbar__nav--item'}>
-        <a
-          className={'navbar__nav--button'}
-          onMouseOver={() => {
-            setIdDropdown(props.id)
-            setIsOpen(true)
-            if (props.id === '2') {
-              getDrawOffers()
-            }
-          }}
-          onClick={() => props.onClick()}
-          style={{ backgroundColor: props.backgroundColor }}
-          onMouseLeave={() => {
-            setIdDropdown('')
-            setIsOpen(false)
-          }}
-        >
-          {props.icon}
-        </a>
-        {
-          isOpen && idDropdown === props.id ?
-            props.children
-            : null
-        }
-      </div>
-    )
-  }
-
-  function DropdownItem(props: any) {
-    return (
-      <div
-        className={'dropdown__item'}
-        onClick={() => props.onClick()}
-        onMouseOver={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
-      >
-        <span className={'dropdown__item--icon'}>
-          {props.leftIcon}
-        </span>
-        {props.children}
-      </div>
-    )
-  }
-
-  async function resignGame() {
+  function resignGame() {
     setWindowResponseOffer(true)
   }
 
@@ -80,63 +27,51 @@ export function GameNavigation({ movingService, navigationService, gameService }
   }
 
   return (
-    <div className={'navbar'}>
-      <div className={'navbar__nav--item'}>
-        <a
-          className={'navbar__nav--button'}
-          href={'/new-game'}
-        >
-          {'➕'}
+    <div className='navbar'>
+      <div className='navbar__nav--item'>
+        <a className='navbar__nav--button' href='/new-game'>
+          ➕
         </a>
       </div>
-      <div className={'navbar__nav--item'}>
-        <a
-          className={'navbar__nav--button'}
-          onClick={() => resignGame()}
-        >
-          {'🚪'}
+      <div className='navbar__nav--item'>
+        <a className='navbar__nav--button' onClick={resignGame}>
+          🚪
         </a>
       </div>
-      <div className={'navbar__nav--item'}>
-        <a
-          className={'navbar__nav--button'}
-          onClick={() => createDrawOffer()}
-        >
-          {'🟰'}
+      <div className='navbar__nav--item'>
+        <a className='navbar__nav--button' onClick={createDrawOffer}>
+          🟰
         </a>
       </div>
-      <NavSettings icon={'🔔'} id={'2'}>
-        {drawOffer ? (
-          <div className={'dropdown'}>
-            <DropdownItem
-              leftIcon={'🔔'}
-              onClick={() => {
-                setWindowResponseOffer(true)
-                setDrawOfferId(drawOffer)
-              }}
-            >
-              {'Draw Offer!'}
-            </DropdownItem>
-          </div>
-        ) : null}
-      </NavSettings>
-
-      <NavSettings icon={'🖌️'} id={'3'}>
-        {
-          // renderColorEditor()
-        }
-      </NavSettings>
+      <Dropdown leftIcon='🔔' onClick={getDrawOffers}>
+        {windowResponseOffer && drawOfferId && (
+          <DropdownItem
+            leftIcon='🔔'
+            onClick={() => setDrawOfferId(drawOfferId)}
+          >
+            Draw Offer!
+          </DropdownItem>
+        )}
+      </Dropdown>
+      <div className='navbar__nav--item'>
+        <a
+          className='navbar__nav--button'
+          onMouseOver={() => setWindowResponseOffer(true)}
+          onMouseLeave={() => setWindowResponseOffer(false)}
+        >
+          🖌️
+        </a>
+        {/* renderColorEditor() */}
+      </div>
       <Settings />
-      {
-        windowResponseOffer ?
-          <RespondingDrawOffer
-            sendDataToParent={setWindowResponseOffer}
-            gameServiceBackend={gameService}
-            drawOfferId={drawOfferId}
-            isCreateOffer={createOffer}
-          ></RespondingDrawOffer>
-          : null
-      }
+      {windowResponseOffer && (
+        <RespondingDrawOffer
+          sendDataToParent={setWindowResponseOffer}
+          gameServiceBackend={gameService}
+          drawOfferId={drawOfferId}
+          isCreateOffer={createOffer}
+        />
+      )}
     </div>
   )
 }
