@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Piece } from '../../game/pieces'
+import { createPieceInstance, Piece } from '../../game/pieces'
 import { Field } from '../field/Field'
 import { TBoard } from './types/TBoard'
 import { MakeMoveRequest } from '../../backend-service-connector/model/rest/game/MakeMoveRequest'
-import { MakeMoveResponse } from '../../backend-service-connector/model/rest/game/MakeMoveResponse'
 
 export function Board({
                         movingService,
@@ -16,7 +15,8 @@ export function Board({
                         positionEditorInfo,
                         editPieceLocation,
                         trashActive,
-                        isPositionEditorMode
+                        isPositionEditorMode,
+                        positionEditorService,
                       }: TBoard) {
   const [pieces, setPieces] = useState<Array<Piece>>([])
   const [history, setHistory] = useState<string>('')
@@ -67,10 +67,11 @@ export function Board({
       isPawnPromotion(move)
     } else {
       gameService.makeMove(move)
-        .then((response) => response.json())
-        .then((data) => {
-          const makeMoveResponse = data as MakeMoveResponse
-          setPieces(makeMoveResponse?.pieces)
+        .then(data => {
+          data.pieces = data.pieces.map((pieceData: Piece) => {
+            return createPieceInstance(pieceData)
+          })
+          setPieces(data.pieces)
         })
     }
 
@@ -117,6 +118,7 @@ export function Board({
           location={location}
           trashActive={trashActive}
           isPositionEditorMode={isPositionEditorMode}
+          positionEditorService={positionEditorService}
         />
       )
     })

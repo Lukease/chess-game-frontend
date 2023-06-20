@@ -3,167 +3,97 @@ import { User } from '../model/rest/user/User'
 import { Config } from '../config'
 import { ChangePasswordRequest } from '../model/rest/user/ChangePasswordRequest'
 import { PlayerInfo } from '../model/rest/user/PlayerInfo'
+import { FetchData } from './FetchData'
 
 export class UserService {
-  logInUser: UserLogIn | undefined
+  fetchData: FetchData
 
-  getActiveToken() {
-    return JSON.parse(localStorage.getItem('logInUser')!).activeToken
+  constructor() {
+    this.fetchData = new FetchData()
   }
 
+  logInUser: UserLogIn | undefined
+
   async getAllUsers() {
-    const users: Array<User> = await fetch(Config.baseUsersUrl + Config.getAllUsersPath, {
-      method: 'GET',
-    })
-      .then((response) => {
-        return response.json().then((data) => {
-
-          return data
-        })
-      })
+    const users: Array<User> = await this.fetchData
+      .requestAPI(Config.baseUsersUrl + Config.getAllUsersPath, 'GET')
+      .then(data => data)
       .catch(error => console.log(error))
-
     return users
-
   }
 
   async addNewUser(newUser: User) {
-    return await fetch(Config.baseUsersUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(newUser),
-    })
-      .then(response => {
-        return response.json()
-          .then((data) => {
-            return data
-          })
-          .catch(error => {
-            alert(error)
-          })
-      })
+    return await this.fetchData
+      .requestAPI(Config.baseUsersUrl, 'POST', newUser)
+      .then(data => data)
+      .catch(error => console.log(error))
   }
 
   editUserLogin(newLogin: string) {
-    const activeToken: string = this.getActiveToken()
-
-    fetch(Config.baseUsersUrl + Config.editUserLoginPath, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-      body: JSON.stringify({ login: newLogin }),
-    })
-      .then(response => response.json())
-      .catch(error => error)
+    const url = Config.baseUsersUrl + Config.editUserLoginPath
+    return this.fetchData
+      .requestAPI(url, 'PUT', { login: newLogin })
+      .then(data => data)
+      .catch(error => console.log(error))
   }
 
   editUserEmail(newEmail: string) {
-    const activeToken: string = this.getActiveToken()
-
-    fetch(Config.baseUsersUrl + Config.editUserEmailPath, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-      body: JSON.stringify({ email: newEmail }),
-    })
-      .then(response => response.json())
-      .catch(error => error)
+    const url = Config.baseUsersUrl + Config.editUserEmailPath
+    return this.fetchData
+      .requestAPI(url, 'PUT', { email: newEmail })
+      .then(data => data)
+      .catch(error => console.log(error))
   }
 
   editUserPassword(changePasswordRequest: ChangePasswordRequest) {
-    const activeToken: string = this.getActiveToken()
-
-    fetch(Config.baseUsersUrl + Config.editUserPasswordPath, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      },
-      body: JSON.stringify(changePasswordRequest),
-    })
-      .then(response => {
-        if (response.ok) {
-          const user: User = this.getLogInUserFromLocalStorage()
-
-          alert('Succes')
-          user.password = changePasswordRequest.password
-          this.setLogInUserToLocalStorage(user)
-
-          return response.json()
-        } else {
-          alert('Wrong data!')
-        }
+    const url = Config.baseUsersUrl + Config.editUserPasswordPath
+    return this.fetchData
+      .requestAPI(url, 'PUT', changePasswordRequest)
+      .then(data => {
+        const user: User = this.getLogInUserFromLocalStorage()
+        alert('Success')
+        user.password = changePasswordRequest.password
+        this.setLogInUserToLocalStorage(user)
+        return data
       })
-      .catch(error => error)
+      .catch(error => console.log(error))
   }
 
   async logIn(login: string, password: string) {
     const userLogIn: UserLogIn = { login: login, password: password }
 
-    return await fetch(Config.baseUsersUrl + Config.logInUserPath, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(userLogIn),
-    })
-      .then(response => {
-        return response.json()
-          .then((data) => {
-            this.logInUser = data
-            this.setLogInUserToLocalStorage(data)
-
-            return data
-          })
-          .catch(() => {
-            this.logInUser = undefined
-          })
+    const url = Config.baseUsersUrl + Config.logInUserPath
+    return await this.fetchData
+      .requestAPI(url, 'POST', userLogIn)
+      .then(data => {
+        this.setLogInUserToLocalStorage(data)
+        return data
+      })
+      .catch(() => {
+        this.logInUser = undefined
       })
   }
 
   async getAllPlayerInfo() {
-    const players: Array<PlayerInfo> = await fetch(Config.baseUsersUrl + Config.getAllPlayersInfoPath, {
-      method: 'GET',
-    })
-      .then((response) => {
-        return response.json().then((data) => {
-
-          return data
-        })
-      })
+    const url = Config.baseUsersUrl + Config.getAllPlayersInfoPath
+    const players: Array<PlayerInfo> = await this.fetchData
+      .requestAPI(url, 'GET')
+      .then(data => data)
       .catch(error => console.log(error))
 
     return players
-
   }
 
   async getPlayerInfo() {
-    const activeToken: string = this.getActiveToken()
-
-    const players: PlayerInfo = await fetch(Config.baseUsersUrl + Config.getPlayerInfoPath, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: activeToken,
-      }
-    })
-      .then((response) => {
-        return response.json().then((data) => {
-
-          return data
-        })
-      })
+    const url = Config.baseUsersUrl + Config.getPlayerInfoPath
+    const players: PlayerInfo = await this.fetchData
+      .requestAPI(url, 'GET')
+      .then(data => data)
       .catch(error => console.log(error))
 
     return players
-
   }
+
   setLogInUserToLocalStorage(user: User | undefined) {
     localStorage.setItem('logInUser', JSON.stringify(user))
     window.dispatchEvent(new Event('storage'))

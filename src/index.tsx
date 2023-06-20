@@ -3,14 +3,13 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
 import Arena from './UI/arena/Arena'
-import { HistoryService, MovingService, NavigationService } from './game/suppliers'
-import { UserService } from './backend-service-connector/service'
+import { MovingService, NavigationService } from './game/suppliers'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { LoginNavigation } from './UI/login/LoginNavigation'
-import { ContextUser, ContextGame } from './UI/context/contextUser'
+import { ContextUser, ContextGame, ContextHistory } from './UI/context/contextUser'
 import { UserSettings } from './UI/settings/UserSettings'
-import { NewGamePanel } from './UI/new-game/NewGamePanel'
-import { GameService } from './backend-service-connector/service'
+import { MainSite } from './UI/new-game/MainSite'
+import { GameService, PositionEditorService, HistoryService, UserService } from './backend-service-connector/service'
 import { PlayersInfo } from './UI/players-info/PlayersInfo'
 
 const root = ReactDOM.createRoot(
@@ -22,6 +21,7 @@ const movingService = new MovingService()
 const navigationService = new NavigationService()
 const historyService = new HistoryService()
 const gameService = new GameService()
+const positionEditorService = new PositionEditorService()
 
 root.render(
   <Router>
@@ -41,6 +41,7 @@ root.render(
             navigationService={navigationService}
             historyService={historyService}
             gameService={gameService}
+            positionEditorService={positionEditorService}
           />
         } />
       <Route
@@ -51,6 +52,18 @@ root.render(
             navigationService={navigationService}
             historyService={historyService}
             gameService={gameService}
+            positionEditorService={positionEditorService}
+          />
+        } />
+      <Route
+        path='/history'
+        element={
+          <Arena
+            movingService={movingService}
+            navigationService={navigationService}
+            historyService={historyService}
+            gameService={gameService}
+            positionEditorService={positionEditorService}
           />
         } />
       <Route path={'/settings'}
@@ -62,15 +75,15 @@ root.render(
       />
       <Route path={'/players-info'}
              element={
-               <ContextUser.Provider value={userService}>
-                 <PlayersInfo />
-               </ContextUser.Provider>
+               <ContextHistory.Provider value={historyService}>
+                 <PlayersInfo userService={userService} />
+               </ContextHistory.Provider>
              }
       />
       <Route path={'/new-game'}
              element={
                <ContextGame.Provider value={gameService}>
-                 <NewGamePanel />
+                 <MainSite />
                </ContextGame.Provider>
              }
       />

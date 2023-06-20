@@ -28,11 +28,11 @@ export function GameNavigation({ gameService }: TGameNavigation) {
 
   return (
     <div className='navbar'>
-      <div className='navbar__nav--item'>
-        <a className='navbar__nav--button' href='/new-game'>
-          ➕
-        </a>
-      </div>
+      {/*<div className='navbar__nav--item'>*/}
+      {/*  <a className='navbar__nav--button' href='/new-game'>*/}
+      {/*    ➕*/}
+      {/*  </a>*/}
+      {/*</div>*/}
       <div className='navbar__nav--item'>
         <a className='navbar__nav--button' onClick={resignGame}>
           🚪
@@ -56,7 +56,7 @@ export function GameNavigation({ gameService }: TGameNavigation) {
       <div className='navbar__nav--item'>
         <a
           className='navbar__nav--button'
-          onMouseOver={() => setWindowResponseOffer(true)}
+          onClick={() => setWindowResponseOffer(true)}
           onMouseLeave={() => setWindowResponseOffer(false)}
         >
           🖌️

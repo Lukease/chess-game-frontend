@@ -18,6 +18,7 @@ export function Field({
                         location,
                         trashActive,
                         isPositionEditorMode,
+                        positionEditorService,
                       }: TField) {
   const [isMoving, setIsMoving] = useState<boolean>(false)
   const [isChosen, setChosen] = useState<boolean>(false)
@@ -55,7 +56,7 @@ export function Field({
   }
 
   function removePiece() {
-    piece && piece.name !== 'King' && gameService.removePieceFromPositionEditor(piece.id)
+    piece && piece.name !== 'King' && positionEditorService.removePieceFromPositionEditor(piece.id)
       .then(() => setPieceRemoved(true))
   }
 

@@ -6,7 +6,7 @@ export function PlayersInfoNavigation({ players }: TPlayersInfoNavigation) {
   const [isAscending, setIsAscending] = useState(true)
 
   const sortedPlayers = [...players].sort((a, b) => {
-    let comparisonValue = 0
+    let comparisonValue
     switch (sortType) {
       case 'login':
         comparisonValue = a.login.localeCompare(b.login)
@@ -56,6 +56,7 @@ export function PlayersInfoNavigation({ players }: TPlayersInfoNavigation) {
           <div
             className='charts__element--nav'
             onClick={() => handleSortClick('lp')}
+            style={{width: '2%'}}
           >
             Lp.
           </div>
@@ -116,7 +117,7 @@ export function PlayersInfoNavigation({ players }: TPlayersInfoNavigation) {
         </div>
         {sortedPlayers.map((player, index) => (
           <div className='charts__element' key={player.login}>
-            <div className='charts__element--nav'>{index + 1}</div>
+            <div className='charts__element--nav' style={{width: '1%'}}>{index + 1}</div>
             <div className='charts__element--nav'>{player.login}</div>
             <div className='charts__element--nav'>{player.email}</div>
             <div className='charts__element--nav'>{player.allGames}</div>

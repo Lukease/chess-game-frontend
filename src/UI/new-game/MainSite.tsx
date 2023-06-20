@@ -3,12 +3,12 @@ import { ContextGame } from '../context/contextUser'
 import { Game } from '../../backend-service-connector/model/rest/game/Game'
 import { GoBackNav } from '../navigation/GoBackNav'
 import { GameItem } from './GameItem'
-import { CreateButton } from './CreateButton'
 import { CreateNewGame } from './CreateGame'
 import { Loader } from '../utils/Loader'
 import { ErrorWindow } from '../utils/ErrorWindow'
+import { CreateButton } from './CreateButton'
 
-export function NewGamePanel(): JSX.Element {
+export function MainSite(): JSX.Element {
   const gameService = useContext(ContextGame)
   const [createdGames, setCreatedGames] = useState<Array<Game>>([])
   const [visibleCreate, setVisibleCreate] = useState(false)
@@ -30,6 +30,7 @@ export function NewGamePanel(): JSX.Element {
         lastMoveBlack: undefined,
         timeLeftBlack: res.timePerPlayerInSeconds,
         timeLeftWhite: res.timePerPlayerInSeconds,
+        result: undefined,
       }
     })
   }
@@ -41,7 +42,7 @@ export function NewGamePanel(): JSX.Element {
 
     gameService.getActiveGameAndReturnMoves()
       .then((r) => {
-        if (r.status !== 404 && r.status !== 400){
+        if (r.status !== 404 && r.status !== 400) {
           window.location.href = 'http://localhost:3000/game'
         }
       })
@@ -66,7 +67,7 @@ export function NewGamePanel(): JSX.Element {
   const renderAllCreatedGames = () => {
     return createdGames ?
       createdGames.map((game, index) => {
-        const user = game.whitePlayer ? game.whitePlayer : game.blackPlayer
+        const user = game.whitePlayer ?? game.blackPlayer
         const playerColor = game.whitePlayer ? 'white' : 'black'
 
         return <GameItem
@@ -107,7 +108,7 @@ export function NewGamePanel(): JSX.Element {
   return (
     <div
       className={'games'}
-      style={{ flexDirection: visibleCreate ? 'row' : 'column' }}
+      // style={{ flexDirection: visibleCreate ? 'row' : 'column' }}
     >
       {
         isLoading
@@ -120,6 +121,13 @@ export function NewGamePanel(): JSX.Element {
           : <ErrorWindow message={error} sendDataToParent={closeError} />
       }
       <GoBackNav />
+      <div className="about-app">
+        <h2>About My App</h2>
+        <p>
+          Welcome to the Chess App! This app allows you to create and join chess games with other players.
+          Good Luck and hava a fun!!
+        </p>
+      </div>
       <ActiveGames />
       {
         visibleCreate
@@ -133,6 +141,11 @@ export function NewGamePanel(): JSX.Element {
           :
           <CreateButton setVisibleCreate={setVisibleCreate} />
       }
+      <footer className='footer'>
+        <div className='container'>
+          <p className='footer__text'>&copy; 2023 Chess App. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   )
 }

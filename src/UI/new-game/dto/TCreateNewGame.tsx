@@ -1,8 +1,9 @@
-import { GameService } from '../../../backend-service-connector/service/GameService'
+import { GameService } from '../../../backend-service-connector/service'
+import React from 'react'
 
 export type TCreateNewGame = {
-  setIsLoading: any
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   gameServiceBackend: GameService
-  setVisibleCreate: any
-  setError: any
+  setVisibleCreate: React.Dispatch<React.SetStateAction<boolean>>
+  setError: React.Dispatch<React.SetStateAction<string>>
 }

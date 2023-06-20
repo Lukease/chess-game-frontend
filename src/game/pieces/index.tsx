@@ -5,4 +5,5 @@ export { Rook } from './Rook'
 export { Piece } from './Piece'
 export { Bishop } from './Bishop'
 export { Pawn } from './Pawn'
+export { createPieceInstance } from './pieceUtils'
 

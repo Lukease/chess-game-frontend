@@ -5,7 +5,7 @@ import { TPlayerStats } from './types/TPlayerStats'
 
 export function PlayerStats({ playerInfo }: TPlayerStats) {
   if (playerInfo === undefined) {
-    return null;
+    return null
   }
   return (
     <div className={'charts'}>

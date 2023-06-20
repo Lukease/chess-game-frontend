@@ -9,6 +9,7 @@ export type Game = {
   timeLeftBlack: number
   timePerPlayerInSeconds: number
   gameStatus: string
+  result?: string
   fen: string
   whitePlayer?: User
   blackPlayer?: User

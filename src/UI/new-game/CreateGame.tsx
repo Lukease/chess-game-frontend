@@ -2,12 +2,17 @@ import React, { useState } from 'react'
 import { NewGame } from '../../backend-service-connector/model/rest/game/NewGame'
 import { TCreateNewGame } from './dto/TCreateNewGame'
 
-export function CreateNewGame({ setIsLoading, gameServiceBackend, setVisibleCreate, setError }: TCreateNewGame) {
+export function CreateNewGame({
+                                setIsLoading,
+                                gameServiceBackend,
+                                setVisibleCreate,
+                                setError,
+                              }: TCreateNewGame) {
   const [time, setTime] = useState(200)
   const [selectedColor, setSelectedColor] = useState('white')
   const isWhitePlayer = selectedColor === 'white'
 
-  const create = (event: any) => {
+  const create = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault()
     setIsLoading(true)
 
@@ -28,6 +33,10 @@ export function CreateNewGame({ setIsLoading, gameServiceBackend, setVisibleCrea
 
   return (
     <form className={'new-game'}>
+      <span className={'new-game__close'}
+            onClick={() => setVisibleCreate(false)}
+      > x
+      </span>
       <h1>Create new game</h1>
       <p className={'new-game__title'}>
         {`Time per player: ${time}s`}
@@ -49,7 +58,7 @@ export function CreateNewGame({ setIsLoading, gameServiceBackend, setVisibleCrea
       <div>
         <select
           value={`${selectedColor}`}
-          onChange={(event) => setSelectedColor(event.target.value)}
+          onChange={event => setSelectedColor(event.target.value)}
           required={true}
         >
           <option></option>
@@ -59,7 +68,7 @@ export function CreateNewGame({ setIsLoading, gameServiceBackend, setVisibleCrea
       </div>
       <p className={'new-game__title'}></p>
       <button
-        onClick={(event) => create(event)}
+        onClick={event => create(event)}
       >create
       </button>
     </form>

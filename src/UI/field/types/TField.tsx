@@ -1,5 +1,5 @@
 import { Piece } from '../../../game/pieces'
-import { GameService } from '../../../backend-service-connector/service'
+import { GameService, PositionEditorService } from '../../../backend-service-connector/service'
 
 export type TField = {
   id: string
@@ -15,4 +15,5 @@ export type TField = {
   location: string
   trashActive: boolean
   isPositionEditorMode: boolean
+  positionEditorService: PositionEditorService
 }

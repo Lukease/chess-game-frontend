@@ -3,7 +3,7 @@ import '../../Arena.css'
 import { GameNavigation } from '../start-game'
 import { HistoryOfMoves } from '../history'
 import { Board } from '../board'
-import { Bishop, King, Knight, Pawn, Piece, Queen, Rook } from '../../game/pieces'
+import { createPieceInstance, Piece } from '../../game/pieces'
 import { TArena } from './types/TArena'
 import { AddPiecePanel } from '../new-figure/AddPiecePanel'
 import { PromotePawnPanel } from '../new-figure/PromotePawnPanel'
@@ -14,8 +14,15 @@ import { GoBackNav } from '../navigation/GoBackNav'
 import { NewPosition } from '../../backend-service-connector/model/rest/game/NewPosition'
 import { PositionEditorInfo } from '../../backend-service-connector/model/rest/game/PositionEditorInfo'
 import { MovedPiece } from './MovedPiece'
+import { NewFen } from './NewFen'
 
-export function Arena({ movingService, navigationService, historyService, gameService }: TArena) {
+export function Arena({
+                        movingService,
+                        navigationService,
+                        historyService,
+                        gameService,
+                        positionEditorService,
+                      }: TArena) {
   const [selectedPiece, setSelectedPiece] = useState<Piece | undefined>(undefined)
   const [coordinateX, setCoordinateX] = useState<number>(0)
   const [coordinateY, setCoordinateY] = useState<number>(0)
@@ -27,6 +34,7 @@ export function Arena({ movingService, navigationService, historyService, gameSe
   const [isMoving, setIsMoving] = useState(false)
   const [isFromBoard, setIsFromBoard] = useState(false)
   const [isPositionEditorMode, setPositionEditorMode] = useState(false)
+  const [moveId, setMoveId] = useState<number>(0)
 
   useEffect(() => {
     const setGameState = (response: MakeMoveResponse | undefined) => {
@@ -36,18 +44,25 @@ export function Arena({ movingService, navigationService, historyService, gameSe
     }
 
     const currentURL = window.location.href
-    setLocation(currentURL.includes('game') ? 'game' : 'position-editor')
+    const path = currentURL.split('/')
+
+    setLocation(path[path.length - 1])
 
     const fetchData = () => {
       if (currentURL.includes('game')) {
         gameService.getActiveGameAndReturnMoves()
-          .then(setGameState)
+          .then(r => {
+            r.pieces = r.pieces.map((pieceData: Piece) => {
+              return createPieceInstance(pieceData)
+            })
+            setGameState(r)
+          })
           .catch(error => {
             alert(`An error occurred while fetching the game: ${error.message}`)
             window.location.href = 'http://localhost:3000/new-game'
           })
       } else if (currentURL.includes('position-editor')) {
-        gameService.getCurrentPositionEditorPieces()
+        positionEditorService.getCurrentPositionEditorPieces()
           .then(r => {
             r.pieces = r.pieces.map((pieceData: Piece) => {
               return createPieceInstance(pieceData)
@@ -58,6 +73,14 @@ export function Arena({ movingService, navigationService, historyService, gameSe
             alert(`An error occurred while fetching the position editor pieces: ${error.message}`)
             window.location.href = 'http://localhost:3000/new-game'
           })
+      } else if (currentURL.includes('history')) {
+        historyService.getHistoryOfGame(moveId)
+          .then(r => {
+            r.pieces = r.pieces.map((pieceData: Piece) => {
+              return createPieceInstance(pieceData)
+            })
+            setPositionEditorInfo(r)
+          })
       }
     }
 
@@ -67,22 +90,6 @@ export function Arena({ movingService, navigationService, historyService, gameSe
     return () => clearInterval(intervalId)
   }, [gameService])
 
-  const createPieceInstance = (pieceData: Piece) => {
-    switch (pieceData.name) {
-      case 'Knight':
-        return new Knight(pieceData.color, pieceData.id, pieceData.name, pieceData.possibleMoves)
-      case 'Bishop':
-        return new Bishop(pieceData.color, pieceData.id, pieceData.name, pieceData.possibleMoves)
-      case 'Rook':
-        return new Rook(pieceData.color, pieceData.id, pieceData.name, pieceData.possibleMoves)
-      case 'Queen':
-        return new Queen(pieceData.color, pieceData.id, pieceData.name, pieceData.possibleMoves)
-      case 'King':
-        return new King(pieceData.color, pieceData.id, pieceData.name, pieceData.possibleMoves)
-      default:
-        return new Pawn(pieceData.color, pieceData.id, pieceData.name, pieceData.possibleMoves)
-    }
-  }
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (isMoving) {
       const parentRect = event.currentTarget.getBoundingClientRect()
@@ -109,7 +116,7 @@ export function Arena({ movingService, navigationService, historyService, gameSe
           isFromBoard: isFromBoard,
         }
 
-        gameService.ChangePositionOfPieceFromPositionEditor(newPiecePosition).then(r => {
+        positionEditorService.ChangePositionOfPieceFromPositionEditor(newPiecePosition).then(r => {
           r.pieces = r.pieces.map((pieceData: Piece) => {
             return createPieceInstance(pieceData)
           })
@@ -146,7 +153,20 @@ export function Arena({ movingService, navigationService, historyService, gameSe
   }
 
   function setDefaultChessPosition() {
-    gameService.getDefaultPositionEditorPieces().then(r => setPositionEditorInfo(r))
+    positionEditorService.getDefaultPositionEditorPieces().then(newPositionEditorState => {
+      newPositionEditorState.pieces = newPositionEditorState.pieces.map((pieceData: Piece) => {
+        return createPieceInstance(pieceData)
+      })
+      window.location.reload()
+      setPositionEditorInfo(newPositionEditorState)
+    })
+  }
+
+  function handleNewPieces(newFenInfo: PositionEditorInfo) {
+    newFenInfo.pieces = newFenInfo.pieces.map((pieceData: Piece) => {
+      return createPieceInstance(pieceData)
+    })
+    setPositionEditorInfo(newFenInfo)
   }
 
   return (
@@ -179,6 +199,7 @@ export function Arena({ movingService, navigationService, historyService, gameSe
           editPieceLocation={handleCopy}
           trashActive={isTrashActive}
           isPositionEditorMode={isPositionEditorMode}
+          positionEditorService={positionEditorService}
         />
         {location === 'position-editor' && (
           <AddPiecePanel color={'white'} trashActive={isTrashActive}
@@ -190,6 +211,8 @@ export function Arena({ movingService, navigationService, historyService, gameSe
         )}
       </div>
       {location !== 'position-editor' && <HistoryOfMoves gameService={gameService} makeMoveResponse={gameInfo} />}
+      {location === 'position-editor' &&
+        <NewFen positionEditorService={positionEditorService} handleNewPieces={handleNewPieces}></NewFen>}
     </div>
   )
 }

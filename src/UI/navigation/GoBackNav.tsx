@@ -10,6 +10,11 @@ export function GoBackNav({ defaultChessPosition }: TGoBackNav) {
 
   return (
     <div className={'navbar'}>
+      <div className="navbar__logo">
+        <span className="navbar__logo-text">Chess Game</span>
+        <span className="navbar__logo-icon">&#9816;</span>
+      </div>
+
       <div className={'navbar__nav--item'}>
         <a
           className={'navbar__nav--button'}
