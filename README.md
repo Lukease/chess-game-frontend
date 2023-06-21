@@ -51,6 +51,9 @@ Open your browser and visit http://localhost:3000 to see the application running
 Once the application is running, you can start playing chess by following these steps:
 
 1.Sign up or log in to your account.
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/7528f593-d592-47ca-a7e5-930580766c10)
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/b6a456e6-002d-4cc9-98f4-b1994816bf1f)
+
 2.Create game or join game to play against another player.
 3.Make your moves by selecting a piece and then selecting the desired destination.
 4.Follow the rules of chess and try to checkmate your opponent's king.
