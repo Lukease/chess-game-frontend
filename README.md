@@ -1,46 +1,118 @@
-# Getting Started with Create React App
+# Chess game Front-end
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the front-end repository for a chess game application built with TypeScript, React and SASS.
 
-## Available Scripts
+## Table of contents
+* [General info](#general-info)
+* [Technologies](#technologies)
+* [Instalation](#Instalation)
+* [Usage](*Usage)
 
-In the project directory, you can run:
+## General info
+This project is a chess game application that allows users to play chess online. It provides a user-friendly interface for playing chess with other players. The game follows the standard rules of chess and includes features such as move validation, highlighting available moves, and capturing opponent pieces.
 
-### `npm start`
+In addition to the chess game itself, this application also includes the following features:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Position Editor: A site where users can create and customize chess positions. They can place the chess pieces on the board, set the initial position, and save it for later use. 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Position Editor 
 
-### `npm test`
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/f980e3d4-f1dc-48b4-8323-9bc965cb67b9)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+User Account Management: A user site where users can change their login password and update their account details.
 
-### `npm run build`
+Edit User Info 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/8ccf5bb2-c659-4c2e-9c8b-b84a4e692e44)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+User Info 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/6e7fe20d-08dd-4f67-af16-ab123f2a0486)
 
-### `npm run eject`
+Game History: A site that allows users to view the history of moves for a particular game. Users can review the sequence of moves made during the game and analyze their strategies.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+History Games 
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/9974540b-975a-4c2d-a8dd-e51b1ca44265)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Player Statistics: A feature that provides statistical information about individual players and all players collectively. Users can view their own performance metrics, such as win-loss ratio and average game duration, as well as overall statistics for the entire player community.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Player Stats 
 
-## Learn More
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/051c8773-f6b9-47a4-9180-03ab9cd8aced)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+All Player Stats 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/3fe8d51f-4617-4158-bbbf-cc179613af2a)
+
+## Technologies
+Project is created with:
+* react version: 18.2.0
+* typescript version: 4.7.4
+* SASS
+
+## Installation
+To install and run this project locally, follow these steps:
+
+Clone the repository:
+bash
+Copy code
+git clone https://github.com/your-username/chess-game-frontend.git
+Navigate to the project directory:
+bash
+Copy code
+cd chess-game-frontend
+Install the dependencies:
+Copy code
+npm install
+Start the development server:
+sql
+Copy code
+npm start
+Open your browser and visit http://localhost:3000 to see the application running.
+
+## Usage
+Once the application is running, you can start playing chess by following these steps:
+
+1.Sign up or log in to your account.
+
+Log in 
+
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/7528f593-d592-47ca-a7e5-930580766c10)
+
+Sign up 
+
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/b6a456e6-002d-4cc9-98f4-b1994816bf1f)
+
+2.Create game or join game to play against another player.
+
+Create game 
+
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/498fe9dc-91ec-4443-85a9-64b0d4f89ce5)
+
+join game 
+
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/caaae229-dec3-45e8-8662-5362049851f1)
+
+3.Make your moves by selecting a piece and then selecting the desired destination.
+
+Play game 
+
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/fe003806-76a1-439a-be8f-f42eed6bbe36)
+
+Game info 
+
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/b59547af-6c15-452b-9774-9dfce207343b)
+
+History of moves 
+
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/b731c49b-00e9-4868-b611-d7516d65d672)
+
+4.Follow the rules of chess and try to checkmate your opponent's king.
+
+Check King
+
+![image](https://github.com/Lukease/chess-game-frontend/assets/89201995/e5f5dc22-6f1d-4d26-88ca-2e4fe9d26880)
+
+5.Enjoy playing chess online!
+
