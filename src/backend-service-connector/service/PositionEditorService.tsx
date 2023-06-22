@@ -1,6 +1,7 @@
 import { Config } from '../config'
 import { NewPosition } from '../model/rest/game/NewPosition'
 import { FetchData } from './FetchData'
+import { PositionEditorInfo } from '../model/rest/game/PositionEditorInfo'
 
 export class PositionEditorService {
   fetchData: FetchData
@@ -9,7 +10,7 @@ export class PositionEditorService {
     this.fetchData = new FetchData()
   }
 
-  async getCurrentPositionEditorPieces() {
+  async getCurrentPositionEditorPieces(): Promise<PositionEditorInfo> {
     const url = Config.basePositionEditorUrl + Config.getCurrentPositionEditorPieces
     return await this.fetchData.requestAPI(url, 'GET')
   }

@@ -5,39 +5,29 @@ import { TBoard } from './types/TBoard'
 import { MakeMoveRequest } from '../../backend-service-connector/model/rest/game/MakeMoveRequest'
 
 export function Board({
-                        movingService,
                         gameService,
-                        navigationService,
-                        historyService,
                         isPawnPromotion,
-                        makeMoveResponse,
+                        gameInfo,
                         location,
-                        positionEditorInfo,
                         editPieceLocation,
                         trashActive,
                         isPositionEditorMode,
                         positionEditorService,
                       }: TBoard) {
   const [pieces, setPieces] = useState<Array<Piece>>([])
-  const [history, setHistory] = useState<string>('')
-  const [whoseTurn, setWhoseTurn] = useState<string>('white')
   const [selectedPiece, setSelectedPiece] = useState<Piece | undefined>(undefined)
   const [kingIsChecked, setKingIsChecked] = useState<Array<string>>([])
   const [playerColor, setPlayerColor] = useState<string>('white')
   const [lastMove, setLastMove] = useState<Array<string>>([])
 
   useEffect(() => {
-    if (makeMoveResponse && location === 'game') {
-      setPieces(makeMoveResponse.pieces)
-      setWhoseTurn(makeMoveResponse.whoseTurn)
-      setKingIsChecked(makeMoveResponse.kingIsChecked ?? [])
-      setPlayerColor(makeMoveResponse.playerColor)
-      setLastMove(makeMoveResponse.fieldFromTo)
-    } else if (location == 'position-editor' && positionEditorInfo) {
-      setPieces(positionEditorInfo.pieces)
-      setKingIsChecked(positionEditorInfo.kingIsChecked)
+    if (gameInfo) {
+      setPieces(gameInfo.pieces)
+      setKingIsChecked(gameInfo.kingIsChecked ?? [])
+      setPlayerColor(gameInfo.playerColor ?? 'white')
+      setLastMove(gameInfo.fieldFromTo ?? [])
     }
-  }, [makeMoveResponse, location, positionEditorInfo?.pieces])
+  }, [gameInfo, location])
 
   const getPieceById = (id: string) => {
     if (pieces && pieces.length > 0) {
@@ -56,7 +46,6 @@ export function Board({
 
   const makeMove = (id: string) => {
     if (!selectedPiece) return
-
     const move: MakeMoveRequest = {
       pieceFromId: selectedPiece.id,
       fieldToId: id,
@@ -102,13 +91,13 @@ export function Board({
       const fieldId = `${letter}${boardRow}`
       const correctMove = doesPieceContainFieldId(fieldId)
       const fieldChecked: boolean = kingIsChecked && kingIsChecked.includes(fieldId)
+      const isChosen: boolean = selectedPiece?.id === fieldId
       return (
         <Field
           id={fieldId}
           piece={currentPiece}
           key={`${letter}${boardRow}`}
           color={(boardColumn + boardRow) % 2 ? 'white' : 'black'}
-          gameService={gameService}
           onPieceClick={getPiece}
           correctMove={correctMove}
           makeMove={makeMove}
@@ -117,6 +106,7 @@ export function Board({
           handleCopy={editPieceLocation}
           location={location}
           trashActive={trashActive}
+          isChosen={isChosen}
           isPositionEditorMode={isPositionEditorMode}
           positionEditorService={positionEditorService}
         />

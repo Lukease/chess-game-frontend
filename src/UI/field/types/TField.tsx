@@ -1,11 +1,10 @@
 import { Piece } from '../../../game/pieces'
-import { GameService, PositionEditorService } from '../../../backend-service-connector/service'
+import { PositionEditorService } from '../../../backend-service-connector/service'
 
 export type TField = {
   id: string
   piece?: Piece
   color: string
-  gameService: GameService
   onPieceClick: (fieldId: string) => void
   correctMove: boolean
   makeMove: (id: string) => void
@@ -16,4 +15,5 @@ export type TField = {
   trashActive: boolean
   isPositionEditorMode: boolean
   positionEditorService: PositionEditorService
+  isChosen: boolean
 }

@@ -130,11 +130,11 @@
     max-height: 259px
     min-height: 200px
     border-radius: 20px
-    overflow: auto
     background-color: #555555
     margin-top: 70px
     margin-left: 20px
     padding: 10px
+    overflow-x: auto
 
   &__title
     font-size: 20px
@@ -156,32 +156,26 @@
   &__item-info
     padding: 15px
     text-align: center
-    flex: 1
     white-space: pre
-    overflow: auto
 
     &--title
       white-space: normal
       overflow: hidden
 
     &:first-child
-      flex: 0.4
-      width: 2%
+      width: 30px
       padding: 15px
 
     &:nth-child(2)
-      flex: 0.5
-      width: 2%
+      width: 30px
       margin-left: 5px
 
     &:nth-child(3)
-      flex: 2
-      width: 10%
+      flex-grow: 1
       margin-left: 5px
 
     &:last-child
-      flex: 2
-      width: 10%
+      flex-grow: 1
       margin-left: 5px
 
 .menu__button:hover

@@ -108,7 +108,6 @@ export function MainSite(): JSX.Element {
   return (
     <div
       className={'games'}
-      // style={{ flexDirection: visibleCreate ? 'row' : 'column' }}
     >
       {
         isLoading

@@ -8,7 +8,6 @@ export function Field({
                         id,
                         piece,
                         color,
-                        gameService,
                         onPieceClick,
                         correctMove,
                         makeMove,
@@ -19,14 +18,15 @@ export function Field({
                         trashActive,
                         isPositionEditorMode,
                         positionEditorService,
+                        isChosen
                       }: TField) {
   const [isMoving, setIsMoving] = useState<boolean>(false)
-  const [isChosen, setChosen] = useState<boolean>(false)
   const [img, setImg] = useState<string>('')
   const [pieceRemoved, setPieceRemoved] = useState(false)
 
   useEffect(() => {
-    piece ? setImg(piece.getImageUrl()) : null
+    setImg(piece ? piece.getImageUrl() : '')
+    setPieceRemoved(false)
   }, [piece])
 
   const handleMoveSound = () => {
@@ -38,9 +38,8 @@ export function Field({
 
   const setPiecePosition = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (piece) {
-      const parentRect = event.currentTarget.getBoundingClientRect()
-      const x: number = event.clientX - parentRect.left - 30
-      const y: number = event.clientY - parentRect.top - 30
+      const x: number = event.clientX - 30
+      const y: number = event.clientY - 30
 
       setIsMoving(true)
       handleCopy(piece, x, y, true)
@@ -56,44 +55,55 @@ export function Field({
   }
 
   function removePiece() {
-    piece && piece.name !== 'King' && positionEditorService.removePieceFromPositionEditor(piece.id)
-      .then(() => setPieceRemoved(true))
+    if (piece && piece.name !== 'King') {
+      positionEditorService.removePieceFromPositionEditor(piece.id).then(() => setPieceRemoved(true))
+    }
+  }
+
+  const handleFieldClick = () => {
+    if (location === 'game') {
+      choosePiece(id)
+      if (correctMove) {
+        clickCorrectField()
+        handleMoveSound()
+      }
+    } else if (location === 'position-editor') {
+      if (trashActive) {
+        removePiece()
+      } else if (!isPositionEditorMode) {
+        choosePiece(id)
+      }
+    }
+  }
+
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (location === 'position-editor' && isPositionEditorMode) {
+      setPiecePosition(event)
+    }
   }
 
   return (
     <div
       className={isChosen || lastMove ? `field  field__${color} field__chosen` : `field  field__${color}`}
-      onClick={() => {
-        if (location === 'game') {
-          choosePiece(id)
-          correctMove ? clickCorrectField() : null
-          handleMoveSound()
-        } else if (location === 'position-editor') {
-          if (trashActive) {
-            removePiece()
-          } else if (!isPositionEditorMode) {
-            choosePiece(id)
-          }
-        }
-      }}
-      onMouseDown={(event) => location === 'position-editor' && isPositionEditorMode && setPiecePosition(event)}
+      onClick={() => handleFieldClick()}
+      onMouseDown={handleMouseDown}
       id={id}
       style={{ backgroundColor: isCheck ? 'red' : '' }}
     >
-      {
-        piece ?
-          <img
-            onClick={() => trashActive && location === 'position-editor' ? removePiece : null}
-            className={correctMove ? `figure figure__move-figure` : 'figure'}
-            id={id}
-            alt={''}
-            src={img}
-            draggable={false}
-            style={{ display: isMoving || (trashActive && pieceRemoved) ? 'none' : 'block' }}
-          >
-          </img>
-          : <div className={correctMove ? `figure figure__move-empty` : 'figure'}></div>
-      }
+      {piece ? (
+        <img
+          onClick={() => (trashActive && location === 'position-editor' ? removePiece() : null)}
+          className={correctMove ? `figure figure__move-figure` : 'figure'}
+          id={id}
+          alt=''
+          src={img}
+          draggable={false}
+          style={{ display: isMoving || pieceRemoved ? 'none' : 'block' }}
+        />
+      ) : (
+        <div className={correctMove ? `figure figure__move-empty` : 'figure'}></div>
+      )}
     </div>
   )
 }
+

@@ -1,23 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { TGameInfo } from './types/TGameInfo'
-import { MakeMoveResponse } from '../../backend-service-connector/model/rest/game/MakeMoveResponse'
-import { Timer } from './Timer'
+import React from 'react';
+import { TGameInfo } from './types/TGameInfo';
+import { Timer } from './Timer';
 
-export function GameInfo({ makeMoveResponse }: TGameInfo) {
-  const [gameState, setGameState] = useState<MakeMoveResponse | null>(null)
-
-  useEffect(() => {
-    if (makeMoveResponse) {
-      setGameState(makeMoveResponse)
-    }
-  }, [makeMoveResponse])
-
-  if (!gameState) {
+export function GameInfo({ currentGame }: TGameInfo) {
+  if (!currentGame) {
     return null
   }
 
-  const { playerColor, whoseTurn, gameInfo } = gameState
-  const { timeLeftWhite, timeLeftBlack } = gameInfo ?? {}
+  const { playerColor = 'white', whoseTurn = 'white', gameInfo } = currentGame
+  const { timeLeftWhite, timeLeftBlack } = gameInfo || {}
 
   return (
     <div className='info'>

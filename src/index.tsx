@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
 import Arena from './UI/arena/Arena'
-import { MovingService, NavigationService } from './game/suppliers'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { LoginNavigation } from './UI/login/LoginNavigation'
 import { ContextUser, ContextGame, ContextHistory } from './UI/context/contextUser'
@@ -17,8 +16,6 @@ const root = ReactDOM.createRoot(
 )
 
 const userService = new UserService()
-const movingService = new MovingService()
-const navigationService = new NavigationService()
 const historyService = new HistoryService()
 const gameService = new GameService()
 const positionEditorService = new PositionEditorService()
@@ -36,34 +33,19 @@ root.render(
       <Route
         path='/game'
         element={
-          <Arena
-            movingService={movingService}
-            navigationService={navigationService}
-            historyService={historyService}
-            gameService={gameService}
-            positionEditorService={positionEditorService}
+          <Arena historyService={historyService} gameService={gameService} positionEditorService={positionEditorService}
           />
         } />
       <Route
         path='/position-editor'
         element={
-          <Arena
-            movingService={movingService}
-            navigationService={navigationService}
-            historyService={historyService}
-            gameService={gameService}
-            positionEditorService={positionEditorService}
+          <Arena historyService={historyService} gameService={gameService} positionEditorService={positionEditorService}
           />
         } />
       <Route
         path='/history'
         element={
-          <Arena
-            movingService={movingService}
-            navigationService={navigationService}
-            historyService={historyService}
-            gameService={gameService}
-            positionEditorService={positionEditorService}
+          <Arena historyService={historyService} gameService={gameService} positionEditorService={positionEditorService}
           />
         } />
       <Route path={'/settings'}

@@ -9,6 +9,7 @@ export function MovedPiece({selectedPiece,coordinateX,coordinateY}: TMovedPiece)
         src={selectedPiece.getImageUrl()}
         key={selectedPiece.id}
         alt={''}
+        draggable={false}
       />
     </div>
   )

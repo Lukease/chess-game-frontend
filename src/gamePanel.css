@@ -129,20 +129,6 @@ input[type=submit]:hover {
   height: 50px;
 }
 
-.footer {
-  color: #fff;
-  bottom: 0;
-}
-.footer__container {
-  max-width: 960px;
-  margin: 0 auto;
-}
-.footer__footer__text {
-  text-align: center;
-  font-size: 14px;
-  margin: 0;
-}
-
 .about-app {
   background-color: #807c7c;
   padding: 20px;

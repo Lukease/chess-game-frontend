@@ -16,20 +16,13 @@ import { PositionEditorInfo } from '../../backend-service-connector/model/rest/g
 import { MovedPiece } from './MovedPiece'
 import { NewFen } from './NewFen'
 
-export function Arena({
-                        movingService,
-                        navigationService,
-                        historyService,
-                        gameService,
-                        positionEditorService,
-                      }: TArena) {
+export function Arena({ historyService, gameService, positionEditorService }: TArena) {
   const [selectedPiece, setSelectedPiece] = useState<Piece | undefined>(undefined)
   const [coordinateX, setCoordinateX] = useState<number>(0)
   const [coordinateY, setCoordinateY] = useState<number>(0)
   const [makeMoveRequest, setMakeMoveRequest] = useState<MakeMoveRequest | undefined>(undefined)
   const [gameInfo, setGameInfo] = useState<MakeMoveResponse | undefined>()
   const [isTrashActive, setTrashActive] = useState(false)
-  const [positionEditorInfo, setPositionEditorInfo] = useState<PositionEditorInfo | undefined>(undefined)
   const [location, setLocation] = useState<string>('')
   const [isMoving, setIsMoving] = useState(false)
   const [isFromBoard, setIsFromBoard] = useState(false)
@@ -37,58 +30,46 @@ export function Arena({
   const [moveId, setMoveId] = useState<number>(0)
 
   useEffect(() => {
-    const setGameState = (response: MakeMoveResponse | undefined) => {
-      if (response) {
-        setGameInfo(response)
-      }
-    }
-
     const currentURL = window.location.href
     const path = currentURL.split('/')
+    const location = path[path.length - 1]
 
-    setLocation(path[path.length - 1])
+    setLocation(location)
 
-    const fetchData = () => {
-      if (currentURL.includes('game')) {
-        gameService.getActiveGameAndReturnMoves()
-          .then(r => {
-            r.pieces = r.pieces.map((pieceData: Piece) => {
-              return createPieceInstance(pieceData)
-            })
-            setGameState(r)
-          })
-          .catch(error => {
-            alert(`An error occurred while fetching the game: ${error.message}`)
-            window.location.href = 'http://localhost:3000/new-game'
-          })
-      } else if (currentURL.includes('position-editor')) {
-        positionEditorService.getCurrentPositionEditorPieces()
-          .then(r => {
-            r.pieces = r.pieces.map((pieceData: Piece) => {
-              return createPieceInstance(pieceData)
-            })
-            setPositionEditorInfo(r)
-          })
-          .catch(error => {
-            alert(`An error occurred while fetching the position editor pieces: ${error.message}`)
-            window.location.href = 'http://localhost:3000/new-game'
-          })
-      } else if (currentURL.includes('history')) {
-        historyService.getHistoryOfGame(moveId)
-          .then(r => {
-            r.pieces = r.pieces.map((pieceData: Piece) => {
-              return createPieceInstance(pieceData)
-            })
-            setPositionEditorInfo(r)
-          })
+    const fetchData = async () => {
+      try {
+        let response
+
+        if (currentURL.includes('game')) {
+          response = await gameService.getActiveGameAndReturnMoves()
+        } else if (currentURL.includes('position-editor')) {
+          response = await positionEditorService.getCurrentPositionEditorPieces()
+        } else if (currentURL.includes('history')) {
+          response = await historyService.getHistoryOfGame(moveId)
+        }
+
+        if (response) {
+          const transformedResponse: MakeMoveResponse = {
+            pieces: response.pieces.map((pieceData: Piece) => createPieceInstance(pieceData)),
+            kingIsChecked: response.kingIsChecked,
+            gameInfo: response.gameInfo,
+            fieldFromTo: response.fieldFromTo,
+          }
+
+          setGameInfo(transformedResponse)
+        }
+      } catch (error) {
+        window.location.href = 'http://localhost:3000/new-game'
       }
     }
 
     fetchData()
+
     const intervalId = setInterval(fetchData, 5000)
 
     return () => clearInterval(intervalId)
-  }, [gameService])
+  }, [gameService, historyService, location, moveId, positionEditorService])
+
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (isMoving) {
@@ -106,7 +87,7 @@ export function Arena({
     if (isMoving) {
       setIsMoving(false)
       document.body.style.cursor = 'auto'
-      const mouseUpTarget = document.elementsFromPoint(coordinateX, coordinateY - 30)
+      const mouseUpTarget = document.elementsFromPoint(coordinateX + 30, coordinateY + 30)
       const newPieceId = mouseUpTarget.find(element => element.id !== '' && element.id !== 'root')?.id
 
       if (newPieceId && selectedPiece) {
@@ -120,9 +101,8 @@ export function Arena({
           r.pieces = r.pieces.map((pieceData: Piece) => {
             return createPieceInstance(pieceData)
           })
-          setPositionEditorInfo(r)
+          setGameInfo(r)
         })
-        console.log('New position:', coordinateX, coordinateY, newPiecePosition)
       }
     }
   }
@@ -158,7 +138,7 @@ export function Arena({
         return createPieceInstance(pieceData)
       })
       window.location.reload()
-      setPositionEditorInfo(newPositionEditorState)
+      setGameInfo(newPositionEditorState)
     })
   }
 
@@ -166,19 +146,18 @@ export function Arena({
     newFenInfo.pieces = newFenInfo.pieces.map((pieceData: Piece) => {
       return createPieceInstance(pieceData)
     })
-    setPositionEditorInfo(newFenInfo)
+    setGameInfo(newFenInfo)
   }
 
   return (
     <div className={'game-content'} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
-      {isMoving && selectedPiece && (
-        <MovedPiece selectedPiece={selectedPiece} coordinateY={coordinateY} coordinateX={coordinateX} />
-      )}
-      {location === 'position-editor' && <GoBackNav defaultChessPosition={setDefaultChessPosition} />}
+      {isMoving && selectedPiece &&
+        <MovedPiece selectedPiece={selectedPiece} coordinateY={coordinateY} coordinateX={coordinateX} />}
+      {location !== 'game' && <GoBackNav defaultChessPosition={setDefaultChessPosition} />}
       {location === 'game' && (
         <>
           <GameNavigation gameService={gameService} />
-          <GameInfo makeMoveResponse={gameInfo} />
+          <GameInfo currentGame={gameInfo} />
         </>
       )}
       <div className={'game__arena'}>
@@ -188,13 +167,9 @@ export function Arena({
                          isPositionEditorMode={isPositionEditorMode} />
         )}
         <Board
-          movingService={movingService}
           gameService={gameService}
-          navigationService={navigationService}
-          historyService={historyService}
           isPawnPromotion={setMakeMoveRequest}
-          makeMoveResponse={gameInfo}
-          positionEditorInfo={positionEditorInfo}
+          gameInfo={gameInfo}
           location={location}
           editPieceLocation={handleCopy}
           trashActive={isTrashActive}
@@ -206,13 +181,14 @@ export function Arena({
                          setTrashActive={toggleTrash} handleCopy={handleCopy} setMode={toggleMode}
                          isPositionEditorMode={isPositionEditorMode} />
         )}
-        {makeMoveRequest && (
-          <PromotePawnPanel sendPromotion={makePromotion} makeMoveResponse={gameInfo} />
-        )}
+        {makeMoveRequest &&
+          <PromotePawnPanel sendPromotion={makePromotion} makeMoveResponse={gameInfo}
+                            fieldToId={makeMoveRequest.fieldToId} />}
       </div>
-      {location !== 'position-editor' && <HistoryOfMoves gameService={gameService} makeMoveResponse={gameInfo} />}
+      {gameInfo?.gameInfo && location !== 'position-editor' &&
+        <HistoryOfMoves moves={gameInfo.gameInfo.moves} location={location} setMoveId={setMoveId} />}
       {location === 'position-editor' &&
-        <NewFen positionEditorService={positionEditorService} handleNewPieces={handleNewPieces}></NewFen>}
+        <NewFen positionEditorService={positionEditorService} handleNewPieces={handleNewPieces} />}
     </div>
   )
 }

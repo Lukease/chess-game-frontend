@@ -24,6 +24,11 @@ export class FetchData {
     const { message, status } = data
     console.log(status)
     console.log(message)
+
+    if (message){
+      alert(message)
+    }
+
     if (message == "No active Token found" && window.location.href !== 'http://localhost:3000/new-game') {
       alert(message)
       window.location.href = 'http://localhost:3000/new-game'

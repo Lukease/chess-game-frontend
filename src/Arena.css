@@ -313,20 +313,6 @@ input[type=submit]:hover {
   height: 50px;
 }
 
-.footer {
-  color: #fff;
-  bottom: 0;
-}
-.footer__container {
-  max-width: 960px;
-  margin: 0 auto;
-}
-.footer__footer__text {
-  text-align: center;
-  font-size: 14px;
-  margin: 0;
-}
-
 .about-app {
   background-color: #807c7c;
   padding: 20px;
@@ -663,11 +649,11 @@ input[type=submit]:hover {
   max-height: 259px;
   min-height: 200px;
   border-radius: 20px;
-  overflow: auto;
   background-color: #555555;
   margin-top: 70px;
   margin-left: 20px;
   padding: 10px;
+  overflow-x: auto;
 }
 .games-history__title {
   font-size: 20px;
@@ -689,32 +675,26 @@ input[type=submit]:hover {
 .games-history__item-info {
   padding: 15px;
   text-align: center;
-  flex: 1;
   white-space: pre;
-  overflow: auto;
 }
 .games-history__item-info--title {
   white-space: normal;
   overflow: hidden;
 }
 .games-history__item-info:first-child {
-  flex: 0.4;
-  width: 2%;
+  width: 30px;
   padding: 15px;
 }
 .games-history__item-info:nth-child(2) {
-  flex: 0.5;
-  width: 2%;
+  width: 30px;
   margin-left: 5px;
 }
 .games-history__item-info:nth-child(3) {
-  flex: 2;
-  width: 10%;
+  flex-grow: 1;
   margin-left: 5px;
 }
 .games-history__item-info:last-child {
-  flex: 2;
-  width: 10%;
+  flex-grow: 1;
   margin-left: 5px;
 }
 
@@ -742,6 +722,7 @@ input[type=submit]:hover {
   background-image: linear-gradient(#413f3f, black);
   -webkit-user-select: none;
   --nav-size: 60px;
+  overflow-x: hidden;
 }
 
 .game-content {
@@ -1126,6 +1107,7 @@ input[type=submit]:hover {
   height: 20px;
   width: 100%;
   left: 0;
+  z-index: 3;
 }
 
 .navbar:hover {

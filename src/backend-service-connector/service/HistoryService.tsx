@@ -1,8 +1,7 @@
 import { Config } from '../config'
 import { FetchData } from './FetchData'
-import { PositionEditorInfo } from '../model/rest/game/PositionEditorInfo'
 import { HistoryRequest } from '../model/rest/history/HistoryRequest'
-import { AllHistoryGamesResponse } from '../model/rest/history/HistoryResponse'
+import { AllHistoryGamesResponse, HistoryResponse } from '../model/rest/history/HistoryResponse'
 
 export class HistoryService {
   fetchData: FetchData
@@ -15,10 +14,15 @@ export class HistoryService {
     this.playAsWhite = true
   }
 
-  async getHistoryOfGame(moveId: number): Promise<PositionEditorInfo> {
-    const historyRequest: HistoryRequest = { gameId: this.gameId, moveId: moveId, playAsWhite: this.playAsWhite }
+  async getHistoryOfGame(moveId: number): Promise<HistoryResponse> {
+    const historyRequest: HistoryRequest = {
+      gameId: 1,
+      moveId: moveId,
+      playAsWhite: false,
+    }
     const url = Config.baseHistoryUrl + Config.getHistoryFromGamePath
-    return await this.fetchData.requestAPI(url, 'GET', historyRequest)
+
+    return await this.fetchData.requestAPI(url, 'PUT', historyRequest)
   }
 
   async getAllPlayerGames(): Promise<AllHistoryGamesResponse> {

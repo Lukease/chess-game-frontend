@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { addPieceArrangement } from '../../chess_arrangement'
 import { TPromotePawnPanel } from './types/TPromotePawnPanel'
-import { Pawn, Piece } from '../../game/pieces'
+import { createPieceInstance, Pawn, Piece } from '../../game/pieces'
 
-export function PromotePawnPanel({ sendPromotion, makeMoveResponse }: TPromotePawnPanel) {
+export function PromotePawnPanel({ sendPromotion, makeMoveResponse, fieldToId }: TPromotePawnPanel) {
   const [color, setColor] = useState<string>('white')
   const [pieceColumn, setPieceColumn] = useState<number>(0)
 
   useEffect(() => {
-    if (makeMoveResponse) {
+    if (makeMoveResponse?.playerColor) {
+      const column = parseInt(fieldToId.charAt(1))
+
       setColor(makeMoveResponse.playerColor)
+      setPieceColumn(column)
     }
   }, [makeMoveResponse])
 
@@ -19,16 +22,15 @@ export function PromotePawnPanel({ sendPromotion, makeMoveResponse }: TPromotePa
 
   const renderFigure = () => {
     return (
-      addPieceArrangement(color).filter(piece => !(piece instanceof Pawn)).map((piece, index) => {
-
+      addPieceArrangement(color)
+        .filter(piece => !(piece instanceof Pawn))
+        .map((figure, index) => {
+        const piece = createPieceInstance(figure)
         return (
-          <div
-            className={'field'}
-            key={index}
-          >
+          <div className={'field'} key={index}>
             <img
               className={'figure'}
-              // src={piece.getImageUrl()}
+              src={piece.getImageUrl()}
               key={index}
               alt={''}
               onClick={() => selectFigure(piece)}
@@ -43,14 +45,8 @@ export function PromotePawnPanel({ sendPromotion, makeMoveResponse }: TPromotePa
   return (
     <div
       className={'select__promotion'}
-      style={{
-        backgroundColor: color === 'white' ? 'black' : '#837676',
-        right: pieceColumn > 4 ? '0' : '360px',
-      }}
-    >
-      {
-        renderFigure()
-      }
+      style={{ backgroundColor: color === 'white' ? 'black' : '#837676', right: pieceColumn > 4 ? '0' : '360px' }}>
+      {renderFigure()}
     </div>
   )
 }

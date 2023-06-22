@@ -34,9 +34,8 @@ export function AddPiecePanel({
   }
 
   const selectPiece = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, piece: Piece) => {
-    const parentRect = event.currentTarget.getBoundingClientRect()
-    const x: number = event.clientX - parentRect.left - 30
-    const y: number = event.clientY - parentRect.top - 30
+    const x: number = event.clientX - 30
+    const y: number = event.clientY - 30
 
     setTrashActive(true)
     setMode(true)

@@ -17,10 +17,10 @@ export function GamesContainer({ games, title, isWhitePlayer }: TGamesContainer)
   return (
     <ul className='games-history__list'>
       <li className='games-history__item'>
-        <div className='games-history__item-info games-history__item-info--title'>result</div>
+        <div className='games-history__item-info games-history__item-info--title'>Result</div>
         <div className='games-history__item-info games-history__item-info--title'>Per Player</div>
-        <div className='games-history__item-info games-history__item-info--title'>fen</div>
-        <div className='games-history__item-info games-history__item-info--title'>moves</div>
+        <div className='games-history__item-info games-history__item-info--title'>FEN</div>
+        <div className='games-history__item-info games-history__item-info--title'>Moves</div>
       </li>
       {games.map((game) => (
         <li key={game.id} className='games-history__item' onClick={() => game.id && setGame(game.id, isWhitePlayer)}>
